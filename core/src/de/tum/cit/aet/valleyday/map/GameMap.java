@@ -47,20 +47,20 @@ public class GameMap {
     
     private final Chest chest;
     
-    private final Flowers[][] flowers;
+    private final Tiles[][] tiles;
     
     public GameMap(ValleyDayGame game) {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 1, 3);
+        this.player = new Player(this.world, 0, 0); // -> Reset player to (1, 1) as our starting point
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 3, 3);
         // Create flowers in a 7x7 grid
-        this.flowers = new Flowers[7][7];
-        for (int i = 0; i < flowers.length; i++) {
-            for (int j = 0; j < flowers[i].length; j++) {
-                this.flowers[i][j] = new Flowers(i, j);
+        this.tiles = new Tiles[7][7];
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                this.tiles[i][j] = new Tiles(i, j, TileType.DIRT);
             }
         }
     }
@@ -99,7 +99,7 @@ public class GameMap {
     }
     
     /** Returns the flowers on the map. */
-    public List<Flowers> getFlowers() {
-        return Arrays.stream(flowers).flatMap(Arrays::stream).toList();
+    public List<Tiles> getTiles() {
+        return Arrays.stream(tiles).flatMap(Arrays::stream).toList();
     }
 }

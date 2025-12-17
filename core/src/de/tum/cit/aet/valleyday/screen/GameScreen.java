@@ -12,6 +12,7 @@ import de.tum.cit.aet.valleyday.ValleyDayGame;
 import de.tum.cit.aet.valleyday.map.Flowers;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.map.GameMap;
+import de.tum.cit.aet.valleyday.map.Tiles;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -104,8 +105,8 @@ public class GameScreen implements Screen {
         
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
-        for (Flowers flowers : map.getFlowers()) {
-            draw(spriteBatch, flowers);
+        for (Tiles tiles : map.getTiles()) {
+            draw(spriteBatch, tiles);
         }
         draw(spriteBatch, map.getChest());
         draw(spriteBatch, map.getPlayer());

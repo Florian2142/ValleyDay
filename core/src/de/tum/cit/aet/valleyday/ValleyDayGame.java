@@ -57,9 +57,18 @@ public class ValleyDayGame extends Game {
      */
     @Override
     public void create() {
+
+        /**
+         * Note: We cannot initiate the spriteBatch and load textures because the graphics card connection hasn't been established yet.
+         * 
+         */
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
+
         this.map = new GameMap(this); // Create a new game map (you should change this to load the map from a file instead)
+
+        // -> So we make our own maps here!!! TO-DO: Choose from File
+
         MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen
     }

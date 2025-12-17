@@ -1,5 +1,7 @@
 package de.tum.cit.aet.valleyday.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -66,8 +68,35 @@ public class Player implements Drawable {
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
-        float xVelocity = (float) Math.sin(this.elapsedTime) * 2;
-        float yVelocity = (float) Math.cos(this.elapsedTime) * 2;
+        float yVelocity = 0;
+        float xVelocity = 0;
+
+        /**
+         * we define a constant speed here
+         */
+
+        float speed = 5f;
+
+        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+            speed += 5;
+        }
+
+        if (Gdx.input.isKeyPressed(Keys.W)) {
+            yVelocity += speed;
+        }
+        else if (Gdx.input.isKeyPressed(Keys.S)) {
+            yVelocity -= speed;
+        }
+        else if (Gdx.input.isKeyPressed(Keys.D)) {
+            xVelocity += speed;
+        }
+        else if (Gdx.input.isKeyPressed(Keys.A)) {
+            xVelocity -= speed;
+        }
+
+        
+        
+        elapsedTime = 0;
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
     
