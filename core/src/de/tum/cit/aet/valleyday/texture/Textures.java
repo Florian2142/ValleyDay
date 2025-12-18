@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Textures {
     
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
-    public static final TextureRegion DIRT    = SpriteSheet.BASIC_TILES.at(9, 3);
+    public static final TextureRegion DIRT    = SpriteSheet.BASIC_TILES.at(7, 3);
     public static final TextureRegion SAND    = SpriteSheet.BASIC_TILES.at(1, 0);
     public static final TextureRegion GRAS    = SpriteSheet.BASIC_TILES.at(2, 0);
     public static final TextureRegion WALL    = SpriteSheet.BASIC_TILES.at(3, 0);

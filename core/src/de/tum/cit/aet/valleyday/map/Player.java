@@ -21,6 +21,22 @@ public class Player implements Drawable {
     
     /** The Box2D hitbox of the player, used for position and collision detection. */
     private final Body hitbox;
+
+    /** Create a memory for the movement of the player*/
+
+    /*
+    *   Make a private ENUM TYPE
+    */
+   private enum Direction{UP, DOWN, LEFT, RIGHT}
+
+
+    private Direction currDirection = Direction.DOWN;
+
+    /*Is the player standing or moving */
+    private boolean moving = false;
+
+
+
     
     public Player(World world, float x, float y) {
         this.hitbox = createHitbox(world, x, y);
@@ -59,8 +75,8 @@ public class Player implements Drawable {
     }
     
     /**
-     * Move the player around in a circle by updating the linear velocity of its hitbox every frame.
-     * This doesn't actually move the player, but it tells the physics engine how the player should move next frame.
+     * This function is based on the logic of keys. The user can press the keys A;W;S;D to move.
+     * 
      * @param frameTime the time since the last frame.
      */
     public void tick(float frameTime) {
@@ -79,32 +95,58 @@ public class Player implements Drawable {
 
         if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
             speed += 5;
+            this.moving = true;
         }
 
         if (Gdx.input.isKeyPressed(Keys.W)) {
             yVelocity += speed;
+            this.currDirection = Direction.UP;
+            this.moving = true;
         }
         else if (Gdx.input.isKeyPressed(Keys.S)) {
             yVelocity -= speed;
+            this.currDirection = Direction.DOWN;
+            this.moving = true;
         }
         else if (Gdx.input.isKeyPressed(Keys.D)) {
             xVelocity += speed;
+            this.currDirection = Direction.RIGHT;
+            this.moving = true;
         }
         else if (Gdx.input.isKeyPressed(Keys.A)) {
             xVelocity -= speed;
+            this.currDirection = Direction.LEFT;
+            this.moving = true;
+        }
+        else {
+            this.moving = false;
         }
 
         
         
-        elapsedTime = 0;
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
     
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
-        return Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
-    }
+        if (isMoving()) {
+            switch (this.currDirection) {
+                    case RIGHT: return  Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
+                    case LEFT : return  Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
+                    case UP   : return  Animations.CHARACTER_WALK_UP.getKeyFrame(this.elapsedTime, true);
+                    default   : return  Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
+            }
+        }
+        else {
+            switch (this.currDirection) {
+                    case RIGHT: return  Animations.CHARACTER_WALK_RIGHT_IDLE.getKeyFrame(this.elapsedTime, true);
+                    case LEFT : return  Animations.CHARACTER_WALK_LEFT_IDLE.getKeyFrame(this.elapsedTime, true);
+                    case UP   : return  Animations.CHARACTER_WALK_UP_IDLE.getKeyFrame(this.elapsedTime, true);
+                    default   : return  Animations.CHARACTER_WALK_DOWN_IDLE.getKeyFrame(this.elapsedTime, true);
+        }
+      
+    }}
     
     @Override
     public float getX() {
@@ -117,4 +159,22 @@ public class Player implements Drawable {
         // The y-coordinate of the player is the y-coordinate of the hitbox (this can change every frame).
         return hitbox.getPosition().y;
     }
+
+    public float getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public Body getHitbox() {
+        return hitbox;
+    }
+
+    public Direction getCurrDirection() {
+        return currDirection;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    
 }

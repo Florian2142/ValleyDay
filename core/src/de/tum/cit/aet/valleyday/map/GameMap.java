@@ -1,6 +1,7 @@
 package de.tum.cit.aet.valleyday.map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
@@ -48,6 +49,14 @@ public class GameMap {
     private final Chest chest;
     
     private final Tiles[][] tiles;
+
+    /*
+    *
+    * Testing
+    */
+   
+
+    FileHandle handle = Gdx.files.classpath("myfile.txt");
     
     public GameMap(ValleyDayGame game) {
         this.game = game;
