@@ -1,15 +1,22 @@
 package de.tum.cit.aet.valleyday;
 
+import java.io.File;
+import java.util.logging.FileHandler;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import de.tum.cit.aet.valleyday.audio.MusicTrack;
 import de.tum.cit.aet.valleyday.map.GameMap;
+import de.tum.cit.aet.valleyday.map.mapInputExcepetion;
 import de.tum.cit.aet.valleyday.screen.GameScreen;
 import de.tum.cit.aet.valleyday.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 
 /**
  * The ValleyDayGame class represents the core of the Valley Day game.
@@ -32,6 +39,8 @@ public class ValleyDayGame extends Game {
      * which you can use to read the contents of the map file as a String, and then parse it into a {@link GameMap}.
      */
     private final NativeFileChooser fileChooser;
+
+    
     
     /**
      * The map. This is where all the game objects are stored.
@@ -47,7 +56,7 @@ public class ValleyDayGame extends Game {
      */
     public ValleyDayGame(NativeFileChooser fileChooser) {
         this.fileChooser = fileChooser;
-    }
+    } 
 
     /**
      * Called when the game is created. Initializes the SpriteBatch and Skin.
@@ -65,9 +74,50 @@ public class ValleyDayGame extends Game {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
 
-        this.map = new GameMap(this); // Create a new game map (you should change this to load the map from a file instead)
+        // THe actualy map is already handled in the NativeFileChooser in the ChosenFile
 
-        // -> So we make our own maps here!!! TO-DO: Choose from File
+        // -> So we make our own maps here!!! 
+
+        /**
+         * 1.0: Via the Desktopmanager we already give the finsihed object of the Filechooser and pass it into the game
+         * 2.0: Once we have the Filechooser in the game we can just use it in order to select the maps we want
+         * 3.0: For that we first have to choose the setting and set it to the path of the maps
+         * 4.0: Then we leverage the onFileChosen which makes a pop-up of the maps
+         * 5.0: We create a new GameMap and pass the selected file for the map creation
+         *
+         * Possible Improvements: Do not choose the file via the explorer but instead ingame choosing
+         * 
+         * 
+        */
+        NativeFileChooserConfiguration config = new NativeFileChooserConfiguration();
+
+        config.directory = Gdx.files.local("itp2526itp2526projectwork-trycatchreturn35\\desktop\\src");
+        
+        // pick the right file
+        this.fileChooser.chooseFile(config, new NativeFileChooserCallback() {
+
+        @Override
+        public void onFileChosen(FileHandle file) {
+            // return the map we have chosen by the user
+            try {
+                ValleyDayGame.this.map = new GameMap(ValleyDayGame.this, file);
+            } catch (mapInputExcepetion e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onCancellation() {
+            // Do Nothing
+        }
+
+        @Override
+        public void onError(Exception exception) {
+            throw new Error();
+        }
+        
+    });
 
         MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen

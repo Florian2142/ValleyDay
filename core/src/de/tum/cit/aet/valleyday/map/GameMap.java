@@ -6,7 +6,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -50,21 +54,64 @@ public class GameMap {
     
     private final Tiles[][] tiles;
 
-    /*
-    *
-    * Testing
-    */
-   
+    // private final int mapSize;
 
-    FileHandle handle = Gdx.files.classpath("myfile.txt");
-    
-    public GameMap(ValleyDayGame game) {
+    public GameMap(ValleyDayGame game, FileHandle map) throws mapInputExcepetion{
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
         this.player = new Player(this.world, 0, 0); // -> Reset player to (1, 1) as our starting point
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 3, 3);
+
+        /*
+        * Here we follow the recommended procedure of the project description which is
+        * 1.0 Store the whole file content in one very big string
+        * 2.0 Split the string at each \n = newline
+        * 3.0 Split each line by "="
+        * 3.1 Make sure to split each empty line or comment ("#")
+        * 
+        */
+        String mapString = map.readString(); // 1.0
+
+        String[] newlines = mapString.split("\n"); // 2.0
+
+        // make new HashMap -> Algorithmic fast lookup O(1) -> Ammortized average case 
+        HashMap<String, String> tileVectorTypes = new HashMap<>();
+
+        String curLine;
+        String[] currTile;
+   
+
+        /**
+         * 
+         * Here we basically stream and read the map input 
+         * 
+         * IMPROVEMENTS: REGEX for identifying faulty input
+         */
+
+        for (int i = 0; i < newlines.length; i++) {
+            // get current Line
+            curLine = newlines[i];
+            
+            if (curLine.startsWith("#") || curLine == null) {
+                continue;
+            }
+
+            try {
+                // try putting each tile into
+                currTile = newlines[i].split("=");
+                tileVectorTypes.put(currTile[0], currTile[1]); 
+                System.out.println(newlines[i]);
+
+            } catch (Exception e) {
+                throw new mapInputExcepetion("Map contained faulty input. Input must follow: int,int=int (Comments, i.e. Hashtags are allowed)");
+            }
+
+
+           
+        }
+
         // Create flowers in a 7x7 grid
         this.tiles = new Tiles[7][7];
         for (int i = 0; i < tiles.length; i++) {
@@ -72,6 +119,24 @@ public class GameMap {
                 this.tiles[i][j] = new Tiles(i, j, TileType.DIRT);
             }
         }
+
+        // Take the map as input and store the given types with a big switch statement
+        // this.mapSize = (int ) Math.sqrt(tileVectorTypes.size());
+
+        // tiles = new Tiles[mapSize][mapSize];
+
+        // int row;
+        // int col;
+
+        // for (String entry : tileVectorTypes.keySet()) {
+        //     row = Integer.valueOf(entry.split(",")[0]);
+        //     col = Integer.valueOf(entry.split(",")[1]);
+
+            
+        //     tiles[row][col] = new Tiles(row, col, TileType.DIRT);
+        //     System.out.println(tiles[row][col]);
+        // }
+        
     }
     
     /**

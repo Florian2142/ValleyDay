@@ -1,5 +1,8 @@
 package de.tum.cit.aet.valleyday;
 
+import java.io.File;
+import java.util.logging.FileHandler;
+
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
@@ -20,6 +23,7 @@ public class DesktopLauncher {
 		// Configuration for the game window
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Valley Day"); // Set the window title
+		
 
 		// Get the display mode of the current monitor
 		Graphics.DisplayMode displayMode = Lwjgl3ApplicationConfiguration.getDisplayMode();
