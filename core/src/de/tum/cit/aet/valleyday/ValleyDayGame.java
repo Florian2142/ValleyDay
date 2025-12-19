@@ -103,7 +103,7 @@ public class ValleyDayGame extends Game {
                 // Load the map
                 ValleyDayGame.this.map = new GameMap(ValleyDayGame.this, file);
                 
-                // B. NOW it is safe to start the game!
+                // Go to game after selecting file
                 goToGame(); 
                 
             } catch (Exception e) {

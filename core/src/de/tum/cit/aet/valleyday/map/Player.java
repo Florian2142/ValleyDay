@@ -107,7 +107,7 @@ public class Player implements Drawable {
         else if (!Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT) && (stamina < MaxStamina)) {
             stamina += regenRate * frameTime;
         }
-        //keep the valie of the stamina between 0 and 100.
+        //keep the value of the stamina between 0 and 100.
         stamina = MathUtils.clamp(stamina, 0, MaxStamina);
 
         if (Gdx.input.isKeyPressed(Keys.W)) {
