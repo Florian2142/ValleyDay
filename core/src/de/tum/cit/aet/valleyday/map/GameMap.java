@@ -54,7 +54,6 @@ public class GameMap {
     
     private final Tiles[][] tiles;
 
-    // private final int mapSize;
 
     public GameMap(ValleyDayGame game, FileHandle map) throws mapInputExcepetion{
         this.game = game;
@@ -76,11 +75,13 @@ public class GameMap {
 
         String[] newlines = mapString.split("\n"); // 2.0
 
-        // make new HashMap -> Algorithmic fast lookup O(1) -> Ammortized average case 
-        HashMap<String, String> tileVectorTypes = new HashMap<>();
+        HashMap<String,String> fillTiles = new HashMap<>();
 
         String curLine;
         String[] currTile;
+
+        int maxX = 0;
+        int maxY = 0;
    
 
         /**
@@ -97,12 +98,23 @@ public class GameMap {
             if (curLine.startsWith("#") || curLine == null) {
                 continue;
             }
+            
+
+            int row = 0;
+            int col = 0;
 
             try {
                 // try putting each tile into
                 currTile = newlines[i].split("=");
-                tileVectorTypes.put(currTile[0], currTile[1]); 
-                System.out.println(newlines[i]);
+
+                row = Integer.valueOf(currTile[0].split(",")[0].trim());
+                col = Integer.valueOf(currTile[0].split(",")[1].trim());
+
+                fillTiles.put(currTile[0], currTile[1]);
+
+                if (row > maxX) {maxX = row;}
+                if (col > maxY) {maxY = col;}
+                
 
             } catch (Exception e) {
                 throw new mapInputExcepetion("Map contained faulty input. Input must follow: int,int=int (Comments, i.e. Hashtags are allowed)");
@@ -113,29 +125,51 @@ public class GameMap {
         }
 
         // Create flowers in a 7x7 grid
-        this.tiles = new Tiles[7][7];
+        // this.tiles = new Tiles[7][7];
+        // for (int i = 0; i < tiles.length; i++) {
+        //     for (int j = 0; j < tiles[i].length; j++) {
+        //         this.tiles[i][j] = new Tiles(i, j, TileType.DIRT);
+        //     }
+        // }
+
+        // Take the map as input and store the given types with a big switch statement
+
+
+        int row;
+        int col;
+
+        String[] splitt;
+
+        
+        // first fill every single tile by default 
+        tiles = new Tiles[maxX + 1][maxY + 1];
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                this.tiles[i][j] = new Tiles(i, j, TileType.DIRT);
+            for (int j = 0; j < tiles[i].length; j++) {               
+                tiles[i][j] = new Tiles(i, j, TileType.DIRT);
             }
         }
 
-        // Take the map as input and store the given types with a big switch statement
-        // this.mapSize = (int ) Math.sqrt(tileVectorTypes.size());
+        for (String tile : fillTiles.keySet()) {
 
-        // tiles = new Tiles[mapSize][mapSize];
+            splitt = tile.split(",");
 
-        // int row;
-        // int col;
+            row = Integer.valueOf(splitt[0].trim());
+            col = Integer.valueOf(splitt[1].trim());
 
-        // for (String entry : tileVectorTypes.keySet()) {
-        //     row = Integer.valueOf(entry.split(",")[0]);
-        //     col = Integer.valueOf(entry.split(",")[1]);
+            System.out.println(tile);
 
-            
-        //     tiles[row][col] = new Tiles(row, col, TileType.DIRT);
-        //     System.out.println(tiles[row][col]);
-        // }
+            switch (Integer.valueOf(fillTiles.get(tile))) {
+                case 1:
+                    tiles[row][col] = new Tiles(row, col, TileType.SAND);
+                    break;
+                case 2:
+                    tiles[row][col] = new Tiles(row, col, TileType.GRAS);
+                default:
+                    tiles[row][col] = new Tiles(row, col, TileType.DIRT);
+                    break;
+            }
+
+        }
         
     }
     
