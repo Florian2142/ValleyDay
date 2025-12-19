@@ -93,9 +93,11 @@ public class GameMap {
 
         for (int i = 0; i < newlines.length; i++) {
             // get current Line
-            curLine = newlines[i];
+            curLine = newlines[i].trim(); // -> We always trim to avoid stupid input
+
+            System.out.println("This is the current line" + curLine);
             
-            if (curLine.startsWith("#") || curLine == null) {
+            if (curLine.contains("#") || curLine.isEmpty()) {
                 continue;
             }
             
@@ -110,7 +112,7 @@ public class GameMap {
                 row = Integer.valueOf(currTile[0].split(",")[0].trim());
                 col = Integer.valueOf(currTile[0].split(",")[1].trim());
 
-                fillTiles.put(currTile[0], currTile[1]);
+                fillTiles.put(currTile[0].trim(), currTile[1].trim());
 
                 if (row > maxX) {maxX = row;}
                 if (col > maxY) {maxY = col;}
@@ -156,7 +158,7 @@ public class GameMap {
             row = Integer.valueOf(splitt[0].trim());
             col = Integer.valueOf(splitt[1].trim());
 
-            System.out.println(tile);
+            System.out.println(Integer.valueOf(fillTiles.get(tile)));
 
             switch (Integer.valueOf(fillTiles.get(tile))) {
                 case 1:

@@ -100,22 +100,28 @@ public class ValleyDayGame extends Game {
         public void onFileChosen(FileHandle file) {
             // return the map we have chosen by the user
             try {
+                // Load the map
                 ValleyDayGame.this.map = new GameMap(ValleyDayGame.this, file);
-            } catch (mapInputExcepetion e) {
-                // TODO Auto-generated catch block
+                
+                // B. NOW it is safe to start the game!
+                goToGame(); 
+                
+            } catch (Exception e) {
+                System.err.println("Map parsing failed!");
                 e.printStackTrace();
             }
         }
 
-        @Override
-        public void onCancellation() {
-            // Do Nothing
-        }
-
-        @Override
-        public void onError(Exception exception) {
-            throw new Error();
-        }
+                @Override
+            public void onCancellation() {
+                System.out.println("User cancelled.");
+            }
+        
+            @Override
+            public void onError(Exception exception) {
+                System.err.println("Error picking file:");
+                exception.printStackTrace(); // This will tell us the REAL reason if it fails again
+            }
         
     });
 
