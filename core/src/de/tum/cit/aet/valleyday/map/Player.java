@@ -3,6 +3,7 @@ package de.tum.cit.aet.valleyday.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -92,11 +93,22 @@ public class Player implements Drawable {
          */
 
         float speed = 5f;
+        float MaxStamina = 100f;
+        float stamina = 100f;
+        float drainRate = 25f;
+        float regenRate = 25f;
 
-        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && stamina > 0) {
             speed += 5;
             this.moving = true;
+            stamina -= drainRate * frameTime;
         }
+        //regenerates Stamina when the Shift key is not pressed.
+        else if (!Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT) && (stamina < MaxStamina)) {
+            stamina += regenRate * frameTime;
+        }
+        //keep the valie of the stamina between 0 and 100.
+        stamina = MathUtils.clamp(stamina, 0, MaxStamina);
 
         if (Gdx.input.isKeyPressed(Keys.W)) {
             yVelocity += speed;
