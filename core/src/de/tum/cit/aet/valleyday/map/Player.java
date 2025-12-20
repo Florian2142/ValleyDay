@@ -23,6 +23,14 @@ public class Player implements Drawable {
     /** The Box2D hitbox of the player, used for position and collision detection. */
     private final Body hitbox;
 
+    float MaxStamina = 100f;
+    float stamina = 100f;
+    boolean isExhausted = false;
+    private float sprintCooldown = 0f;
+    private final float COOLDOWN_DURATION = 5f; // 5 seconds
+    float drainRate = 25f;
+    float regenRate = 25f;
+
     /** Create a memory for the movement of the player*/
 
     /*
@@ -93,39 +101,46 @@ public class Player implements Drawable {
          */
 
         float speed = 5f;
-        float MaxStamina = 100f;
-        float stamina = 100f;
-        float drainRate = 25f;
-        float regenRate = 25f;
 
-        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && stamina > 0) {
-            speed += 5;
+        if (sprintCooldown > 0) {
+            sprintCooldown -= frameTime;
+        }
+        if (stamina <= 0) {
+            isExhausted = true;
+            sprintCooldown = 5.0f;
+            stamina = 0;
+        }
+        if (isExhausted && stamina >= MaxStamina * 0.5f) {
+            isExhausted = false;
+        }
+        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && sprintCooldown <= 0 && stamina > 0) {
+            speed = 15f;
             this.moving = true;
             stamina -= drainRate * frameTime;
         }
         //regenerates Stamina when the Shift key is not pressed.
-        else if (!Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT) && (stamina < MaxStamina)) {
+        else if (stamina < MaxStamina) {
             stamina += regenRate * frameTime;
         }
         //keep the value of the stamina between 0 and 100.
         stamina = MathUtils.clamp(stamina, 0, MaxStamina);
 
-        if (Gdx.input.isKeyPressed(Keys.W)) {
+        if (Gdx.input.isKeyPressed(Keys.UP)) {
             yVelocity += speed;
             this.currDirection = Direction.UP;
             this.moving = true;
         }
-        else if (Gdx.input.isKeyPressed(Keys.S)) {
+        else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
             yVelocity -= speed;
             this.currDirection = Direction.DOWN;
             this.moving = true;
         }
-        else if (Gdx.input.isKeyPressed(Keys.D)) {
+        else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
             xVelocity += speed;
             this.currDirection = Direction.RIGHT;
             this.moving = true;
         }
-        else if (Gdx.input.isKeyPressed(Keys.A)) {
+        else if (Gdx.input.isKeyPressed(Keys.LEFT)) {
             xVelocity -= speed;
             this.currDirection = Direction.LEFT;
             this.moving = true;
