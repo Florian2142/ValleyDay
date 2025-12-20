@@ -152,6 +152,7 @@ public class Player implements Drawable {
         }
         else {
             switch (this.currDirection) {
+                // These weird things are basically just when the character stands still -> Makes it natural
                     case RIGHT: return  Animations.CHARACTER_WALK_RIGHT_IDLE.getKeyFrame(this.elapsedTime, true);
                     case LEFT : return  Animations.CHARACTER_WALK_LEFT_IDLE.getKeyFrame(this.elapsedTime, true);
                     case UP   : return  Animations.CHARACTER_WALK_UP_IDLE.getKeyFrame(this.elapsedTime, true);

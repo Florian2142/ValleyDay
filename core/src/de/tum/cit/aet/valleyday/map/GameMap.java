@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import de.tum.cit.aet.valleyday.ValleyDayGame;
 
 import java.io.File;
@@ -53,13 +55,22 @@ public class GameMap {
     private final Chest chest;
     
     private final Tiles[][] tiles;
+    private final Obstacle[][] obstacles;
+ 
+    private int width = 0;
+    private int height = 0;
+
+    // we have to define the starting point of the player based on the gate
+    private int startX = 0;
+    private int startY = 0;
+
 
 
     public GameMap(ValleyDayGame game, FileHandle map) throws mapInputExcepetion{
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
-        this.player = new Player(this.world, 0, 0); // -> Reset player to (1, 1) as our starting point
+        
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 3, 3);
 
@@ -69,6 +80,11 @@ public class GameMap {
         * 2.0 Split the string at each \n = newline
         * 3.0 Split each line by "="
         * 3.1 Make sure to split each empty line or comment ("#")
+        * 
+        * 
+        * Otherwise the Whole Logic is built in an layered Approach. Hence:
+        * 1: Built the basic map -> Just default flowers
+        * 2: Read the File/Properties input and built the objects on top of it.
         * 
         */
         String mapString = map.readString(); // 1.0
@@ -80,8 +96,7 @@ public class GameMap {
         String curLine;
         String[] currTile;
 
-        int maxX = 0;
-        int maxY = 0;
+        
    
 
         /**
@@ -94,8 +109,6 @@ public class GameMap {
         for (int i = 0; i < newlines.length; i++) {
             // get current Line
             curLine = newlines[i].trim(); // -> We always trim to avoid stupid input
-
-            System.out.println("This is the current line" + curLine);
             
             if (curLine.contains("#") || curLine.isEmpty()) {
                 continue;
@@ -107,71 +120,80 @@ public class GameMap {
 
             try {
                 // try putting each tile into
-                currTile = newlines[i].split("=");
+                currTile = newlines[i].trim().split("=");
 
                 row = Integer.valueOf(currTile[0].split(",")[0].trim());
                 col = Integer.valueOf(currTile[0].split(",")[1].trim());
 
                 fillTiles.put(currTile[0].trim(), currTile[1].trim());
 
-                if (row > maxX) {maxX = row;}
-                if (col > maxY) {maxY = col;}
+                if (row > width) {width = row;}
+                if (col > height) {height = col;}
                 
 
             } catch (Exception e) {
                 throw new mapInputExcepetion("Map contained faulty input. Input must follow: int,int=int (Comments, i.e. Hashtags are allowed)");
             }
 
-
-           
         }
 
-        // Create flowers in a 7x7 grid
-        // this.tiles = new Tiles[7][7];
-        // for (int i = 0; i < tiles.length; i++) {
-        //     for (int j = 0; j < tiles[i].length; j++) {
-        //         this.tiles[i][j] = new Tiles(i, j, TileType.DIRT);
-        //     }
-        // }
-
-        // Take the map as input and store the given types with a big switch statement
 
 
-        int row;
-        int col;
+        int r;
+        int c;
 
         String[] splitt;
 
+        /**
+         * This is a layered Map building approach. 
+         * 
+         * We first built the default map and then on top of that the other things
+         * 
+         */
+
         
-        // first fill every single tile by default 
-        tiles = new Tiles[maxX + 1][maxY + 1];
+        // 1.0 Build the basic tiles which we draw over everything 
+        tiles = new Tiles[width + 1][height + 1];
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {               
-                tiles[i][j] = new Tiles(i, j, TileType.DIRT);
+                tiles[i][j] = new Tiles(i, j, TileType.FLOWERS);
             }
         }
+
+        // 2.0 Build/Define the obstacles array which places the objects on the base map
+
+        this.obstacles = new Obstacle[width + 1][height + 1];
 
         for (String tile : fillTiles.keySet()) {
 
             splitt = tile.split(",");
 
-            row = Integer.valueOf(splitt[0].trim());
-            col = Integer.valueOf(splitt[1].trim());
-
-            System.out.println(Integer.valueOf(fillTiles.get(tile)));
+            r = Integer.valueOf(splitt[0].trim());
+            c = Integer.valueOf(splitt[1].trim());
 
             switch (Integer.valueOf(fillTiles.get(tile))) {
-                case 1:
-                    tiles[row][col] = new Tiles(row, col, TileType.SAND);
+                // Fence
+                case 0:
+                    obstacles[r][c] = new Fence(world, r, c);
                     break;
-                case 2:
-                    tiles[row][col] = new Tiles(row, col, TileType.GRAS);
-                default:
-                    tiles[row][col] = new Tiles(row, col, TileType.DIRT);
+                case 1: // Sand -> Overwrites GROUND Layer
+                    tiles[r][c] = new Tiles(r, c, TileType.ICE);
+                    break;
+                case 2: // Grass -> Overwrites GROUND Layer
+                    this.startX = r;
+                    this.startY = c;
+                    System.out.println("start x: " + startX);
+                    System.out.println("start y: " + startY);
+                    
+                    tiles[r][c] = new Tiles(r, c, TileType.GRAS);
+                    break;
+                default: // Dirt -> Already set by default
                     break;
             }
 
         }
+
+        this.player = new Player(this.world, startX, startY); // Set player first after defining the starting point -> i.e. Entrance
         
     }
     
@@ -208,8 +230,83 @@ public class GameMap {
         return chest;
     }
     
-    /** Returns the flowers on the map. */
-    public List<Tiles> getTiles() {
-        return Arrays.stream(tiles).flatMap(Arrays::stream).toList();
+    /** Returns the Tiles -> Default or ground of the map. */
+    public Tiles[][] getTiles() {
+        return this.tiles;
     }
+
+    /** Return the Obstacles -> Destructible and not kaputtable */
+
+    public Obstacle[][] getObstacles() {
+        return obstacles;
+    }
+
+
+    /**
+     * 
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return  the ground at x,y to get the basic map tiles for drawing
+     */
+
+    public Tiles getGround(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            return tiles[x][y];
+            }
+        return null;
+    }
+    /**
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return  the ground at x,y to get the basic map tiles for drawing
+     */
+    public Obstacle getObstacle(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            return obstacles[x][y];
+            }
+        return null;
+    }
+
+    
+
+    public boolean isFence(int x, int y) {
+        if (x < 0 || y < 0 || x > width || y > height) return false;
+        return ((obstacles[x][y]) instanceof Fence);
+        
+    }
+
+    public static float getTimeStep() {
+        return TIME_STEP;
+    }
+
+    public static int getVelocityIterations() {
+        return VELOCITY_ITERATIONS;
+    }
+
+    public static int getPositionIterations() {
+        return POSITION_ITERATIONS;
+    }
+
+    public float getPhysicsTime() {
+        return physicsTime;
+    }
+
+    public ValleyDayGame getGame() {
+        return game;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
 }

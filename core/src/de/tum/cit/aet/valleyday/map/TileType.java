@@ -15,10 +15,10 @@ public enum TileType {
  
         FLOWERS(true, Textures.FLOWERS),
         DIRT(true, Textures.DIRT),
-        SAND(true, Textures.SAND),
         GRAS(true, Textures.GRAS),
         WALL(false, Textures.WALL),
-        CHEST(false, Textures.CHEST);
+        CHEST(false, Textures.CHEST),
+        ICE(true, Textures.ICE);
         
 
 

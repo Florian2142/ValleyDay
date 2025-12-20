@@ -11,7 +11,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
 import de.tum.cit.aet.valleyday.map.Flowers;
 import de.tum.cit.aet.valleyday.texture.Drawable;
+
 import de.tum.cit.aet.valleyday.map.GameMap;
+import de.tum.cit.aet.valleyday.map.Player;
 import de.tum.cit.aet.valleyday.map.Tiles;
 
 /**
@@ -86,13 +88,22 @@ public class GameScreen implements Screen {
     }
     
     /**
-     * Updates the camera to match the current state of the game.
-     * Currently, this just centers the camera at the origin.
+     * Updates the camera to follow the player but only 80% viewport (stated in the task)
+     * 
      */
     private void updateCamera() {
-        mapCamera.setToOrtho(false);
-        mapCamera.position.x = 3.5f * TILE_SIZE_PX * SCALE;
-        mapCamera.position.y = 3.5f * TILE_SIZE_PX * SCALE;
+
+        Player player = map.getPlayer();
+
+        // first we need to get the actual players position
+        float currentX = player.getX() * TILE_SIZE_PX * SCALE;
+        float currentY = player.getY() * TILE_SIZE_PX * SCALE;
+
+
+        mapCamera.position.x = currentX;
+        mapCamera.position.y = currentY;
+
+
         mapCamera.update(); // This is necessary to apply the changes
     }
     
@@ -105,11 +116,28 @@ public class GameScreen implements Screen {
         
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
-        for (Tiles tiles : map.getTiles()) {
-            draw(spriteBatch, tiles);
+
+        
+        // Loop through every coordinate -> Builts the map from the Groundup
+
+        for (int x = 0; x <= map.getWidth(); x++) {
+            for (int y = 0; y <= map.getHeight(); y++) {
+
+                // 1. Draw Ground (Layer 0)
+                Drawable floor = map.getGround(x, y);
+                if (floor != null) {
+                    draw(spriteBatch, floor);
+                }
+
+                // 2. Draw Obstacles (Layer 1) - Drawn ON TOP of ground
+                Drawable wall = map.getObstacle(x, y);
+                if (wall != null) {
+                    draw(spriteBatch, wall);
+                }
+            }
         }
-        draw(spriteBatch, map.getChest());
-        draw(spriteBatch, map.getPlayer());
+            draw(spriteBatch, map.getChest());
+            draw(spriteBatch, map.getPlayer());
         
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
