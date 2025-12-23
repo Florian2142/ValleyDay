@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.random.*;
 
 /**
  * Represents the game map.
@@ -53,8 +55,26 @@ public class GameMap {
     private final Player player;
     
     private final Chest chest;
+
+    /** Difficulty of the game */
+    private int difficulty;
+
+
+    /***
+     * Now following all the vars for the harvesting, croping and difficuly
+     */
+
+    private int currentHarvest;
     
+    private final int harvesting;
+
+    /**
+     * The map is based on the layered approach. We built piece by piece.
+     * We start with the base tiles and then the hiddenObjects (distributed randomly beneath the obstacles)
+     * And last but not least the destructible and indestructible objects (interface functionality)
+     */
     private final Tiles[][] tiles;
+    private final hiddenObject[][] hiddenObjects;
     private final Obstacle[][] obstacles;
  
     private int width = 0;
@@ -70,10 +90,15 @@ public class GameMap {
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
+
+        
+        this.harvesting = 3; // UPDATE TO DIFFICULTY
         
         // Create a chest in the middle of the map
         this.chest = new Chest(world, 3, 3);
 
+        /** Set difficulty, UPDATE LATER FOR REAL DIFFICULTY */
+        this.difficulty = 0;
         /*
         * Here we follow the recommended procedure of the project description which is
         * 1.0 Store the whole file content in one very big string
@@ -97,8 +122,6 @@ public class GameMap {
         String[] currTile;
 
         
-   
-
         /**
          * 
          * Here we basically stream and read the map input 
@@ -137,10 +160,11 @@ public class GameMap {
 
         }
 
-
-
         int r;
         int c;
+
+        List<Obstacle> debrList = new ArrayList<>(); // List for storing all the Debris
+        boolean exitExists = false; // BOOLEAN FLAG (DON'T remove!)
 
         String[] splitt;
 
@@ -162,7 +186,8 @@ public class GameMap {
 
         // 2.0 Build/Define the obstacles array which places the objects on the base map
 
-        this.obstacles = new Obstacle[width + 1][height + 1];
+        this.obstacles = new Obstacle[width + 1][height + 1]; /** Initialize the Obstacle */
+        this.hiddenObjects = new hiddenObject[width + 1][height + 1];         /** Initialize the hiddenObjects */
 
         for (String tile : fillTiles.keySet()) {
 
@@ -177,7 +202,10 @@ public class GameMap {
                     obstacles[r][c] = new Fence(world, r, c);
                     break;
                 case 1: // Sand -> Overwrites GROUND Layer
-                    tiles[r][c] = new Tiles(r, c, TileType.ICE);
+                    obstacles[r][c] = new Debris(world, r, c);
+
+                    debrList.add(obstacles[r][c]); // add the Debris for later randomization
+
                     break;
                 case 2: // Grass -> Overwrites GROUND Layer
                     this.startX = r;
@@ -187,14 +215,50 @@ public class GameMap {
                     
                     tiles[r][c] = new Tiles(r, c, TileType.GRAS);
                     break;
+                case 3: // PUTS Shovel on the Map and puts DEBRIS on top
+                    hiddenObjects[r][c] = new Shovel(r, c, this);
+                    obstacles[r][c] = new Debris(world, r, c);
+                    break;
+                case 4: // EXIT
+                    hiddenObjects[r][c] = new Exit(r, c, this);
+                    obstacles[r][c]     = new Debris(world, r, c);// put debris again, guaranteeing its debris
+                    exitExists = true;
+                    break;
+
                 default: // Dirt -> Already set by default
                     break;
             }
 
         }
 
+        /** IF exit does not exists already make it */
+        if (!exitExists) {
+            Random rand = new Random(42); // make new random and set seed (just because its a farm Game ;)
+            int random = rand.nextInt(debrList.size()); // pick random number from all DEBRIS
+
+            Obstacle currDebris = debrList.get(random); // get the Debris where Exit must be put
+
+            int x = (int) currDebris.getX();
+            int y = (int) currDebris.getY();
+
+            this.hiddenObjects[x][y] = new Exit(x, y, this); // put the new Exit at random Location
+
+            System.out.println("Print X: " + x);
+            System.out.println("Print Y: " + y);
+        }
+
+
+        /* Update the obstacles -> visualization updating */
+
+        for (int row = 0; row < width + 1; row++) {
+            for (int col = 0; col < height + 1; col++) {
+                if (obstacles[row][col] instanceof Fence) {
+                    ((Fence) obstacles[row][col]).updatextureRegion(this);
+                }
+            }
+        }
+
         this.player = new Player(this.world, startX, startY); // Set player first after defining the starting point -> i.e. Entrance
-        
     }
     
     /**
@@ -203,7 +267,7 @@ public class GameMap {
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
-        this.player.tick(frameTime);
+        this.player.tick(frameTime, this);
         doPhysicsStep(frameTime);
     }
     
@@ -220,6 +284,86 @@ public class GameMap {
         }
     }
     
+
+    /** Destroys a tile if the object is a Destrutible */
+    public void destroyObstacle(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            this.obstacles[x][y] = null;
+        }
+    }
+
+    /** Removes Item when player has picked it up */
+    public void removeItem(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            this.hiddenObjects[x][y] = null; // remove the item from the map
+        }
+    }
+
+    /**
+     * 
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return  the ground at x,y to get the basic map tiles for drawing
+     */
+
+    public Tiles getGround(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            return tiles[x][y];
+            }
+        return null;
+    }
+
+    public hiddenObject gethiddenObject(int x, int y) {
+            if (x >= 0 && x <= width && y >= 0 && y <= height) {
+                return hiddenObjects[x][y];
+                }
+            return null;
+        }
+
+
+
+    /**
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return  the ground at x,y to get the basic map tiles for drawing
+     */
+    public Obstacle getObstacle(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            return obstacles[x][y];
+            }
+        return null;
+    }
+
+    /**
+     * Important for the orientation and direction of the Fence
+     * 
+     * Returns true if the neighbor or the tile is a fence
+     * 
+     * @param x
+     * @param y
+     * @return true if tile is instanceof Fence
+     */
+    public boolean isFence(int x, int y) {
+        if (x < 0 || y < 0 || x > width || y > height) return false;
+        return ((obstacles[x][y]) instanceof Fence);
+    }
+
+    /**
+     * Important for the player when removing destructable objects
+     * 
+     * @param x
+     * @param y
+     * @return true if the object is destrutible
+     */
+    public boolean isDestructible(int x, int y) {
+        if (x < 0 || y < 0 || x > width || y > height) return false;
+        return ((obstacles[x][y]) instanceof Destructible);
+    }
+
+
+
     /** Returns the player on the map. */
     public Player getPlayer() {
         return player;
@@ -239,42 +383,6 @@ public class GameMap {
 
     public Obstacle[][] getObstacles() {
         return obstacles;
-    }
-
-
-    /**
-     * 
-     * 
-     * @param x x-axis point 
-     * @param y y-axis point
-     * @return  the ground at x,y to get the basic map tiles for drawing
-     */
-
-    public Tiles getGround(int x, int y) {
-        if (x >= 0 && x <= width && y >= 0 && y <= height) {
-            return tiles[x][y];
-            }
-        return null;
-    }
-    /**
-     * 
-     * @param x x-axis point 
-     * @param y y-axis point
-     * @return  the ground at x,y to get the basic map tiles for drawing
-     */
-    public Obstacle getObstacle(int x, int y) {
-        if (x >= 0 && x <= width && y >= 0 && y <= height) {
-            return obstacles[x][y];
-            }
-        return null;
-    }
-
-    
-
-    public boolean isFence(int x, int y) {
-        if (x < 0 || y < 0 || x > width || y > height) return false;
-        return ((obstacles[x][y]) instanceof Fence);
-        
     }
 
     public static float getTimeStep() {

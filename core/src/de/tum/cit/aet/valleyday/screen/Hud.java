@@ -1,5 +1,8 @@
 package de.tum.cit.aet.valleyday.screen;
 
+import de.tum.cit.aet.valleyday.map.GameMap;
+import de.tum.cit.aet.valleyday.map.Player;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,11 +20,15 @@ public class Hud {
     private final BitmapFont font;
     /** The camera used to render the HUD. */
     private final OrthographicCamera camera;
-    
-    public Hud(SpriteBatch spriteBatch, BitmapFont font) {
+
+    /** Hud needs to know the player */
+    private Player player;
+
+    public Hud(SpriteBatch spriteBatch, BitmapFont font, Player player) {
         this.spriteBatch = spriteBatch;
         this.font = font;
         this.camera = new OrthographicCamera();
+        this.player = player;
     }
     
     /**
@@ -35,6 +42,13 @@ public class Hud {
         spriteBatch.begin();
         // Draw the HUD elements
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
+
+        /** Display message for Shovel pickup */
+        if (player.shovelPickedUp() > 0) {
+            font.draw(spriteBatch, "Shovel was picked up! You can remove Debris faster.", 10,Gdx.graphics.getHeight() - 800);
+        }
+
+
         // Finish drawing
         spriteBatch.end();
     }
@@ -48,5 +62,6 @@ public class Hud {
     public void resize(int width, int height) {
         camera.setToOrtho(false, width, height);
     }
+
     
 }

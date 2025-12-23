@@ -19,6 +19,8 @@ public abstract class Obstacle implements Drawable {
     protected final float x;
     protected final float y;
 
+    Body body;
+
     public Obstacle(World world, float x, float y) {
         this.x = x;
         this.y = y;
@@ -39,7 +41,7 @@ public abstract class Obstacle implements Drawable {
         // Set the initial position of the body.
         bodyDef.position.set(this.x, this.y);
         // Create the body in the world using the body definition.
-        Body body = world.createBody(bodyDef);
+        this.body = world.createBody(bodyDef);
         // Now we need to give the body a shape so the physics engine knows how to collide with it.
         // We'll use a polygon shape for the chest.
         PolygonShape box = new PolygonShape();
@@ -64,4 +66,19 @@ public abstract class Obstacle implements Drawable {
     public float getY() {
         return y;
     }
+
+    /**
+     * Destroys the Box2D body associated with this obstacle.
+     * This keeps the body 
+     * private while allowing the Map to clean it up -> Encapsulation. 
+     * @param world The physics world where the body lives.
+     */
+    public void destroyBody(World world) {
+        if (this.body != null) {
+            world.destroyBody(this.body);
+            this.body = null; // Prevents double-deletion crashes
+        }
+    }
+
+    
 }

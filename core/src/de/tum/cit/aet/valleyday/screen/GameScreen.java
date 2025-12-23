@@ -51,7 +51,7 @@ public class GameScreen implements Screen {
         this.game = game;
         this.spriteBatch = game.getSpriteBatch();
         this.map = game.getMap();
-        this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"));
+        this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), map.getPlayer());
         // Create and configure the camera for the game view
         this.mapCamera = new OrthographicCamera();
         this.mapCamera.setToOrtho(false);
@@ -129,10 +129,18 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, floor);
                 }
 
-                // 2. Draw Obstacles (Layer 1) - Drawn ON TOP of ground
-                Drawable wall = map.getObstacle(x, y);
-                if (wall != null) {
-                    draw(spriteBatch, wall);
+                
+                
+                // 2. Draw Obstacles (Layer 2) - Drawn ON TOP of ground
+                Drawable obstacles = map.getObstacle(x, y);
+                if (obstacles != null) {
+                    draw(spriteBatch, obstacles);
+                }
+
+                // 3. Draw the nice Items or Objects like shovel, exit etc. (Layer 3)
+                Drawable item = map.gethiddenObject(x, y);
+                if (item != null && item.getCurrentAppearance() != null) {
+                    draw(spriteBatch, item);
                 }
             }
         }
@@ -151,13 +159,30 @@ public class GameScreen implements Screen {
      */
     private static void draw(SpriteBatch spriteBatch, Drawable drawable) {
         TextureRegion texture = drawable.getCurrentAppearance();
-        // Drawable coordinates are in tiles, so we need to scale them to pixels
-        float x = drawable.getX() * TILE_SIZE_PX * SCALE;
-        float y = drawable.getY() * TILE_SIZE_PX * SCALE;
-        // Additionally scale everything by the game scale
-        float width = texture.getRegionWidth() * SCALE;
-        float height = texture.getRegionHeight() * SCALE;
-        spriteBatch.draw(texture, x, y, width, height);
+    
+        // 1. Calculate the size of the logical tile on screen
+        float tilePx = TILE_SIZE_PX * SCALE; // e.g., 64 pixels
+
+        // 2. Calculate the size of the sprite to draw
+        float drawWidth = texture.getRegionWidth() * SCALE;
+        float drawHeight = texture.getRegionHeight() * SCALE;
+
+        // 3. Calculate Position
+        // Base X/Y is the bottom-left corner of the TILE
+        float baseX = drawable.getX() * tilePx;
+        float baseY = drawable.getY() * tilePx;
+
+    
+        // 
+
+        float drawX = baseX + (tilePx - drawWidth) / 2;
+
+        // ALIGN BOTTOM vertically
+        // This ensures the object's "feet" sit on the bottom of the tile
+        // and the "head" sticks up into the tile above.
+        float drawY = baseY; 
+
+        spriteBatch.draw(texture, drawX, drawY, drawWidth, drawHeight);
     }
     
     /**

@@ -6,19 +6,22 @@ import de.tum.cit.aet.valleyday.texture.Textures;
 
 public class Fence extends Obstacle {
 
+    private TextureRegion currTexture;
+
 
     public Fence(World world, int x, int y) {
         super(world, x, y);
+        this.currTexture = Textures.FENCE_HORIZ;
 
     }
 
     @Override
     public TextureRegion getCurrentAppearance() {
         // return the default Fence here
-        return Textures.FENCE_CROSS;
+        return currTexture;
     }
 
-    public TextureRegion updatextureRegion(GameMap map) {
+    public void updatextureRegion(GameMap map) {
 
         // cast it to int -> safe, because input must be integers from the map
         int x = (int) super.getX();
@@ -30,13 +33,13 @@ public class Fence extends Obstacle {
         boolean right = map.isFence(x + 1, y);
 
         
-        if      (!up && !down && left && right) {return Textures.FENCE_HORIZ;}          // horizontal
-        else if (up && down && !left && !right) {return Textures.FENCE_VERT;}           // vertical
-        else if (!up && down && !left && right) {return Textures.FENCE_TOP_LEFT;}       // top-left
-        else if (!up && down && left && !right) {return Textures.FENCE_TOP_RIGHT;}      // top-right
-        else if (up && !down && !left && right) {return Textures.FENCE_BOTTOM_LEFT;}    // bottom-left
-        else if (up && !down && left && !right) {return Textures.FENCE_BOTTOM_RIGHT;}   // bottom-right
-        else                                    {return Textures.FENCE_CROSS;}          // fence-cross
+        if      (!up && !down && left && right) {this.currTexture = Textures.FENCE_HORIZ;}          // horizontal
+        else if (up && down && !left && !right) {this.currTexture = Textures.FENCE_VERT;}           // vertical
+        else if (!up && down && !left && right) {this.currTexture = Textures.FENCE_TOP_LEFT;}       // top-left
+        else if (!up && down && left && !right) {this.currTexture = Textures.FENCE_TOP_RIGHT;}      // top-right
+        else if (up && !down && !left && right) {this.currTexture = Textures.FENCE_BOTTOM_LEFT;}    // bottom-left
+        else if (up && !down && left && !right) {this.currTexture = Textures.FENCE_BOTTOM_RIGHT;}   // bottom-right
+        else                                    {this.currTexture = Textures.FENCE_CROSS;}          // fence-cross
         
     }
 

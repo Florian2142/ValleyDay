@@ -10,6 +10,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.aet.valleyday.texture.Animations;
 import de.tum.cit.aet.valleyday.texture.Drawable;
+import de.tum.cit.aet.valleyday.audio.SoundEffect;
+import de.tum.cit.aet.valleyday.screen.Hud;
+
 
 /**
  * Represents the player character in the game.
@@ -31,6 +34,7 @@ public class Player implements Drawable {
     float drainRate = 25f;
     float regenRate = 25f;
 
+
     /** Create a memory for the movement of the player*/
 
     /*
@@ -45,6 +49,24 @@ public class Player implements Drawable {
     private boolean moving = false;
 
 
+    /* Nice cozy soundeffects */
+    private float chopSoundCooldown = 0f;
+    private static final float CHOP_SOUND_INTERVAL = 0.25f;
+    private float stepSoundCooldown = 0f;
+    private static final float STEP_SOUND_INTERVAL = 0.35f;
+
+    /* Variables for Items */
+    private boolean hasShovel = false;
+
+    /** vars for the HUD */
+    private int messageCoolDown;
+
+    /** Winning conditions */
+    private int currentHarvest;
+
+    private final int harvesting = 3; // UPDATE CORRESPONDING TO THE DIFFICULTY
+
+    
 
     
     public Player(World world, float x, float y) {
@@ -86,9 +108,15 @@ public class Player implements Drawable {
     /**
      * This function is based on the logic of keys. The user can press the keys A;W;S;D to move.
      * 
+     * This has all the logic for all the player movements and all the actions a player can perform
+     * 
      * @param frameTime the time since the last frame.
      */
-    public void tick(float frameTime) {
+    public void tick(float frameTime, GameMap map) {
+
+        int currX = Math.round(getX()); // retrieve the currX always, reduces the function calls
+        int currY = Math.round(getY()); // same for Y
+
         this.elapsedTime += frameTime;
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
@@ -113,44 +141,140 @@ public class Player implements Drawable {
         if (isExhausted && stamina >= MaxStamina * 0.5f) {
             isExhausted = false;
         }
-        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && sprintCooldown <= 0 && stamina > 0) {
-            speed = 15f;
+        boolean isSprinting = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && sprintCooldown <= 0 && stamina > 0;
+
+        if (isSprinting) {
+            speed = 10f;
             this.moving = true;
             stamina -= drainRate * frameTime;
         }
         //regenerates Stamina when the Shift key is not pressed.
         else if (stamina < MaxStamina) {
+
             stamina += regenRate * frameTime;
         }
-        //keep the value of the stamina between 0 and 100.
+        //keep the value of the stamina between 0 and 100. -> The nice clamping from Stefan
         stamina = MathUtils.clamp(stamina, 0, MaxStamina);
+
+        if (stepSoundCooldown > 0f) {
+            stepSoundCooldown -= frameTime;
+        }
+
+        // we want to increase the stepping sound or the frequency when he is sprinting
+        float stepInterval = isSprinting ? 0.2f : STEP_SOUND_INTERVAL;
 
         if (Gdx.input.isKeyPressed(Keys.UP)) {
             yVelocity += speed;
             this.currDirection = Direction.UP;
             this.moving = true;
+            if (stepSoundCooldown <= 0f) {
+                SoundEffect.STEPS_DIRT.play();
+                stepSoundCooldown = stepInterval;
+            }
         }
         else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
             yVelocity -= speed;
             this.currDirection = Direction.DOWN;
             this.moving = true;
+            if (stepSoundCooldown <= 0f) {
+                SoundEffect.STEPS_DIRT.play();
+                stepSoundCooldown = stepInterval;
+            }
         }
         else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
             xVelocity += speed;
             this.currDirection = Direction.RIGHT;
             this.moving = true;
+            if (stepSoundCooldown <= 0f) {
+                SoundEffect.STEPS_DIRT.play();
+                stepSoundCooldown = stepInterval;
+            }
         }
         else if (Gdx.input.isKeyPressed(Keys.LEFT)) {
             xVelocity -= speed;
             this.currDirection = Direction.LEFT;
             this.moving = true;
+            if (stepSoundCooldown <= 0f) {
+                SoundEffect.STEPS_DIRT.play();
+                stepSoundCooldown = stepInterval;
+            }
         }
         else {
             this.moving = false;
         }
 
+        /**
+         * Scans for destructible objects in the given direction 
+         * 
+         * if destroyable -> Destroys object piece by piece
+         * 
+         * KEEP key pressed if you want to completely remove the object
+         */
+        if (chopSoundCooldown > 0f) {
+            chopSoundCooldown -= frameTime;
+        }
+
+        if (Gdx.input.isKeyPressed(Keys.D)) {
+
+            /** We need to round otherwise the math is off */
+            int offsetX = currX;
+            int offsetY = currY;
+            /*** TESTING REMOVE LATER */
+            System.out.println("THE CURRENT X COORDINATE IS: " + currX);
+            System.out.println("THE CURRENT X COORDINATE IS: " + offsetX);
+            // offset the coordinates given the direction the Player is looking at
+            if (currDirection == Direction.UP) {
+                offsetY++;
+            }
+            else if (currDirection == Direction.DOWN) {
+                offsetY--;
+            }
+            else if (currDirection == Direction.RIGHT) {
+                offsetX++;
+            }
+            else {
+                offsetX--;
+            }
+
+            // asks if the tile is a destructable
+            if (map.isDestructible(offsetX, offsetY)) {
+                int damage = hasShovel ? 2 : 1;
+                // destruct the obstacle
+                ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
+                if (chopSoundCooldown <= 0f) {
+                    SoundEffect.BRANCHES.play(); // play the nice sound for killing branches
+                    chopSoundCooldown = CHOP_SOUND_INTERVAL;
+                }
+            }
+
+        }
+
+        /**
+        * Function for hidden items
+        */
+
+        hiddenObject currHiddenObject = map.gethiddenObject(currX, currY);
+
+        if (currHiddenObject != null && (map.getObstacle(currX, currY) == null)) {
+            if (currHiddenObject instanceof Shovel) {
+                equipShovel(); // equips the shovel -> Faster debris removal 
+                ((Shovel) currHiddenObject).pickup(); // returns String was picked up
+                this.messageCoolDown = 240;
+                
+            }
+        }
+
+        /**
+         * Function for the Exit. If Player has all the required winning functions
+         */
+
+        /** Decrement all the cooldowns */
         
-        
+        messageCoolDown--;
+
+
+
+
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
     
@@ -175,6 +299,45 @@ public class Player implements Drawable {
         }
       
     }}
+
+    public void equipShovel() {
+        this.hasShovel = true;
+    }
+
+    /**
+     * Function for the HuD to display 
+     * @param time
+     */
+
+    public int shovelPickedUp() {
+        return this.messageCoolDown;
+    }   
+
+
+
+    /**
+     * Has player all the winning conditions
+     * 
+     */
+    public boolean isWinning() {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     @Override
     public float getX() {
