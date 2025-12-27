@@ -18,13 +18,14 @@ import de.tum.cit.aet.valleyday.screen.Hud;
  * Represents the player character in the game.
  * The player has a hitbox, so it can collide with other objects in the game.
  */
-public class Player implements Drawable {
+public class Player extends Entity implements Drawable {
     
     /** Total time elapsed since the game started. We use this for calculating the player movement and animating it. */
     private float elapsedTime;
+
+    private float harvestTime; /** var for harvesting time to make an Animation of the Harvesting */
     
-    /** The Box2D hitbox of the player, used for position and collision detection. */
-    private final Body hitbox;
+    
 
     float MaxStamina = 100f;
     float stamina = 100f;
@@ -37,16 +38,13 @@ public class Player implements Drawable {
 
     /** Create a memory for the movement of the player*/
 
-    /*
-    *   Make a private ENUM TYPE
-    */
-   private enum Direction{UP, DOWN, LEFT, RIGHT}
-
-
-    private Direction currDirection = Direction.DOWN;
+    /** offset x,y for the direction he is interacting with */
+    private int offsetX;
+    private int offsetY;
 
     /*Is the player standing or moving */
     private boolean moving = false;
+    private boolean isHarvesting = false;
 
 
     /* Nice cozy soundeffects */
@@ -59,10 +57,19 @@ public class Player implements Drawable {
     private boolean hasShovel = false;
 
     /** vars for the HUD */
-    private int messageCoolDown;
+    private int    messageCoolDown;
+
+    /** individual MESSAGES */
+    private String messageToDisplay;
+    private String messageForHarvest;
+    private String waterCanPickupMessage;
+    private String messageForReviving;
 
     /** Winning conditions */
     private int currentHarvest;
+
+    private float harvestCooloff = 0;
+    private float harvestingAnimationCooloff = 0;
 
     private final int harvesting = 3; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
@@ -70,39 +77,7 @@ public class Player implements Drawable {
 
     
     public Player(World world, float x, float y) {
-        this.hitbox = createHitbox(world, x, y);
-    }
-    
-    /**
-     * Creates a Box2D body for the player.
-     * This is what the physics engine uses to move the player around and detect collisions with other bodies.
-     * @param world The Box2D world to add the body to.
-     * @param startX The initial X position.
-     * @param startY The initial Y position.
-     * @return The created body.
-     */
-    private Body createHitbox(World world, float startX, float startY) {
-        // BodyDef is like a blueprint for the movement properties of the body.
-        BodyDef bodyDef = new BodyDef();
-        // Dynamic bodies are affected by forces and collisions.
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        // Set the initial position of the body.
-        bodyDef.position.set(startX, startY);
-        // Create the body in the world using the body definition.
-        Body body = world.createBody(bodyDef);
-        // Now we need to give the body a shape so the physics engine knows how to collide with it.
-        // We'll use a circle shape for the player.
-        CircleShape circle = new CircleShape();
-        // Give the circle a radius of 0.3 tiles (the player is 0.6 tiles wide).
-        circle.setRadius(0.3f);
-        // Attach the shape to the body as a fixture.
-        // Bodies can have multiple fixtures, but we only need one for the player.
-        body.createFixture(circle, 1.0f);
-        // We're done with the shape, so we should dispose of it to free up memory.
-        circle.dispose();
-        // Set the player as the user data of the body so we can look up the player from the body later.
-        body.setUserData(this);
-        return body;
+        super(world, x, y);
     }
     
     /**
@@ -114,16 +89,26 @@ public class Player implements Drawable {
      */
     public void tick(float frameTime, GameMap map) {
 
+        this.elapsedTime += frameTime; // increment the delta of the time elapsed
+
+        this.harvestTime += frameTime; // increment the harvest time
+
         int currX = Math.round(getX()); // retrieve the currX always, reduces the function calls
         int currY = Math.round(getY()); // same for Y
 
-        this.elapsedTime += frameTime;
+        
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
         float yVelocity = 0;
         float xVelocity = 0;
 
+        /** We need to round otherwise the math is off */
+        this.offsetX = currX;
+        this.offsetY = currY;
+        // offset the coordinates given the direction the Player is looking at
+        offsetDirection(currDirection);
+        
         /**
          * we define a constant speed here
          */
@@ -215,27 +200,9 @@ public class Player implements Drawable {
         }
 
         if (Gdx.input.isKeyPressed(Keys.D)) {
-
-            /** We need to round otherwise the math is off */
-            int offsetX = currX;
-            int offsetY = currY;
             /*** TESTING REMOVE LATER */
             System.out.println("THE CURRENT X COORDINATE IS: " + currX);
             System.out.println("THE CURRENT X COORDINATE IS: " + offsetX);
-            // offset the coordinates given the direction the Player is looking at
-            if (currDirection == Direction.UP) {
-                offsetY++;
-            }
-            else if (currDirection == Direction.DOWN) {
-                offsetY--;
-            }
-            else if (currDirection == Direction.RIGHT) {
-                offsetX++;
-            }
-            else {
-                offsetX--;
-            }
-
             // asks if the tile is a destructable
             if (map.isDestructible(offsetX, offsetY)) {
                 int damage = hasShovel ? 2 : 1;
@@ -249,19 +216,93 @@ public class Player implements Drawable {
 
         }
 
+
         /**
-        * Function for hidden items
+         * Function for Harvesting the Crops and interacting with them
+         * 
+         * Player can Press A on an empty Soil field and plant a new Crop
+         * 
+         */
+        if (Gdx.input.isKeyJustPressed(Keys.A)) {
+            /*** TESTING REMOVE LATER */
+            System.out.println("THE CURRENT X COORDINATE IS: " + currX);
+            System.out.println("THE CURRENT X COORDINATE IS: " + offsetX);
+            // check if the current Soil is empty
+            if (map.getGround(offsetX, offsetY).getType().equals(TileType.SOIL)) {
+                /**
+                 * Maybe enhance this method such that we can plant different CropTypes
+                 * 
+                 * FOR THE MVP we stick with just a simple one!
+                 */
+                System.out.println("COULD ENTER THE SOIL");
+                if (map.plantCrop(offsetX, offsetY, CropType.CORN) != true) {
+                    System.out.println("COULD ENTER THE PLANT CROP");
+                    // now we have to check if player can harvest the current crop if the SOIL isEmpty() != true
+                    Crop currentCrop = map.getCrop(offsetX, offsetY);
+                    if (currentCrop != null) {
+                        System.out.println("CROP IS ACTUALLY NOT EMPTY");
+                        // we must check if the Crop is in state 2 (implying we can harvest this one)
+                        if (currentCrop.canHarvest()) {
+                            System.out.println("IS THE CROP ACTUALLY HARVESTABLE");
+                            map.harvestCrop(offsetX, offsetY); // harvest the crop
+                            /** INCREMENTING THE WINNING CONDITION */
+                            this.currentHarvest++;
+
+                            messageForHarvest = "You just harvested: " + currentCrop.getClass().getSimpleName() + ". Only " + (harvesting - currentHarvest) + "left!";
+                        }
+                        else if (currentCrop.isRotten()) {
+                            messageForHarvest = "Crop is Rotten, you need to water it!";
+                        }
+                        else {
+                            messageForHarvest = "Crop is not ready for harvesting!";
+                        }
+                        harvestCooloff = 120;
+                        harvestingAnimationCooloff = 30f; // 0.5 Seconds animation for the harvesting
+                        isHarvesting = true;
+                        this.harvestTime = 0;
+                    }
+                };
+                harvestingAnimationCooloff = 30f; // 0.5 Seconds animation for the harvesting
+                isHarvesting = true;
+                this.harvestTime = 0;
+
+            }
+
+        }
+        
+
+
+        /**
+        * Function for hidden items, exits and any easter egg
         */
 
         hiddenObject currHiddenObject = map.gethiddenObject(currX, currY);
 
         if (currHiddenObject != null && (map.getObstacle(currX, currY) == null)) {
-            if (currHiddenObject instanceof Shovel) {
-                equipShovel(); // equips the shovel -> Faster debris removal 
-                ((Shovel) currHiddenObject).pickup(); // returns String was picked up
+            /** ITEM FUNCTION
+             * 
+             * to pick it up */
+            if (currHiddenObject instanceof Item) { // DYNAMIC POLYMORPISM 
                 this.messageCoolDown = 240;
-                
+                // pickup the Item and return the pickup String message
+                this.messageToDisplay = ((Item)currHiddenObject).pickup(this);
             }
+            /** Exit function for exiting the 
+             * game 
+             * MUST FULLFILL ALL THE WINNING CONDITIONS */
+            else if (currHiddenObject instanceof Exit) {
+                if (isWinning()) {
+                    // leave the game
+                    map.getGame().goToMenu();
+                }
+                else {
+                    // not yet finished will display the message on screen
+                    this.messageCoolDown = 240;
+                    this.messageToDisplay = "You have not won yet! You're missing: " + (harvesting - currentHarvest);
+                }
+            }
+            
+            
         }
 
         /**
@@ -271,9 +312,12 @@ public class Player implements Drawable {
         /** Decrement all the cooldowns */
         
         messageCoolDown--;
+        harvestCooloff--;
+        harvestingAnimationCooloff--;
 
 
 
+        if (harvestingAnimationCooloff <= 0) {isHarvesting = false;}
 
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
@@ -281,7 +325,17 @@ public class Player implements Drawable {
     @Override
     public TextureRegion getCurrentAppearance() {
         // Get the frame of the walk down animation that corresponds to the current time.
-        if (isMoving()) {
+        if (isHarvesting()) {
+            switch (this.currDirection) {
+                    case RIGHT: return  Animations.CHARACTER_HARVEST_RIGHT.getKeyFrame(this.harvestTime, false);
+                    case LEFT : return  Animations.CHARACTER_HARVEST_LEFT.getKeyFrame(this.harvestTime, false);
+                    case UP   : return  Animations.CHARACTER_HARVEST_UP.getKeyFrame(this.harvestTime, false);
+                    default   : return  Animations.CHARACTER_HARVEST_DOWN.getKeyFrame(this.harvestTime, false);
+            }
+        } 
+        
+        // if the player is not harvesting he can move
+        else if (isMoving()) {
             switch (this.currDirection) {
                     case RIGHT: return  Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
                     case LEFT : return  Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.elapsedTime, true);
@@ -289,6 +343,7 @@ public class Player implements Drawable {
                     default   : return  Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.elapsedTime, true);
             }
         }
+        
         else {
             switch (this.currDirection) {
                 // These weird things are basically just when the character stands still -> Makes it natural
@@ -297,7 +352,6 @@ public class Player implements Drawable {
                     case UP   : return  Animations.CHARACTER_WALK_UP_IDLE.getKeyFrame(this.elapsedTime, true);
                     default   : return  Animations.CHARACTER_WALK_DOWN_IDLE.getKeyFrame(this.elapsedTime, true);
         }
-      
     }}
 
     public void equipShovel() {
@@ -309,7 +363,7 @@ public class Player implements Drawable {
      * @param time
      */
 
-    public int shovelPickedUp() {
+    public int messageCooldown() {
         return this.messageCoolDown;
     }   
 
@@ -320,36 +374,34 @@ public class Player implements Drawable {
      * 
      */
     public boolean isWinning() {
+        return this.harvesting <= currentHarvest;
 
     }
 
 
+    /**
+     * Offsets the current direction in order to find the next tile he is looking at
+     * 
+     * Important for Debris removal, Item Interaction
+     * @param currDirection
+     */
+    private void offsetDirection(Direction currDirection) {
 
+        if (currDirection == Direction.UP) {
+                this.offsetY++;
+            }
+            else if (currDirection == Direction.DOWN) {
+                this.offsetY--;
+            }
+            else if (currDirection == Direction.RIGHT) {
+                this.offsetX++;
+            }
+            else {
+               this.offsetX--;
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    @Override
-    public float getX() {
-        // The x-coordinate of the player is the x-coordinate of the hitbox (this can change every frame).
-        return hitbox.getPosition().x;
     }
-    
-    @Override
-    public float getY() {
-        // The y-coordinate of the player is the y-coordinate of the hitbox (this can change every frame).
-        return hitbox.getPosition().y;
-    }
+
 
     public float getElapsedTime() {
         return elapsedTime;
@@ -366,6 +418,106 @@ public class Player implements Drawable {
     public boolean isMoving() {
         return moving;
     }
+
+    public float getMaxStamina() {
+        return MaxStamina;
+    }
+
+    public float getStamina() {
+        return stamina;
+    }
+
+    public boolean isExhausted() {
+        return isExhausted;
+    }
+
+    public float getSprintCooldown() {
+        return sprintCooldown;
+    }
+
+    public float getCOOLDOWN_DURATION() {
+        return COOLDOWN_DURATION;
+    }
+
+    public float getDrainRate() {
+        return drainRate;
+    }
+
+    public float getRegenRate() {
+        return regenRate;
+    }
+
+    public float getChopSoundCooldown() {
+        return chopSoundCooldown;
+    }
+
+    public static float getChopSoundInterval() {
+        return CHOP_SOUND_INTERVAL;
+    }
+
+    public float getStepSoundCooldown() {
+        return stepSoundCooldown;
+    }
+
+    public static float getStepSoundInterval() {
+        return STEP_SOUND_INTERVAL;
+    }
+
+    public boolean isHasShovel() {
+        return hasShovel;
+    }
+
+    public int getMessageCoolDown() {
+        return messageCoolDown;
+    }
+
+    public String getMessageToDisplay() {
+        return messageToDisplay;
+    }
+
+    public int getCurrentHarvest() {
+        return currentHarvest;
+    }
+
+    public int getHarvesting() {
+        return harvesting;
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public String getMessageForHarvest() {
+        return messageForHarvest;
+    }
+
+    public float getHarvestCooloff() {
+        return harvestCooloff;
+    }
+
+    public boolean isHarvesting() {
+        return isHarvesting;
+    }
+
+    public String getWaterCanPickupMessage() {
+        return waterCanPickupMessage;
+    }
+
+    public String getMessageForReviving() {
+        return messageForReviving;
+    }
+
+    public float getHarvestingAnimationCooloff() {
+        return harvestingAnimationCooloff;
+    }
+
+    
+
+    
 
     
 }

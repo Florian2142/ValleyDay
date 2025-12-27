@@ -35,18 +35,26 @@ public class Hud {
      * Renders the HUD on the screen.
      * This uses a different OrthographicCamera so that the HUD is always fixed on the screen.
      */
-    public void render() {
+    public void render(float timeRemaining) {
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
         // Start drawing
         spriteBatch.begin();
         // Draw the HUD elements
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
+        // message for the Time left
+        font.draw(spriteBatch, "Time left: " + (int) timeRemaining,Gdx.graphics.getWidth() - 265, Gdx.graphics.getHeight() - 10);
 
-        /** Display message for Shovel pickup */
-        if (player.shovelPickedUp() > 0) {
-            font.draw(spriteBatch, "Shovel was picked up! You can remove Debris faster.", 10,Gdx.graphics.getHeight() - 800);
+        /** Display message for any interactions with hidden items */
+        if (player.messageCooldown() > 0) {
+            font.draw(spriteBatch, player.getMessageToDisplay(), 10,Gdx.graphics.getHeight() - 800);
         }
+
+        if (player.getHarvestCooloff() > 0) {
+            font.draw(spriteBatch, player.getMessageForHarvest(), Gdx.graphics.getWidth() - 650,Gdx.graphics.getHeight() - 800);
+        }
+
+  
 
 
         // Finish drawing

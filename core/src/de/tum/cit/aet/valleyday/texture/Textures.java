@@ -1,5 +1,7 @@
 package de.tum.cit.aet.valleyday.texture;
 
+import org.w3c.dom.Text;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -10,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Textures {
     
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
-    public static final TextureRegion DIRT    = SpriteSheet.BASIC_TILES.at(7, 3);
+    public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 1); 
     public static final TextureRegion ICE     = SpriteSheet.BASIC_TILES.at(2, 6);
     public static final TextureRegion GRAS    = SpriteSheet.BASIC_TILES.at(2, 1);
     public static final TextureRegion WALL    = SpriteSheet.BASIC_TILES.at(3, 1);
@@ -34,15 +36,6 @@ public class Textures {
     public static final TextureRegion EXIT = SpriteSheet.BASIC_TILES.at(7, 1);
 
 
-    // Debris objects
-    // public static final TextureRegion DEBRIS_FULL = SpriteSheet.BASICS.at(4, 7);
-    // public static final TextureRegion DEBRIS_ONE = SpriteSheet.BASICS.at(4, 7);
-    // public static final TextureRegion DEBRIS_TWO = SpriteSheet.BASICS.at(4, 8);
-    // public static final TextureRegion DEBRIS_THREE = SpriteSheet.BASICS.at(4, 9);
-    // public static final TextureRegion DEBRIS_FINAL = SpriteSheet.BASICS.at(4, 10);
-    
-
-
     // testing with specific pixel estimation (bottom-left origin)
     public static final TextureRegion DEBRIS_FULL  = SpriteSheet.BASICS.fromPixelsTopLeft(190, 0, 18, 14);
     public static final TextureRegion DEBRIS_ONE   = SpriteSheet.BASICS.fromPixelsTopLeft(190, 0, 18, 14);
@@ -64,10 +57,35 @@ public class Textures {
     /**
     * ITEMS 
     */
-     public static final TextureRegion SHOVEL= SpriteSheet.ITEMS.atBig(1, 1, 2, 1);
-     //public static final TextureRegion SHOVEL = SpriteSheet.ITEMS.atBigFromBottom(3, 1, 3, 1);  // bottomRow=1, spans up 3 tiles
+    // SHOVEL
+    public static final TextureRegion SHOVEL= SpriteSheet.ITEMS.atBig(1, 1, 2, 1);
+    // WATERCAN
+    public static final TextureRegion WATERCAN = SpriteSheet.BASICS.at(2,11);
+    // FERTILIZER
+    public static final TextureRegion FERTILIZER = SpriteSheet.BASICS.at(2,12);
+    
+     
 
-   
+    /**
+     * CROPS AND HARVESTING
+     */
+    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 1); 
+    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 1); 
+    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(6, 1); 
+    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(8, 1); 
+
+
+
+
+
+
+    // The crop array which will greatly increase scalability and clean code :)
+    public static final TextureRegion[] CORN_STAGES = {
+        CORN_INIT, // Index 0 => Will be the just planted crop
+        CORN_GROWING ,
+        CORN_MATURING,
+        CORN_MATURED
+    };
 
 
 

@@ -21,8 +21,9 @@ public class Shovel extends hiddenObject implements Item{
     }
 
     @Override
-    public String pickup() {
+    public String pickup(Player player) {
         super.map.removeItem((int) super.getX(),(int) super.getY());
+        player.equipShovel(); // equip the shovel
         return "Shovel was picked up!";
     }
 

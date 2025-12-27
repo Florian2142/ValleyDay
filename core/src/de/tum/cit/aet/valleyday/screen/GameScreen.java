@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
+import de.tum.cit.aet.valleyday.map.Chicken;
 import de.tum.cit.aet.valleyday.map.Flowers;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 
@@ -42,6 +43,11 @@ public class GameScreen implements Screen {
     private final Hud hud;
     private final OrthographicCamera mapCamera;
 
+
+    /** Stuff for the Time runner */
+    private float remainingTime;
+    private int tick = 60;
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
      *
@@ -55,6 +61,10 @@ public class GameScreen implements Screen {
         // Create and configure the camera for the game view
         this.mapCamera = new OrthographicCamera();
         this.mapCamera.setToOrtho(false);
+
+
+        /** DUMMY VARIABLES CHANGE LATER TO DIFFICULTY */
+        this.remainingTime = 180; 
     }
     
     /**
@@ -84,7 +94,20 @@ public class GameScreen implements Screen {
         renderMap();
         
         // Render the HUD on the screen
-        hud.render();
+        /** Every 60 frames goes a second */
+        if (tick == 0) {
+            remainingTime--;
+            tick = 60;
+        }
+
+
+        hud.render(this.remainingTime);
+
+        if (remainingTime <= 0d) {game.goToMenu();}
+
+
+        /** tick counter for various activities */
+        tick--;
     }
     
     /**
@@ -142,8 +165,28 @@ public class GameScreen implements Screen {
                 if (item != null && item.getCurrentAppearance() != null) {
                     draw(spriteBatch, item);
                 }
+
+                // 4. Draw the Crops
+                Drawable crop = map.getCrop(x, y);
+                if (crop != null && crop.getCurrentAppearance() != null) {
+                    draw(spriteBatch, crop);
+                }
+
+                
             }
+
+            
         }
+
+            /** Draw the chicken */
+            for (Chicken chicken : map.getActiveChickens()) {
+                if (chicken != null) {
+                    draw(spriteBatch, chicken);
+                }
+                
+            }
+
+
             draw(spriteBatch, map.getChest());
             draw(spriteBatch, map.getPlayer());
         

@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import de.tum.cit.aet.valleyday.texture.Textures;
 /**
- * ENUM datatype 
- * .
+ * ENUM datatype for the TileType
  * 
+ * Enables us to use different grounds for the map visualization
  */
 public enum TileType {
  
         FLOWERS(true, Textures.FLOWERS),
-        DIRT(true, Textures.DIRT),
+        SOIL(true, Textures.SOIL),
         GRAS(true, Textures.GRAS),
         WALL(false, Textures.WALL),
         CHEST(false, Textures.CHEST),

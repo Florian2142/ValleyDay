@@ -27,8 +27,6 @@ public abstract class hiddenObject implements Drawable {
     protected TextureRegion texture;
     protected GameMap map; // needs access for the map especially the obstacles to determine if its been hidden or not
 
-    private boolean pickedUp; // implies whether the player has picked up the Item
-
     /**
      * 
      * @param x => X-Coordinate

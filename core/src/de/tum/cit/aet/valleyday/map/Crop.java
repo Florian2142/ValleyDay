@@ -1,0 +1,181 @@
+package de.tum.cit.aet.valleyday.map;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.World;
+
+import de.tum.cit.aet.valleyday.texture.Drawable;
+import de.tum.cit.aet.valleyday.texture.Textures;
+/**
+ * Makes the Crop which can be planted by the player
+ * 
+ * Has different state will growing
+ */
+
+public class Crop implements Drawable{
+
+
+
+    private boolean planted = false;
+
+    // private final TextureRegion[] debrisState = Textures.DEBRIS_STATES;
+
+    private int currState;
+    private TextureRegion[] cropTexture;
+    private float timeElapsed;
+
+
+    private float timeToMaturity;
+
+    private float x;
+    private float y;
+
+
+
+    /**
+     * Constructs a new  Crop at the given SOIL
+     * 
+     * @param world the actual world
+     * @param x x-axis coordinate
+     * @param y y-axis coordinate
+     */
+    public Crop(CropType croptype, float x, float y) {
+        this.cropTexture = croptype.getTextures();
+        this.x = x;
+        this.y = y;
+        this.timeElapsed = 0;
+        this.timeToMaturity = croptype.getTimeToMaturity();
+    }
+    
+    public TextureRegion getCurrentAppearance() {
+        /** Returns the current state, will update if player holds d and eventually destroy the object */
+        return cropTexture[currState];
+    }
+
+    public boolean isPlanted() {
+        return this.planted;
+    }
+
+
+    @Override
+    public float getX() {
+        return this.x;
+    }
+
+
+    @Override
+    public float getY() {
+        return this.y;
+    }
+
+
+    /*
+    * Plants the Crop
+    */
+   public void plant() {
+    this.planted = true;
+   }
+
+    /**
+     * Lets the Crop grow for later Harvesting. Must be used within the tick of the player or map.
+     */
+
+    public void grow(float deltaTime) {
+        timeElapsed += deltaTime; // Increment the method with each tickcall -> We call the method all the time
+    
+        // with elapsing time the crop grows
+        if (timeElapsed >= timeToMaturity/4 && currState < 2) {
+            currState++;
+            timeElapsed = 0;
+        }
+        else if (currState == 2 && timeElapsed >= 60) {
+            currState++; // Now its rotten
+            timeElapsed = 0;
+        }
+        
+    }
+
+
+    /** Function for the watering Can -> Will revive the rotten Crops */
+
+    public void revive() {
+    
+        // with elapsing time the crop grows
+        if (currState <= 2) {
+            // resets the rot timer FOR all crops
+            timeElapsed = 0;
+        }
+        // revive the crop, setting it one state back
+        else if (currState == 3) {
+            currState--; 
+            timeElapsed = 0; // reset count -> After 60 Seconds will be rotten again
+        }
+        
+    }
+
+    /** Function for Fertilizer -> Growing Crop instantly by one */
+    public void fertilze() {
+
+        // works only if state 0 or 1
+        if (currState < 2) {
+            currState++; // advance the State if the Player picks up the fertilizer
+            timeElapsed = 0;
+        }
+    }
+
+
+
+
+    /**
+     * If player wants to harvest and the crop is actually ready for harvesting we will return true here
+     * @return true if current State == 2 (indicating maturity, not like a government bond but as a crop like real economy)
+     */
+
+    public boolean canHarvest() {
+        if (this.isPlanted() && this.currState == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * is the current Crop rotten
+     * 
+     * @return true if is rotten (== state == 3) else false
+     */
+    public boolean isRotten() {
+        if (isPlanted() && this.currState == 3) {
+            return true;
+        }
+        return false;
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+    // /**
+    //  * Destroys the object 
+    //  */
+    // @Override
+    // public void destruct(GameMap gamemap, int damage) {
+    //     // if player holds d decrement the lifetime
+    //     hit -= damage; // faster if player has shovel
+    //     if (hit <= 0) {
+    //         currState--;
+    //         hit = 12;
+    //     }
+    //     if (currState <= 0) {
+    //         this.destroyBody(gamemap.getWorld());
+    //         gamemap.destroyObstacle((int) this.x, (int) this.y);
+    //         this.destructed = true;
+    //     }
+    // }
+    
+}

@@ -55,20 +55,16 @@ public class Debris extends Obstacle implements Destructible{
     @Override
     public void destruct(GameMap gamemap, int damage) {
         // if player holds d decrement the lifetime
-        if (hit > 0) {
-            hit -= damage; // faster if player has shovel
-        }
-        else if (hit == 0) {
+        hit -= damage; // faster if player has shovel
+        if (hit <= 0) {
             currState--;
             hit = 12;
         }
-        if (currState == 0 ) {
+        if (currState <= 0) {
             this.destroyBody(gamemap.getWorld());
             gamemap.destroyObstacle((int) this.x, (int) this.y);
             this.destructed = true;
         }
-
-        
     }
     
 }

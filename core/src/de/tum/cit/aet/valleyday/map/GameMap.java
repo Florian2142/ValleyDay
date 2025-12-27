@@ -2,6 +2,7 @@ package de.tum.cit.aet.valleyday.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -73,16 +74,24 @@ public class GameMap {
      * We start with the base tiles and then the hiddenObjects (distributed randomly beneath the obstacles)
      * And last but not least the destructible and indestructible objects (interface functionality)
      */
-    private final Tiles[][] tiles;
-    private final hiddenObject[][] hiddenObjects;
-    private final Obstacle[][] obstacles;
+    private final Tiles[][] tiles;                      // Basic Tiles -> The foundation
+    private final hiddenObject[][] hiddenObjects;       // Hidden Objects 
+    private final Obstacle[][] obstacles;               // Obstacles like Fence and Debris
+    private final Crop[][] crops;                      // All the harvesting and crops needed for winning
+    private final boolean[][] cutsceneTriggers;         // special cutscene Tiles with trigger nice easter eggs
+
+    /** Even though the map is layer based we add a map containing the active Crops for better managing of growth */
+    private final List<Crop> activeCrops = new ArrayList<>();
+
+    /** We add a new Chicken Array */
+    private final List<Chicken> activeChickens = new ArrayList<>();
  
     private int width = 0;
     private int height = 0;
 
     // we have to define the starting point of the player based on the gate
-    private int startX = 0;
-    private int startY = 0;
+    private int startX = 1;
+    private int startY = 1;
 
 
 
@@ -184,10 +193,12 @@ public class GameMap {
             }
         }
 
-        // 2.0 Build/Define the obstacles array which places the objects on the base map
+        // 2.0 Build/Define tthe other layers NON-Default
 
-        this.obstacles = new Obstacle[width + 1][height + 1]; /** Initialize the Obstacle */
-        this.hiddenObjects = new hiddenObject[width + 1][height + 1];         /** Initialize the hiddenObjects */
+        this.obstacles = new Obstacle[width + 1][height + 1];                /** Initialize the Obstacle */
+        this.hiddenObjects = new hiddenObject[width + 1][height + 1];        /** Initialize the hiddenObjects */
+        this.crops         = new Crop[width + 1][height + 1];               /** Intialize the Crops */
+        this.cutsceneTriggers = new boolean[width + 1][height + 1];          /** For cutscenes later */
 
         for (String tile : fillTiles.keySet()) {
 
@@ -198,34 +209,51 @@ public class GameMap {
 
             switch (Integer.valueOf(fillTiles.get(tile))) {
                 // Fence
-                case 0:
+                case 0: // Indestructible FENCE -> Needs to be updated Later
                     obstacles[r][c] = new Fence(world, r, c);
                     break;
-                case 1: // Sand -> Overwrites GROUND Layer
+                case 1: // Destructible DEBRIS  -> Overwrites GROUND Layer
                     obstacles[r][c] = new Debris(world, r, c);
-
+                    // 
                     debrList.add(obstacles[r][c]); // add the Debris for later randomization
-
                     break;
-                case 2: // Grass -> Overwrites GROUND Layer
+                case 2: // The Entrace LATER
                     this.startX = r;
                     this.startY = c;
-                    System.out.println("start x: " + startX);
-                    System.out.println("start y: " + startY);
-                    
-                    tiles[r][c] = new Tiles(r, c, TileType.GRAS);
                     break;
-                case 3: // PUTS Shovel on the Map and puts DEBRIS on top
+                case 3: // PUTS Shovel on the Map and puts DEBRIS on top -> Later Wildlife Visitor
                     hiddenObjects[r][c] = new Shovel(r, c, this);
                     obstacles[r][c] = new Debris(world, r, c);
                     break;
-                case 4: // EXIT
+                case 4: // EXIT 
                     hiddenObjects[r][c] = new Exit(r, c, this);
                     obstacles[r][c]     = new Debris(world, r, c);// put debris again, guaranteeing its debris
                     exitExists = true;
                     break;
+                case 5: // Fertilizer
+                    hiddenObjects[r][c] = new Fertilizer(r, c, this);
+                    obstacles[r][c] = new Debris(world, r, c);
+                    break;
+                case 6: // Watering Can
+                    hiddenObjects[r][c] = new WateringCan(r, c, this);
+                    obstacles[r][c] = new Debris(world, r, c);
+                    break;
+                case 7: // Shovel
+
+                case 8:
+                    tiles[r][c] = new Tiles(r, c, TileType.SOIL);
+                    break;
+
+                case 10: // THE CHICKEN WILL SPAWN HERE
+                    this.activeChickens.add(new Chicken(world, r, c));
+                    break;
+
+                case 11: // CUTSCENE TRIGGER -> Only happens in 10 but triggers special Synthwave map for easter egg
+                    cutsceneTriggers[r][c] = true;
+                    break;
 
                 default: // Dirt -> Already set by default
+
                     break;
             }
 
@@ -267,6 +295,13 @@ public class GameMap {
      * @param frameTime the time that has passed since the last update
      */
     public void tick(float frameTime) {
+        // for each tick in the map we update the time implying growth of the crops
+        for (Crop crop: activeCrops) {
+            crop.grow(frameTime);
+        }
+        for (Chicken chicken: activeChickens) {
+            chicken.tick(frameTime, this);
+        }
         this.player.tick(frameTime, this);
         doPhysicsStep(frameTime);
     }
@@ -287,17 +322,76 @@ public class GameMap {
 
     /** Destroys a tile if the object is a Destrutible */
     public void destroyObstacle(int x, int y) {
-        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+        if (inBound(x, y)) {
             this.obstacles[x][y] = null;
         }
     }
 
     /** Removes Item when player has picked it up */
     public void removeItem(int x, int y) {
-        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+        if (inBound(x, y)) {
             this.hiddenObjects[x][y] = null; // remove the item from the map
         }
     }
+
+    /** Plants a new crop if on the tile there is no obstacle, its Soil and not already a crop planted */
+    public boolean plantCrop(int x, int y, CropType cropType) {
+        if (inBound(x, y) && (getObstacle(x, y) == null) && getCrop(x, y) == null && gethiddenObject(x, y) == null) {
+            Crop newCrop = new Crop(cropType, x, y);
+            newCrop.plant();
+            
+            crops[x][y] = newCrop; // add new crop to the map
+
+            this.activeCrops.add(newCrop); // add crop to the active Crops for better managing of growth
+            return true;
+        }
+        return false;
+    }
+
+    /** Harvest the inquired Crop if its inbound and not null */
+    public boolean harvestCrop(int x, int y) {
+        if (inBound(x, y)) {
+            Crop newCrop = getCrop(x, y);
+            if (newCrop != null) {
+                // remove the crop from the map -> Implying harvesting
+                crops[x][y] = null;
+                // Also remove the crop from the active Crops -> Not active anymore
+                int index = activeCrops.indexOf(newCrop);
+                activeCrops.remove(index);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Revive the crop if a Watering Can was picked up */
+    public boolean reviveCrop() {
+        if (this.activeCrops.size() == 0) {
+            return false;
+        }
+        // else call the revive on every crop
+        for (Crop crop : this.activeCrops) {
+            if (crop != null) {
+                crop.revive(); // revives crop
+            }
+        }
+        return true;
+    } 
+
+    /** Fertilizes the Active Crops -> Growing instantly by one Stage */
+    public boolean fertilizing() {
+        if (this.activeCrops.size() == 0) {
+            return false;
+        }
+        // else call the revive on every crop
+        for (Crop crop : this.activeCrops) {
+            if (crop != null) {
+                crop.fertilze(); // fertilizes the crop
+            }
+        }
+        return true;
+    } 
 
     /**
      * 
@@ -308,20 +402,18 @@ public class GameMap {
      */
 
     public Tiles getGround(int x, int y) {
-        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+        if (inBound(x, y)) {
             return tiles[x][y];
             }
         return null;
     }
 
     public hiddenObject gethiddenObject(int x, int y) {
-            if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            if (inBound(x, y)) {
                 return hiddenObjects[x][y];
                 }
             return null;
         }
-
-
 
     /**
      * 
@@ -330,10 +422,35 @@ public class GameMap {
      * @return  the ground at x,y to get the basic map tiles for drawing
      */
     public Obstacle getObstacle(int x, int y) {
-        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+        if (inBound(x, y)) {
             return obstacles[x][y];
             }
         return null;
+    }
+
+    /**
+     * 
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return the Crop at the inquired tile if no crop then return null
+     */
+
+    public Crop getCrop(int x, int y) {
+        if (inBound(x, y)) {
+            return crops[x][y];
+        }
+        return null;
+    }
+
+
+
+    public boolean consumeCutsceneTrigger(int x, int y) {
+        if (inBound(x, y) && cutsceneTriggers[x][y]) {
+            cutsceneTriggers[x][y] = false;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -346,8 +463,10 @@ public class GameMap {
      * @return true if tile is instanceof Fence
      */
     public boolean isFence(int x, int y) {
-        if (x < 0 || y < 0 || x > width || y > height) return false;
-        return ((obstacles[x][y]) instanceof Fence);
+        if (inBound(x, y)) {
+            return ((obstacles[x][y]) instanceof Fence);
+        }
+        return false;
     }
 
     /**
@@ -358,8 +477,19 @@ public class GameMap {
      * @return true if the object is destrutible
      */
     public boolean isDestructible(int x, int y) {
-        if (x < 0 || y < 0 || x > width || y > height) return false;
+        if (inBound(x, y)) {
         return ((obstacles[x][y]) instanceof Destructible);
+        }
+        return false;
+    }
+
+
+    /** Make safety checks for inbound to avoid NullPointerExceptions */
+    public boolean inBound(int x, int y) {
+        if (x >= 0 && x <= width && y >= 0 && y <= height) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -416,5 +546,47 @@ public class GameMap {
     public int getHeight() {
         return height;
     }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public int getCurrentHarvest() {
+        return currentHarvest;
+    }
+
+    public int getHarvesting() {
+        return harvesting;
+    }
+
+    public hiddenObject[][] getHiddenObjects() {
+        return hiddenObjects;
+    }
+
+    public Crop[][] getCrops() {
+        return crops;
+    }
+
+    public boolean[][] getCutsceneTriggers() {
+        return cutsceneTriggers;
+    }
+
+    public List<Crop> getActiveCrops() {
+        return activeCrops;
+    }
+
+    public List<Chicken> getActiveChickens() {
+        return activeChickens;
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
+
+    
 
 }

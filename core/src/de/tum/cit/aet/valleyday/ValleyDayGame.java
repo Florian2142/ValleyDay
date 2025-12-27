@@ -74,6 +74,10 @@ public class ValleyDayGame extends Game {
         this.spriteBatch = new SpriteBatch(); // Create SpriteBatch for rendering
         this.skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json")); // Load UI skin
 
+        MusicTrack.BACKGROUND.play(); // Play some background music
+        goToMenu(); // Navigate to the menu screen
+    }
+
         // THe actualy map is already handled in the NativeFileChooser in the ChosenFile
 
         // -> So we make our own maps here!!! 
@@ -89,6 +93,8 @@ public class ValleyDayGame extends Game {
          * 
          * 
         */
+
+    public void selectMap() {
         NativeFileChooserConfiguration config = new NativeFileChooserConfiguration();
 
         config.directory = Gdx.files.local("itp2526itp2526projectwork-trycatchreturn35\\desktop\\src");
@@ -125,8 +131,7 @@ public class ValleyDayGame extends Game {
         
     });
 
-        MusicTrack.BACKGROUND.play(); // Play some background music
-        goToMenu(); // Navigate to the menu screen
+       
     }
 
     /**
