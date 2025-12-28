@@ -251,6 +251,8 @@ public class GameMap {
                 case 11: // CUTSCENE TRIGGER -> Only happens in 10 but triggers special Synthwave map for easter egg
                     cutsceneTriggers[r][c] = true;
                     break;
+                case 12:
+                    this.activeChickens.add(new Chicken(world, r, c));
 
                 default: // Dirt -> Already set by default
 
