@@ -62,7 +62,19 @@ public class Animations {
         SpriteSheet.CHARACTER.at(2,1)
     );
 
+    /** The Chicken Animation for Movement */
+    public static final Animation<TextureRegion> CHICKEN_WALKING = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.at(1,5),
+        SpriteSheet.FARM_THINGS.at(1,6),
+        SpriteSheet.FARM_THINGS.at(1,7),
+        SpriteSheet.FARM_THINGS.at(1,8)
+    );
 
+    /** The Animation for the standing Chicken */
+
+    public static final Animation<TextureRegion> CHICKEN_NOT_WALKING = new Animation<>(0.1f,
+            SpriteSheet.FARM_THINGS.at(1,5)
+    );
 
 
 

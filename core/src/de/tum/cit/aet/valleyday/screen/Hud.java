@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * A Heads-Up Display (HUD) that displays information on the screen.
@@ -23,12 +24,14 @@ public class Hud {
 
     /** Hud needs to know the player */
     private Player player;
+    private ShapeRenderer shapeRenderer;
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font, Player player) {
         this.spriteBatch = spriteBatch;
         this.font = font;
         this.camera = new OrthographicCamera();
         this.player = player;
+        this.shapeRenderer = new ShapeRenderer();
     }
     
     /**
@@ -36,6 +39,21 @@ public class Hud {
      * This uses a different OrthographicCamera so that the HUD is always fixed on the screen.
      */
     public void render(float timeRemaining) {
+
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        float hudWidth = 220;
+        float hudHeight = 150;
+        float margin = 20;
+        float x = screenWidth - hudWidth - margin;
+        float y = screenHeight - hudHeight - margin;
+
+        shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 0.5f);
+        shapeRenderer.rect(x, y, hudWidth, hudHeight);
+        shapeRenderer.end();
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
         // Start drawing
@@ -44,6 +62,7 @@ public class Hud {
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
         // message for the Time left
         font.draw(spriteBatch, "Time left: " + (int) timeRemaining,Gdx.graphics.getWidth() - 265, Gdx.graphics.getHeight() - 10);
+        
 
         /** Display message for any interactions with hidden items */
         if (player.messageCooldown() > 0) {

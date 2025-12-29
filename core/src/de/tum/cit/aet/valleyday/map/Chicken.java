@@ -84,13 +84,7 @@ public class Chicken extends Entity {
             timeToNextMove = 2.0f;
 
             
-
-
         }
-
-
-
-
 
 
         // decrement the time in order for brainpower restorage -> Move requires loads of energy
@@ -109,23 +103,12 @@ public class Chicken extends Entity {
     
         // if the player is not harvesting he can move
         if (isMoving()) {
-            switch (this.currDirection) {
-                    case RIGHT: return  Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.moveTimer, true);
-                    case LEFT : return  Animations.CHARACTER_WALK_LEFT.getKeyFrame(this.moveTimer, true);
-                    case UP   : return  Animations.CHARACTER_WALK_UP.getKeyFrame(this.moveTimer, true);
-                    default   : return  Animations.CHARACTER_WALK_DOWN.getKeyFrame(this.moveTimer, true);
-            }
+            return  Animations.CHICKEN_WALKING.getKeyFrame(this.moveTimer, true);
         }
-        
         else {
-            switch (this.currDirection) {
-                // These weird things are basically just when the character stands still -> Makes it natural
-                    case RIGHT: return  Animations.CHARACTER_WALK_RIGHT_IDLE.getKeyFrame(this.moveTimer, true);
-                    case LEFT : return  Animations.CHARACTER_WALK_LEFT_IDLE.getKeyFrame(this.moveTimer, true);
-                    case UP   : return  Animations.CHARACTER_WALK_UP_IDLE.getKeyFrame(this.moveTimer, true);
-                    default   : return  Animations.CHARACTER_WALK_DOWN_IDLE.getKeyFrame(this.moveTimer, true);
+            return  Animations.CHICKEN_NOT_WALKING.getKeyFrame(this.moveTimer, true);    
         }
-    }}
+    };
 
 
 

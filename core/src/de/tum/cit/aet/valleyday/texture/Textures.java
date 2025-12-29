@@ -58,9 +58,9 @@ public class Textures {
     * ITEMS 
     */
     // SHOVEL
-    public static final TextureRegion SHOVEL= SpriteSheet.ITEMS.atBig(1, 1, 2, 1);
+    public static final TextureRegion SHOVEL= SpriteSheet.HARVEST.at(16, 10);
     // WATERCAN
-    public static final TextureRegion WATERCAN = SpriteSheet.BASICS.at(2,11);
+    public static final TextureRegion WATERING_CAN = SpriteSheet.BASICS.at(2,11);
     // FERTILIZER
     public static final TextureRegion FERTILIZER = SpriteSheet.BASICS.at(2,12);
     
@@ -89,28 +89,5 @@ public class Textures {
 
 
 
-    public static final TextureRegion PUMPKIN = SpriteSheet.FARM_THINGS.at(1, 2);
-    public static final TextureRegion JACK_O_LANTERN = SpriteSheet.FARM_THINGS.at(1, 3);
 
-    public static final TextureRegion WATERING_CAN = SpriteSheet.FARM_THINGS.at(2, 6);
-    public static final TextureRegion TOMATOES = SpriteSheet.FARM_THINGS.at(3, 7);
-    public static final TextureRegion BUSH = SpriteSheet.FARM_THINGS.at(3, 8);  // One of the black bushes
-    public static final TextureRegion TREE_STUMP = SpriteSheet.FARM_THINGS.at(3, 11);
-
-    // Larger example: Barn roof (assuming 3 wide, 1 tall)
-    public static final TextureRegion BARN_ROOF = SpriteSheet.FARM_THINGS.atBig(1, 4, 3, 1);  // heightTiles=3? Wait, no: for horizontal, heightTiles=1 (vert), widthTiles=3 (horiz)
-
-    // Larger example: Greenhouse (assuming 6 wide, 3 tall—adjust after counting pixels)
-    public static final TextureRegion GREENHOUSE = SpriteSheet.FARM_THINGS.atBig(3, 1, 6, 3);
-
-    // From second image (basics.png)—adjust row/col based on exact counts; assuming 32x32 grid
-    public static final TextureRegion HEART = SpriteSheet.BASICS.at(1, 3);  // Red heart example
-    public static final TextureRegion FIRE = SpriteSheet.BASICS.at(2, 1);
-    public static final TextureRegion COIN = SpriteSheet.BASICS.at(3, 1);
-    public static final TextureRegion ROCK = SpriteSheet.BASICS.at(3, 4);  // Pebble example
-    public static final TextureRegion GREEN_BUSH = SpriteSheet.BASICS.at(6, 5);  // Round green bush
-    public static final TextureRegion NUMBER_ONE = SpriteSheet.BASICS.at(7, 2);
-    public static final TextureRegion ARROW = SpriteSheet.BASICS.at(8, 1);
-    public static final TextureRegion ICICLE = SpriteSheet.BASICS.at(8, 4);
-        
 }

@@ -35,7 +35,11 @@ public enum SpriteSheet {
 
 
     // CROPS
-    CROPS("crops.png", 32, 32);
+    CROPS("crops.png", 32, 32),
+
+    // FARMTHINGS -> DOWNLOADED FROM KENNEY FREE OPEN SOURCE
+    HARVEST("tilemap.png", 16, 16);
+    
     
 
 
