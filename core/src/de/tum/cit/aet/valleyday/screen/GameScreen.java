@@ -64,7 +64,9 @@ public class GameScreen implements Screen {
 
 
         /** DUMMY VARIABLES CHANGE LATER TO DIFFICULTY */
-        this.remainingTime = 180; 
+        this.remainingTime = 314;
+        // Set harvesting quota 
+        map.getPlayer().setHarvesting(5); 
     }
     
     /**
@@ -100,9 +102,9 @@ public class GameScreen implements Screen {
             tick = 60;
         }
 
-
+        //After every start, the remaining time is displayed.
         hud.render(this.remainingTime);
-
+        //If time is over, game screen appears.
         if (remainingTime <= 0d) {game.goToMenu();}
 
 

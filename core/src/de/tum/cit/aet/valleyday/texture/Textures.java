@@ -58,7 +58,7 @@ public class Textures {
     * ITEMS 
     */
     // SHOVEL
-    public static final TextureRegion SHOVEL= SpriteSheet.HARVEST.at(16, 10);
+    public static final TextureRegion SHOVEL= SpriteSheet.BASICS.at(16, 10);
     // WATERCAN
     public static final TextureRegion WATERING_CAN = SpriteSheet.BASICS.at(2,11);
     // FERTILIZER

@@ -56,7 +56,7 @@ public class Player extends Entity implements Drawable {
     public void addCrops() {
         harvestedCrops++;
     }
-    public void addShovel() {
+    /* public void addShovel() {
         shovelCount++;
     }
     public void addFertilizer() {
@@ -64,7 +64,7 @@ public class Player extends Entity implements Drawable {
     }
     public void addWateringCan() {
         wateringCanCount++;
-    }
+    } */
 
     
 
@@ -92,7 +92,7 @@ public class Player extends Entity implements Drawable {
     private float harvestCooloff = 0;
     private float harvestingAnimationCooloff = 0;
 
-    private final int harvesting = 3; // UPDATE CORRESPONDING TO THE DIFFICULTY
+    private int harvesting ; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
     
 
@@ -422,7 +422,9 @@ public class Player extends Entity implements Drawable {
             }
 
     }
-
+    public void setHarvesting(int winningQuota) {
+        this.harvesting = winningQuota;
+    }
 
     public float getElapsedTime() {
         return elapsedTime;
@@ -549,14 +551,14 @@ public class Player extends Entity implements Drawable {
         return wateringCanCount;
     }
     public boolean hasShovel() {
-        return shovelCount > 0;
+        return hasShovel;
     }
-    public boolean hasFertilizer() {
+    /* public boolean hasFertilizer() {
         return fertilizerCount > 0;
     }
     public boolean hasWateringCan() {
         return wateringCanCount > 0;
-    }
+    } */
 
     
 
