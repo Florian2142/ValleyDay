@@ -1,8 +1,6 @@
 package de.tum.cit.aet.valleyday.screen;
 
-import de.tum.cit.aet.valleyday.map.GameMap;
 import de.tum.cit.aet.valleyday.map.Player;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * A Heads-Up Display (HUD) that displays information on the screen.
  * It uses a separate camera so that it is always fixed on the screen.
  */
-public class Hud {
+public class Hud{
     
     /** The SpriteBatch used to draw the HUD. This is the same as the one used in the GameScreen. */
     private final SpriteBatch spriteBatch;
@@ -27,6 +25,7 @@ public class Hud {
     private ShapeRenderer shapeRenderer;
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font, Player player) {
+        
         this.spriteBatch = spriteBatch;
         this.font = font;
         this.camera = new OrthographicCamera();
@@ -62,7 +61,8 @@ public class Hud {
         font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() - 10);
         // message for the Time left
         font.draw(spriteBatch, "Time left: " + (int) timeRemaining,Gdx.graphics.getWidth() - 265, Gdx.graphics.getHeight() - 10);
-        
+    
+        font.draw(spriteBatch, "Harvested crops: " + player.getCurrentHarvest(), x + 45, y + hudHeight - 32);
 
         /** Display message for any interactions with hidden items */
         if (player.messageCooldown() > 0) {
@@ -89,6 +89,10 @@ public class Hud {
     public void resize(int width, int height) {
         camera.setToOrtho(false, width, height);
     }
+
+    
+
+   
 
     
 }

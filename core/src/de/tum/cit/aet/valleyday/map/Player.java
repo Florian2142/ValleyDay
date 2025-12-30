@@ -46,6 +46,27 @@ public class Player extends Entity implements Drawable {
     private boolean moving = false;
     private boolean isHarvesting = false;
 
+    /*Variables to store the harvesting count and tool count implenented in the HUD */
+    private int harvestedCrops = 0;
+    private int shovelCount = 0;
+    private int fertilizerCount = 0;
+    private int wateringCanCount = 0;
+
+    /* Methods to update the counts */
+    public void addCrops() {
+        harvestedCrops++;
+    }
+    public void addShovel() {
+        shovelCount++;
+    }
+    public void addFertilizer() {
+        fertilizerCount++;
+    }
+    public void addWateringCan() {
+        wateringCanCount++;
+    }
+
+    
 
     /* Nice cozy soundeffects */
     private float chopSoundCooldown = 0f;
@@ -515,7 +536,27 @@ public class Player extends Entity implements Drawable {
         return harvestingAnimationCooloff;
     }
 
-    
+    public int getHarvestedCount() { 
+        return harvestedCrops; 
+    }
+    public int getShovelCount() { 
+        return shovelCount; 
+    }
+    public int getFertilizerCount() { 
+        return fertilizerCount; 
+    }
+    public int getWateringCanCount() {
+        return wateringCanCount;
+    }
+    public boolean hasShovel() {
+        return shovelCount > 0;
+    }
+    public boolean hasFertilizer() {
+        return fertilizerCount > 0;
+    }
+    public boolean hasWateringCan() {
+        return wateringCanCount > 0;
+    }
 
     
 
