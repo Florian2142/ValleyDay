@@ -94,7 +94,8 @@ public enum SpriteSheet {
      * @param column the column of the texture to fetch, starting from 1 on the LEFT of the spritesheet
      * @return the texture
      */
-    public TextureRegion atBig(int row, int column, int heightTiles, int widthTiles) {
+    //  Overload the Method given larger tiles and crops
+    public TextureRegion at(int row, int column, int heightTiles, int widthTiles) {
         return new TextureRegion(
                 spritesheet,
                 (column - 1) * this.width,
@@ -122,7 +123,7 @@ public enum SpriteSheet {
 public TextureRegion atBigFromBottom(int bottomRow, int column, int heightTiles, int widthTiles) {
     int totalRows = spritesheet.getHeight() / height;
     int startRow = totalRows - heightTiles - (bottomRow - 1);  // bottomRow 1 = bottom
-    return atBig(startRow, column, heightTiles, widthTiles);
+    return at(startRow, column, heightTiles, widthTiles);
 }
 
 

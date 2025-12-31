@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Textures {
     
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
-    public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 1); 
+    public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 5, 1, 1); 
     public static final TextureRegion ICE     = SpriteSheet.BASIC_TILES.at(2, 6);
     public static final TextureRegion GRAS    = SpriteSheet.BASIC_TILES.at(2, 1);
     public static final TextureRegion WALL    = SpriteSheet.BASIC_TILES.at(3, 1);
@@ -69,10 +69,10 @@ public class Textures {
     /**
      * CROPS AND HARVESTING
      */
-    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 1); 
-    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 1); 
-    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(6, 1); 
-    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(8, 1); 
+    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 1, 1, 1); 
+    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 1, 1, 1); 
+    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(6, 1, 1, 1); 
+    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(8, 1, 2, 1); 
 
 
 
@@ -91,3 +91,4 @@ public class Textures {
 
 
 }
+

@@ -82,7 +82,9 @@ public class Hud {
                 Gdx.graphics.getHeight() - 40);
         // Displayes the tools.
         font.draw(spriteBatch, "Tools: ", 10, Gdx.graphics.getHeight() - 80);
-        draw(spriteBatch, Textures.WATERING_CAN);
+        /** Graphics for HUD  */
+
+        draw(spriteBatch, Textures.SHOVEL, 80, 80, 25, Gdx.graphics.getHeight() - 150);
         // Displays the EXIT option.
         // At the start the Exit font color is displayed red.
         // If the the harvesting Quota is reached, font color is changed to green.
@@ -119,20 +121,21 @@ public class Hud {
         camera.setToOrtho(false, width, height);
     }
 
-    private static void draw(SpriteBatch spriteBatch, TextureRegion textureRegion) {
+    private static void draw(SpriteBatch spriteBatch, TextureRegion textureRegion, float height, float width, 
+        float x, float y) {
         TextureRegion texture = textureRegion;
 
         // 1. Calculate the size of the logical tile on screen
         // float tilePx = TILE_SIZE_PX * SCALE; // e.g., 64 pixels
 
         // 2. Calculate the size of the sprite to draw
-        float drawWidth = texture.getRegionWidth();
-        float drawHeight = texture.getRegionHeight();
+        float drawWidth = width;
+        float drawHeight = height;
 
         // 3. Calculate Position
         // Base X/Y is the bottom-left corner of the TILE
-        float baseX = texture.getRegionX();
-        float baseY = texture.getRegionY();
+        float baseX = x;
+        float baseY = y;
 
         //
 

@@ -249,7 +249,9 @@ public class Player extends Entity implements Drawable {
             System.out.println("THE CURRENT X COORDINATE IS: " + currX);
             System.out.println("THE CURRENT X COORDINATE IS: " + offsetX);
             // check if the current Soil is empty
-            if (map.getGround(offsetX, offsetY).getType().equals(TileType.SOIL)) {
+            Tiles soil = map.getSoil(offsetX, offsetY);
+
+            if (soil != null && soil.getType().equals(TileType.SOIL)) {
                 /**
                  * Maybe enhance this method such that we can plant different CropTypes
                  * 

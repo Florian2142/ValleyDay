@@ -83,30 +83,31 @@ public class Animations {
     /** DOWN CASE */
     public static final Animation<TextureRegion> CHARACTER_HARVEST_DOWN = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(1, 6),
-            SpriteSheet.CHARACTER.at(1, 7),
-            SpriteSheet.CHARACTER.at(1, 8)
+            SpriteSheet.CHARACTER.at(1, 7)
+            //SpriteSheet.CHARACTER.at(1, 8)
             
     );
     
     /** UP CASE */
     public static final Animation<TextureRegion> CHARACTER_HARVEST_UP = new Animation<>(0.1f,
         SpriteSheet.CHARACTER.at(3,6),
-        SpriteSheet.CHARACTER.at(3,7),
-        SpriteSheet.CHARACTER.at(3,8)
+        SpriteSheet.CHARACTER.at(3,7)
+        //SpriteSheet.CHARACTER.at(3,8)
     );
+
 
     /** LEFT CASE */
     public static final Animation<TextureRegion> CHARACTER_HARVEST_LEFT = new Animation<>(0.1f,
         SpriteSheet.CHARACTER.at(4,6),
-        SpriteSheet.CHARACTER.at(4,7),
-        SpriteSheet.CHARACTER.at(4,8)
+        SpriteSheet.CHARACTER.at(4,7)
+        //SpriteSheet.CHARACTER.at(4,8)
     );
 
     /** RIGHT CASE*/
     public static final Animation<TextureRegion> CHARACTER_HARVEST_RIGHT = new Animation<>(0.1f,
         SpriteSheet.CHARACTER.at(2,6),
-        SpriteSheet.CHARACTER.at(2,7),
-        SpriteSheet.CHARACTER.at(2,8)
+        SpriteSheet.CHARACTER.at(2,7)
+        //SpriteSheet.CHARACTER.at(2,8)
     );
 
 }

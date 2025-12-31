@@ -145,8 +145,8 @@ public class GameScreen implements Screen {
         
         // Loop through every coordinate -> Builts the map from the Groundup
 
-        for (int x = 0; x <= map.getWidth(); x++) {
-            for (int y = 0; y <= map.getHeight(); y++) {
+        for (int y = map.getWidth(); y >= 0; y--) {
+            for (int x = 0; x <= map.getWidth(); x++) {
 
                 // 1. Draw Ground (Layer 0)
                 Drawable floor = map.getGround(x, y);
@@ -155,12 +155,6 @@ public class GameScreen implements Screen {
                 }
 
                 
-                
-                // 2. Draw Obstacles (Layer 2) - Drawn ON TOP of ground
-                Drawable obstacles = map.getObstacle(x, y);
-                if (obstacles != null) {
-                    draw(spriteBatch, obstacles);
-                }
 
                 // 3. Draw the nice Items or Objects like shovel, exit etc. (Layer 3)
                 Drawable item = map.gethiddenObject(x, y);
@@ -168,17 +162,40 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, item);
                 }
 
+
+            }
+            }
+
+            for (int y = map.getWidth(); y >= 0; y--) {
+                for (int x = 0; x <= map.getWidth(); x++) {
+
+                Drawable soil = map.getSoil(x, y);
+                if (soil != null && soil.getCurrentAppearance() != null) {
+                    draw(spriteBatch, soil);
+                }
+            }}
+
+                
+            for (int y = map.getWidth(); y >= 0; y--) {
+                for (int x = 0; x <= map.getWidth(); x++) {
+
+                // 2. Draw Obstacles (Layer 2) - Drawn ON TOP of ground
+                Drawable obstacles = map.getObstacle(x, y);
+                if (obstacles != null) {
+                    draw(spriteBatch, obstacles);
+                }
+
+
+            
                 // 4. Draw the Crops
                 Drawable crop = map.getCrop(x, y);
                 if (crop != null && crop.getCurrentAppearance() != null) {
                     draw(spriteBatch, crop);
                 }
-
-                
             }
-
-            
         }
+            
+        
 
             /** Draw the chicken */
             for (Chicken chicken : map.getActiveChickens()) {

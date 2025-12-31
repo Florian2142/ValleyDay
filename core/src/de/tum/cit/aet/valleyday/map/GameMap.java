@@ -79,6 +79,11 @@ public class GameMap {
     private final Obstacle[][] obstacles;               // Obstacles like Fence and Debris
     private final Crop[][] crops;                      // All the harvesting and crops needed for winning
     private final boolean[][] cutsceneTriggers;         // special cutscene Tiles with trigger nice easter eggs
+    
+    
+
+    /** Soils  */
+    private final Tiles[][] soils;
 
     /** Even though the map is layer based we add a map containing the active Crops for better managing of growth */
     private final List<Crop> activeCrops = new ArrayList<>();
@@ -199,6 +204,7 @@ public class GameMap {
         this.hiddenObjects = new hiddenObject[width + 1][height + 1];        /** Initialize the hiddenObjects */
         this.crops         = new Crop[width + 1][height + 1];               /** Intialize the Crops */
         this.cutsceneTriggers = new boolean[width + 1][height + 1];          /** For cutscenes later */
+        this.soils             = new Tiles[width + 1][height + 1];
 
         for (String tile : fillTiles.keySet()) {
 
@@ -241,7 +247,7 @@ public class GameMap {
                 case 7: // Shovel
 
                 case 8:
-                    tiles[r][c] = new Tiles(r, c, TileType.SOIL);
+                    soils[r][c] = new Tiles(r, c, TileType.SOIL);
                     break;
 
                 case 10: // THE CHICKEN WILL SPAWN HERE
@@ -406,6 +412,13 @@ public class GameMap {
     public Tiles getGround(int x, int y) {
         if (inBound(x, y)) {
             return tiles[x][y];
+            }
+        return null;
+    }
+
+    public Tiles getSoil(int x, int y) {
+        if (inBound(x, y)) {
+            return soils[x][y];
             }
         return null;
     }
@@ -592,3 +605,4 @@ public class GameMap {
     
 
 }
+
