@@ -171,11 +171,6 @@ public class GameScreen implements Screen {
                 if (item != null && item.getCurrentAppearance() != null) {
                     allDrawables.add(item);
                 }
-                // Same for soil
-                Drawable soil = map.getSoil(x, y);
-                if (soil != null && soil.getCurrentAppearance() != null) {
-                    draw(spriteBatch, soil);
-                }
                 // Same for obstactles
                 Drawable obstacles = map.getObstacle(x, y);
                 if (obstacles != null) {
@@ -192,6 +187,19 @@ public class GameScreen implements Screen {
                 for (Chicken chicken : map.getActiveChickens()) {
                     if (chicken != null) {
                         allDrawables.add(chicken);
+                    }
+                }
+
+                
+            for (int y = map.getHeight(); y >= 0; y--) {
+                for (int x = 0; x <= map.getWidth(); x++) {
+
+                // Print Seperately the Soil
+                // Same for soil
+                Drawable soil = map.getSoil(x, y);
+                if (soil != null && soil.getCurrentAppearance() != null) {
+                    draw(spriteBatch, soil);
+                         }
                     }
                 }
                 // Same for chest

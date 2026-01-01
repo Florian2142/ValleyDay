@@ -89,6 +89,9 @@ public class Textures {
 
 
 
+    // Textures for the HUD
+    public static final TextureRegion CLOCK = SpriteSheet.CLOCK.at(1,1);
+
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(2, 1, 2, 1); 
 
