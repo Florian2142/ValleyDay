@@ -80,8 +80,6 @@ public class GameMap {
     private final Crop[][] crops;                      // All the harvesting and crops needed for winning
     private final boolean[][] cutsceneTriggers;         // special cutscene Tiles with trigger nice easter eggs
     
-    
-
     /** Soils  */
     private final Tiles[][] soils;
 

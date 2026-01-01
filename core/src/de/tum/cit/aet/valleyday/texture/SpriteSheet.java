@@ -33,6 +33,9 @@ public enum SpriteSheet {
     // BASICS("basics.png", 303, 132);
     ITEMS("Items.png", 16,16),
 
+    // CROPS
+    OUTSIDE("crops.png", 6, 16),
+
 
     // CROPS
     CROPS("crops.png", 32, 32);

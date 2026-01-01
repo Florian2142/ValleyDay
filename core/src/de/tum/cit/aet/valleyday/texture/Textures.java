@@ -71,8 +71,8 @@ public class Textures {
      */
     public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 1, 1, 1); 
     public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 1, 1, 1); 
-    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(6, 1, 1, 1); 
-    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(8, 1, 2, 1); 
+    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 1, 1, 1); 
+    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
 
 
 
@@ -86,6 +86,12 @@ public class Textures {
         CORN_MATURING,
         CORN_MATURED
     };
+
+
+
+    // big objects for style
+    public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(2, 1, 2, 1); 
+
 
 
 

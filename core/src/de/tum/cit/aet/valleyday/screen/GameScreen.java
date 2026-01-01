@@ -1,5 +1,10 @@
 package de.tum.cit.aet.valleyday.screen;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Collections;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -7,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
 import de.tum.cit.aet.valleyday.map.Chicken;
@@ -142,10 +148,16 @@ public class GameScreen implements Screen {
         // Render everything in the map here, in order from lowest to highest (later things appear on top)
         // You may want to add a method to GameMap to return all the drawables in the correct order
 
+
+        /** Big Drawable List for Sorting and depth drawing */
+
+        // We make a temporary list for sorting according to the y-axis
+        List<Drawable> allDrawables = new ArrayList<>();
+
         
         // Loop through every coordinate -> Builts the map from the Groundup
 
-        for (int y = map.getWidth(); y >= 0; y--) {
+        for (int y = map.getHeight(); y >= 0; y--) {
             for (int x = 0; x <= map.getWidth(); x++) {
 
                 // 1. Draw Ground (Layer 0)
@@ -154,61 +166,57 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, floor);
                 }
 
-                
-
-                // 3. Draw the nice Items or Objects like shovel, exit etc. (Layer 3)
+                // Add the items to the list for later sorting
                 Drawable item = map.gethiddenObject(x, y);
                 if (item != null && item.getCurrentAppearance() != null) {
-                    draw(spriteBatch, item);
+                    allDrawables.add(item);
                 }
-
-
-            }
-            }
-
-            for (int y = map.getWidth(); y >= 0; y--) {
-                for (int x = 0; x <= map.getWidth(); x++) {
-
+                // Same for soil
                 Drawable soil = map.getSoil(x, y);
                 if (soil != null && soil.getCurrentAppearance() != null) {
                     draw(spriteBatch, soil);
                 }
-            }}
-
-                
-            for (int y = map.getWidth(); y >= 0; y--) {
-                for (int x = 0; x <= map.getWidth(); x++) {
-
-                // 2. Draw Obstacles (Layer 2) - Drawn ON TOP of ground
+                // Same for obstactles
                 Drawable obstacles = map.getObstacle(x, y);
                 if (obstacles != null) {
-                    draw(spriteBatch, obstacles);
+                    allDrawables.add(obstacles);
                 }
-
-
-            
-                // 4. Draw the Crops
+                // Same for crops
                 Drawable crop = map.getCrop(x, y);
                 if (crop != null && crop.getCurrentAppearance() != null) {
-                    draw(spriteBatch, crop);
+                    allDrawables.add(crop);
+                        }
+                    }
                 }
-            }
-        }
-            
-        
-
-            /** Draw the chicken */
-            for (Chicken chicken : map.getActiveChickens()) {
-                if (chicken != null) {
-                    draw(spriteBatch, chicken);
+                // Same for chicken
+                for (Chicken chicken : map.getActiveChickens()) {
+                    if (chicken != null) {
+                        allDrawables.add(chicken);
+                    }
                 }
-                
-            }
+                // Same for chest
+                allDrawables.add(map.getChest());
+                // Same for Player
+                allDrawables.add(map.getPlayer());
 
+                // Now we sort the temporary List
+                Collections.sort(allDrawables, new Comparator<Drawable>() {
+                @Override
+                public int compare(Drawable i1, Drawable i2) {
+                    // compare(b, a) gives us Descending Order (Big Y first)
+                    return Float.compare(i2.getY(), i1.getY());
+                                }
+                            });
 
-            draw(spriteBatch, map.getChest());
-            draw(spriteBatch, map.getPlayer());
-        
+                /**
+                 * Draw all the sorted Items in the list
+                 */
+                for (Drawable drawable : allDrawables) {
+                    // Draw every large item
+                    draw(spriteBatch, drawable);
+                }
+
+    
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
     }
