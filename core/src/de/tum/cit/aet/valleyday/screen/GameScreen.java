@@ -126,31 +126,32 @@ public class GameScreen implements Screen {
 
         Player player = map.getPlayer();
 
-        // first we need to get the actual players position
-        float currentX = (player.getX() * TILE_SIZE_PX * SCALE) + (TILE_SIZE_PX * SCALE/2f);
-        float currentY = (player.getY() * TILE_SIZE_PX * SCALE) + (TILE_SIZE_PX * SCALE/2f);
+        float currentX = player.getX() * TILE_SIZE_PX * SCALE;
+        float currentY = player.getY() * TILE_SIZE_PX * SCALE;
 
-        /*Defining the boundries of the map */
-        float mapWidth = map.getWidth() * TILE_SIZE_PX * SCALE;
-        float mapHeight = map.getHeight() * TILE_SIZE_PX * SCALE; 
+        /* Increase artifically by 1 for small maps */
+        float mapWidth = (map.getWidth() + 1) * TILE_SIZE_PX * SCALE;
+        float mapHeight = (map.getHeight() + 1) * TILE_SIZE_PX * SCALE; 
 
-        /* Half of the viewport, how far the camera sees from its Center */
-        float halfViewportWidth = mapCamera.viewportWidth / 2f;
-        float halfViewportHeight = mapCamera.viewportHeight / 2f;
+        float marginX = mapCamera.viewportWidth * 0.10f; 
+        float marginY = mapCamera.viewportHeight * 0.10f;
 
-        /* Fix the camera so that its center cannot be less than half of the screen width */
-        float maxX = mapWidth - halfViewportWidth;
+
+        /* Half of the viewport */
+        float halfViewportWidth  = mapCamera.viewportWidth  / 2f - marginX;
+        float halfViewportHeight = mapCamera.viewportHeight / 2f - marginY;
+
+        /* Clamp to keep map edges in view */
         float minX = halfViewportWidth;
-        float maxY = mapHeight - halfViewportHeight;
+        float maxX = mapWidth - halfViewportWidth;
         float minY = halfViewportHeight;
+        float maxY = mapHeight - halfViewportHeight;
 
-        
-
+        // Remove Math.round() — this is the source of the jumping!
         mapCamera.position.x = MathUtils.clamp(currentX, minX, maxX);
         mapCamera.position.y = MathUtils.clamp(currentY, minY, maxY);
 
-
-        mapCamera.update(); // This is necessary to apply the changes
+        mapCamera.update();
     }
     
     private void renderMap() {

@@ -456,6 +456,30 @@ public class GameMap {
         return null;
     }
 
+    /**
+     * 
+     * @param x
+     * @param y
+     * @return
+     */
+    public void eatCrop(int x, int y) {
+        if (inBound(x, y)) {
+            Crop newCrop = getCrop(x, y);
+            if (newCrop != null) {
+                // remove the crop from the map -> Implying harvesting
+                crops[x][y] = null;
+                // Also remove the crop from the active Crops -> Not active anymore
+                int index = activeCrops.indexOf(newCrop);
+                activeCrops.remove(index);
+            }
+        }
+    }
+
+
+
+
+
+
 
 
     public boolean consumeCutsceneTrigger(int x, int y) {

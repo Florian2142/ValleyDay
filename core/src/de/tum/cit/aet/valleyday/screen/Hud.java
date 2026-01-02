@@ -277,9 +277,6 @@ public class Hud {
         // Draws the HUD
         stage.draw();   
 
-
-
-
     }
 
     /**

@@ -80,12 +80,21 @@ public class Chicken extends Entity {
             
             }       
 
+            
+
+
+
+
+
+
             // WE NEED TO RESET THE TIMER for next Brainmove
             timeToNextMove = 2.0f;
 
             
         }
 
+        // Make the chicken eat the crop
+        map.eatCrop(currX, currY);
 
         // decrement the time in order for brainpower restorage -> Move requires loads of energy
         timeToNextMove -= frameTime;

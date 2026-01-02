@@ -37,7 +37,8 @@ public enum SpriteSheet {
     OUTSIDE("crops.png", 6, 16),
     // HUD STUFF
     CLOCK("clock.png", 16, 16),
-
+    // Items
+    TOOLS("tools.png", 16,16),
 
     // CROPS
     CROPS("crops.png", 32, 32);
