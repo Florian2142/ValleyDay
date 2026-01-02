@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
 import de.tum.cit.aet.valleyday.map.Chicken;
@@ -127,12 +127,27 @@ public class GameScreen implements Screen {
         Player player = map.getPlayer();
 
         // first we need to get the actual players position
-        float currentX = player.getX() * TILE_SIZE_PX * SCALE;
-        float currentY = player.getY() * TILE_SIZE_PX * SCALE;
+        float currentX = (player.getX() * TILE_SIZE_PX * SCALE) + (TILE_SIZE_PX * SCALE/2f);
+        float currentY = (player.getY() * TILE_SIZE_PX * SCALE) + (TILE_SIZE_PX * SCALE/2f);
 
+        /*Defining the boundries of the map */
+        float mapWidth = map.getWidth() * TILE_SIZE_PX * SCALE;
+        float mapHeight = map.getHeight() * TILE_SIZE_PX * SCALE; 
 
-        mapCamera.position.x = currentX;
-        mapCamera.position.y = currentY;
+        /* Half of the viewport, how far the camera sees from its Center */
+        float halfViewportWidth = mapCamera.viewportWidth / 2f;
+        float halfViewportHeight = mapCamera.viewportHeight / 2f;
+
+        /* Fix the camera so that its center cannot be less than half of the screen width */
+        float maxX = mapWidth - halfViewportWidth;
+        float minX = halfViewportWidth;
+        float maxY = mapHeight - halfViewportHeight;
+        float minY = halfViewportHeight;
+
+        
+
+        mapCamera.position.x = MathUtils.clamp(currentX, minX, maxX);
+        mapCamera.position.y = MathUtils.clamp(currentY, minY, maxY);
 
 
         mapCamera.update(); // This is necessary to apply the changes
