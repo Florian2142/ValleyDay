@@ -14,7 +14,9 @@ import de.tum.cit.aet.valleyday.texture.Textures;
  */
 public enum CropType {
  
-        CORN(Textures.CORN_STAGES, 45f);
+        CORN(Textures.CORN_STAGES, 45f),
+        MAIS(Textures.MAIS_STAGES, 55f),
+        LEMON(Textures.LEMON_STAGES, 75f);
       
         
 

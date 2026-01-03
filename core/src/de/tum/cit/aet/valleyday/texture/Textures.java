@@ -13,9 +13,14 @@ public class Textures {
     
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
     public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 5, 1, 1); 
-    public static final TextureRegion ICE     = SpriteSheet.BASIC_TILES.at(2, 6);
+    public static final TextureRegion ICE     = SpriteSheet.BASIC_TILES.at(3, 6);
     public static final TextureRegion GRAS    = SpriteSheet.BASIC_TILES.at(2, 1);
     public static final TextureRegion WALL    = SpriteSheet.BASIC_TILES.at(3, 1);
+    public static final TextureRegion STONE     = SpriteSheet.BASIC_TILES.at(2, 6);
+    public static final TextureRegion SNOW     = SpriteSheet.BASIC_TILES.at(8, 8);
+    public static final TextureRegion WATER    = SpriteSheet.FARM_THINGS.at(6, 7);
+    public static final TextureRegion SAND    = SpriteSheet.BASIC_TILES.at(2, 3);
+
     // STRAIGHT PIECES
     public static final TextureRegion FENCE_HORIZ = SpriteSheet.FARM_THINGS.at(6, 2);
     public static final TextureRegion FENCE_VERT  = SpriteSheet.FARM_THINGS.at(7, 3);
@@ -37,11 +42,11 @@ public class Textures {
 
 
     // testing with specific pixel estimation (bottom-left origin)
-    public static final TextureRegion DEBRIS_FULL  = SpriteSheet.BASICS.fromPixelsTopLeft(190, 0, 18, 14);
-    public static final TextureRegion DEBRIS_ONE   = SpriteSheet.BASICS.fromPixelsTopLeft(190, 0, 18, 14);
-    public static final TextureRegion DEBRIS_TWO   = SpriteSheet.BASICS.fromPixelsTopLeft(173, 0, 14, 14);
-    public static final TextureRegion DEBRIS_THREE = SpriteSheet.BASICS.fromPixelsTopLeft(155, 0, 12, 8);
-    public static final TextureRegion DEBRIS_FINAL = SpriteSheet.BASICS.fromPixelsTopLeft(155, 0, 12, 8);
+    public static final TextureRegion DEBRIS_FULL  = SpriteSheet.DEBRIS.at(1,1);
+    public static final TextureRegion DEBRIS_ONE   = SpriteSheet.DEBRIS.at(1,2);;
+    public static final TextureRegion DEBRIS_TWO   = SpriteSheet.DEBRIS.at(1,3);;
+    public static final TextureRegion DEBRIS_THREE = SpriteSheet.DEBRIS.at(1,5);
+    public static final TextureRegion DEBRIS_FINAL = SpriteSheet.DEBRIS.at(1,5);
    
 
 
@@ -74,6 +79,15 @@ public class Textures {
     public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 1, 1, 1); 
     public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
 
+    public static final TextureRegion MAIS_INIT = SpriteSheet.CROPS.at(12, 29, 1, 1); 
+    public static final TextureRegion MAIS_GROWING = SpriteSheet.CROPS.at(14, 29, 1, 1); 
+    public static final TextureRegion MAIS_MATURING = SpriteSheet.CROPS.at(18, 29, 1, 1); 
+    public static final TextureRegion MAIS_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
+
+    public static final TextureRegion LEMON_INIT = SpriteSheet.CROPS.at(14, 22, 1, 1); 
+    public static final TextureRegion LEMON_GROWING = SpriteSheet.CROPS.at(16, 22, 1, 1); 
+    public static final TextureRegion LEMON_MATURING = SpriteSheet.CROPS.at(18, 22, 1, 1); 
+    public static final TextureRegion LEMON_MATURED = SpriteSheet.CROPS.at(20, 22, 2, 1); 
 
 
 
@@ -87,13 +101,30 @@ public class Textures {
         CORN_MATURED
     };
 
+    // The crop array which will greatly increase scalability and clean code :)
+    public static final TextureRegion[] MAIS_STAGES = {
+        MAIS_INIT, // Index 0 => Will be the just planted crop
+        MAIS_GROWING ,
+        MAIS_MATURING,
+        MAIS_MATURED
+    };
+
+    // The crop array which will greatly increase scalability and clean code :)
+    public static final TextureRegion[] LEMON_STAGES = {
+        LEMON_INIT, // Index 0 => Will be the just planted crop
+        LEMON_GROWING ,
+        LEMON_MATURING,
+        LEMON_MATURED
+    };
+
 
 
     // Textures for the HUD
     public static final TextureRegion CLOCK = SpriteSheet.CLOCK.at(1,1);
 
     // big objects for style
-    public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(2, 1, 2, 1); 
+    public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 
+    public static final TextureRegion HOUSE = SpriteSheet.HARVEST.at(2, 7);
 
 
 

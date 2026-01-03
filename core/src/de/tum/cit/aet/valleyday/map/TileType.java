@@ -19,7 +19,11 @@ public enum TileType {
         WALL(false, Textures.WALL),
         CHEST(false, Textures.CHEST),
         TREE(false, Textures.TREE),
-        ICE(true, Textures.ICE);
+        ICE(true, Textures.ICE),
+        WATER(true, Textures.WATER),
+        SAND(true, Textures.SAND),
+        HOUSE(true, Textures.HOUSE),
+        SNOW(true, Textures.SNOW);
         
 
 

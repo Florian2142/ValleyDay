@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import de.tum.cit.aet.valleyday.ValleyDayGame;
@@ -82,6 +83,8 @@ public class GameMap {
     
     /** Soils  */
     private final Tiles[][] soils;
+    /** Decoration */
+    private final Obstacle[][] bigUnpassableObjects;     // For decoration 
 
     /** Even though the map is layer based we add a map containing the active Crops for better managing of growth */
     private final List<Crop> activeCrops = new ArrayList<>();
@@ -198,11 +201,12 @@ public class GameMap {
 
         // 2.0 Build/Define tthe other layers NON-Default
 
-        this.obstacles = new Obstacle[width + 1][height + 1];                /** Initialize the Obstacle */
-        this.hiddenObjects = new hiddenObject[width + 1][height + 1];        /** Initialize the hiddenObjects */
-        this.crops         = new Crop[width + 1][height + 1];               /** Intialize the Crops */
-        this.cutsceneTriggers = new boolean[width + 1][height + 1];          /** For cutscenes later */
-        this.soils             = new Tiles[width + 1][height + 1];
+        this.obstacles              = new Obstacle[width + 1][height + 1];                /** Initialize the Obstacle */
+        this.hiddenObjects          = new hiddenObject[width + 1][height + 1];        /** Initialize the hiddenObjects */
+        this.crops                  = new Crop[width + 1][height + 1];               /** Intialize the Crops */
+        this.cutsceneTriggers       = new boolean[width + 1][height + 1];          /** For cutscenes later */
+        this.soils                  = new Tiles[width + 1][height + 1];
+        this.bigUnpassableObjects   = new Obstacle[width + 1][height + 1];
 
         for (String tile : fillTiles.keySet()) {
 
@@ -257,6 +261,30 @@ public class GameMap {
                     break;
                 case 12:
                     this.activeChickens.add(new Chicken(world, r, c));
+                    break;
+                case 13:
+                    // Make a TREE
+                    this.bigUnpassableObjects[r][c] = new Trees(world, r, c);
+                    break;
+                // case 14: 
+                //     // Water
+                //     this.bigObjects[r][c] = new Tiles(r, c,TileType.WATER);
+                //     break;
+                // case 15:
+                //     // sand
+                //     this.bigObjects[r][c] = new Tiles(r, c,TileType.SAND);
+                //     break;
+                // case 16: 
+                //     // snow
+                //     this.bigObjects[r][c] = new Tiles(r, c,TileType.SNOW);
+                //     break;
+                case 17:
+                    // House
+                    // this.bigUnpassableObjects[r][c] = new Tiles(r, c,TileType.HOUSE);
+                    break;
+                case 18:
+                    // other
+                    
 
                 default: // Dirt -> Already set by default
 
@@ -276,9 +304,6 @@ public class GameMap {
             int y = (int) currDebris.getY();
 
             this.hiddenObjects[x][y] = new Exit(x, y, this); // put the new Exit at random Location
-
-            System.out.println("Print X: " + x);
-            System.out.println("Print Y: " + y);
         }
 
 
@@ -437,6 +462,19 @@ public class GameMap {
     public Obstacle getObstacle(int x, int y) {
         if (inBound(x, y)) {
             return obstacles[x][y];
+            }
+        return null;
+    }
+
+    /**
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return  the ground at x,y to get the basic map tiles for drawing
+     */
+    public Obstacle getBigObject(int x, int y) {
+        if (inBound(x, y)) {
+            return bigUnpassableObjects[x][y];
             }
         return null;
     }

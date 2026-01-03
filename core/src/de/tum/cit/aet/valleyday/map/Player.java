@@ -52,19 +52,18 @@ public class Player extends Entity implements Drawable {
     private int fertilizerCount = 0;
     private int wateringCanCount = 0;
 
+    /** Method to switch through the options */
+
+    private int option = 0;
+
+    private CropType currentCropType = CropType.CORN;
+
+
     /* Methods to update the counts */
     public void addCrops() {
         harvestedCrops++;
     }
-    /* public void addShovel() {
-        shovelCount++;
-    }
-    public void addFertilizer() {
-        fertilizerCount++;
-    }
-    public void addWateringCan() {
-        wateringCanCount++;
-    } */
+    
 
     
 
@@ -220,6 +219,8 @@ public class Player extends Entity implements Drawable {
             chopSoundCooldown -= frameTime;
         }
 
+        
+
         if (Gdx.input.isKeyPressed(Keys.D)) {
             /*** TESTING REMOVE LATER */
             System.out.println("THE CURRENT X COORDINATE IS: " + currX);
@@ -237,6 +238,21 @@ public class Player extends Entity implements Drawable {
 
         }
 
+
+        if (Gdx.input.isKeyJustPressed(Keys.R)) {
+
+
+            CropType[] types = CropType.values();
+            
+            option++;
+
+            option = option % types.length; // Wrapper -> Circular Array
+
+            currentCropType = CropType.values()[option];
+
+            System.out.println("Switched to: " + currentCropType);
+
+        }
 
         /**
          * Function for Harvesting the Crops and interacting with them
@@ -258,7 +274,7 @@ public class Player extends Entity implements Drawable {
                  * FOR THE MVP we stick with just a simple one!
                  */
                 System.out.println("COULD ENTER THE SOIL");
-                if (map.plantCrop(offsetX, offsetY, CropType.CORN) != true) {
+                if (map.plantCrop(offsetX, offsetY, currentCropType) != true) {
                     System.out.println("COULD ENTER THE PLANT CROP");
                     // now we have to check if player can harvest the current crop if the SOIL isEmpty() != true
                     Crop currentCrop = map.getCrop(offsetX, offsetY);

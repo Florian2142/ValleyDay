@@ -33,12 +33,17 @@ public enum SpriteSheet {
     // BASICS("basics.png", 303, 132);
     ITEMS("Items.png", 16,16),
 
-    // Outside stuff
-    OUTSIDE("crops.png", 6, 16),
+    // BASICS("basics.png", 303, 132);
+    DEBRIS("Branches.png", 16,16),
+
     // HUD STUFF
     CLOCK("clock.png", 16, 16),
     // Items
     TOOLS("tools.png", 16,16),
+    // HARVESTSTUFF
+    HARVEST("Harvest.png", 16,16),
+    // HARVESTSTUFF
+    OUTSIDE("Outside.png", 16,16),
 
     // CROPS
     CROPS("crops.png", 32, 32);

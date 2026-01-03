@@ -240,6 +240,17 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, drawable);
                 }
 
+
+                for (int y = map.getHeight(); y >= 0; y--) {
+                    for (int x = 0; x <= map.getWidth(); x++) {
+                    // Same for bigObjects
+                    Drawable bigObjects = map.getBigObject(x, y);
+                    if (bigObjects != null) {
+                        draw(spriteBatch, bigObjects);
+                        }
+                    }
+                }
+
     
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
