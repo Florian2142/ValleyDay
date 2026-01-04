@@ -261,6 +261,7 @@ public class GameMap {
                     break;
                 case 12:
                     this.activeChickens.add(new Chicken(world, r, c));
+
                     break;
                 case 13:
                     // Make a TREE

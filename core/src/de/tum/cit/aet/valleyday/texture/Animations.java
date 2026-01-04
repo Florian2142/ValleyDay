@@ -76,6 +76,14 @@ public class Animations {
             SpriteSheet.FARM_THINGS.at(1,5)
     );
 
+    /** Animation for eating Chicken */
+    public static final Animation<TextureRegion> CHICKEN_EATING = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.at(2,5),
+        SpriteSheet.FARM_THINGS.at(2,6),
+        SpriteSheet.FARM_THINGS.at(2,5)
+        
+    );
+
 
 
     /** Harvesting Animations */

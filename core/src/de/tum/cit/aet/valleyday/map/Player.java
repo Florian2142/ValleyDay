@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.aet.valleyday.texture.Animations;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.audio.SoundEffect;
+import de.tum.cit.aet.valleyday.screen.GameScreen;
 import de.tum.cit.aet.valleyday.screen.Hud;
 
 
@@ -66,6 +67,7 @@ public class Player extends Entity implements Drawable {
     
 
     
+    
 
     /* Nice cozy soundeffects */
     private float chopSoundCooldown = 0f;
@@ -90,6 +92,7 @@ public class Player extends Entity implements Drawable {
 
     private float harvestCooloff = 0;
     private float harvestingAnimationCooloff = 0;
+    private float exitCooloff = 120f;
 
     private int harvesting ; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
@@ -330,9 +333,10 @@ public class Player extends Entity implements Drawable {
              * game 
              * MUST FULLFILL ALL THE WINNING CONDITIONS */
             else if (currHiddenObject instanceof Exit) {
-                if (isWinning()) {
+                if (isWinning() && exitCooloff <= 0) {
                     // leave the game
-                    map.getGame().goToMenu();
+                    ((GameScreen) map.getGame().getScreen()).onVictory(); // display the ExitMenu
+                    exitCooloff = 120;                    
                 }
                 else {
                     // not yet finished will display the message on screen
@@ -353,6 +357,7 @@ public class Player extends Entity implements Drawable {
         messageCoolDown--;
         harvestCooloff--;
         harvestingAnimationCooloff--;
+        exitCooloff--;
 
 
 

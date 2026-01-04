@@ -14,8 +14,10 @@ import de.tum.cit.aet.valleyday.texture.Animations;
 public class Chicken extends Entity {
 
     private boolean moving = false;
+    private boolean isEating = false;
 
     private float moveTimer = 0f;
+    private float eatTimer = 0f;
     private float timeToNextMove = 2.0f; // Chicken thinks every 2 seconds
 
     private float yVelocity = 0;
@@ -94,13 +96,18 @@ public class Chicken extends Entity {
         }
 
         // Make the chicken eat the crop
+        if (map.getCrop(currX, currY) != null) {
+            eatTimer = 30f;
+            this.isEating = true;
+        }
         map.eatCrop(currX, currY);
 
         // decrement the time in order for brainpower restorage -> Move requires loads of energy
         timeToNextMove -= frameTime;
+        eatTimer--;
 
 
-
+        if (eatTimer <= 0) {isEating = false;} // reset the eating animation
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
@@ -111,7 +118,11 @@ public class Chicken extends Entity {
         // Get the frame of the walk down animation that corresponds to the current time.
     
         // if the player is not harvesting he can move
-        if (isMoving()) {
+        if (isEating()) {
+            return Animations.CHICKEN_EATING.getKeyFrame(this.eatTimer, false);
+
+        }
+        else if (isMoving()) {
             return  Animations.CHICKEN_WALKING.getKeyFrame(this.moveTimer, true);
         }
         else {
@@ -126,6 +137,13 @@ public class Chicken extends Entity {
     public boolean isMoving() {
         return moving;
     }
+
+
+
+    public boolean isEating() {
+        return isEating;
+    }
+
 
 
     
