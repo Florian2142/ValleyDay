@@ -371,4 +371,9 @@ public class GameScreen implements Screen {
         game.goToMenu();
     }
 
+    /** IF touch the chicken */
+    public void gameOver() {
+        game.goToMenu();
+    }
+
 }
