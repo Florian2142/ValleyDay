@@ -1,0 +1,11 @@
+Animated Clock Sprite
+Originally created for a game jam game but never ended up using it
+
+More information
+Status	Released
+Category	Assets
+Rating	
+Rated 4.5 out of 5 stars
+(2total ratings)
+Author	AlltheturtlesGames
+Tags	2D, clock, No AI, Pixel Art, Sprites

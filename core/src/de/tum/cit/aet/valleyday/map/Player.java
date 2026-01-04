@@ -53,6 +53,19 @@ public class Player extends Entity implements Drawable {
     private int fertilizerCount = 0;
     private int wateringCanCount = 0;
 
+    /* Variables to store the state of wether the player is scared and wether the game is over */
+    private float gameOverTimer = 1.0f;
+    private boolean isScared = false;
+    private float escapeX, escapeY;
+
+    /* Handles the startled state */
+    public void startle(float chickenOnTileX, float chickenOnTileY) {
+        this.isScared = true;
+
+        this.escapeX = this.getX() - chickenOnTileX;
+        this.escapeY = this.getY() - chickenOnTileY;
+    }
+
     /** Method to switch through the options */
 
     private int option = 0;
@@ -135,6 +148,14 @@ public class Player extends Entity implements Drawable {
         /**
          * we define a constant speed here
          */
+
+         if (isScared) {
+            gameOverTimer -= frameTime;
+            float moveX = escapeX * frameTime;
+            float moveY = escapeY * frameTime;
+
+            
+        }
 
         float speed = 5f;
 
@@ -312,6 +333,9 @@ public class Player extends Entity implements Drawable {
 
         }
         
+        if (Gdx.input.isKeyJustPressed(Keys.S)) {
+           
+        }
 
 
         /**

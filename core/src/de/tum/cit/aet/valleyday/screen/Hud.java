@@ -6,25 +6,28 @@ import de.tum.cit.aet.valleyday.map.Shovel;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.texture.Textures;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture3D;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
-
-
+import com.badlogic.gdx.scenes.scene2d.Actor;
 /** Import the libraries for 2D Tables */
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
@@ -50,6 +53,7 @@ public class Hud {
     /** Hud needs to know the player */
     private Player player;
     private ShapeRenderer shapeRenderer;
+    private GameScreen gameScreen;
     private float x;
     private float y;
     float hudWidth;
@@ -70,22 +74,37 @@ public class Hud {
     Image shovelIcon  = new Image(Textures.SHOVEL);
     Image wateringCan = new Image(Textures.WATERING_CAN);
     Image fertilizer  = new Image(Textures.FERTILIZER);
-    Image clock       = new Image(Textures.CLOCK);
+    Image clock       = new Image(Textures.CLOCK1);
     Image crop        = new Image(Textures.CORN_MATURING);
+
+    /** For the clock ticking */
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable clockHigh = (com.badlogic.gdx.scenes.scene2d.utils.Drawable) new TextureRegionDrawable(Textures.CLOCK1);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable clock1    = (com.badlogic.gdx.scenes.scene2d.utils.Drawable) new TextureRegionDrawable(Textures.CLOCK2);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable clock2    = (com.badlogic.gdx.scenes.scene2d.utils.Drawable) new TextureRegionDrawable(Textures.CLOCK3);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable clock3    = (com.badlogic.gdx.scenes.scene2d.utils.Drawable) new TextureRegionDrawable(Textures.CLOCK4);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable clockLow  = (com.badlogic.gdx.scenes.scene2d.utils.Drawable) new TextureRegionDrawable(Textures.CLOCK5);
 
     // Cooloff for Displaying messages
     int fertilizerCooloff;
     int wateringCanCooloff;
+    int clockTicking = 240;
 
 
+    /** To access the HUD via Gamescreen for Pausing and resuming option adding global Variables */
+    private Table pauseTable;
+    private Table exitTable;
 
-    public Hud(SpriteBatch spriteBatch, BitmapFont font, Player player) {
+    private Skin skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json"));
+
+
+    public Hud(SpriteBatch spriteBatch, BitmapFont font, Player player, GameScreen gameScreen) {
 
         this.spriteBatch = spriteBatch;
         this.font = font;
         this.camera = new OrthographicCamera();
         this.stage = new Stage(new ScreenViewport(), spriteBatch);
         this.player = player;
+        this.gameScreen = gameScreen;
         this.shapeRenderer = new ShapeRenderer();
         //Define global settings 
         hudWidth = 220;
@@ -111,18 +130,36 @@ public class Hud {
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, com.badlogic.gdx.graphics.Color.WHITE);
 
 
-        Table rootTable = new Table();
-        Table toolsTable = new Table(); // Nested tools table
+        Table rootTable   = new Table();
+        Table borderTable = new Table(); // Only for nice Border of the table
+        Table toolsTable  = new Table(); // Nested tools table
+
+        // toolsTable.setDebug(true); // Uncomment for nice Debugging
+      
         rootTable.setFillParent(true);
-        rootTable.add(toolsTable).expand().top().left();
+        rootTable.add(borderTable).expand().top().left(); // Also restrict the size to avoid weird oversize
+        rootTable.padTop(margin);
+        rootTable.padLeft(margin);
+
+        float marginBorder = 5f;
+
+        borderTable.padLeft(marginBorder);
+        borderTable.padRight(marginBorder);
+        borderTable.padTop(marginBorder);
+        borderTable.padBottom(marginBorder);
+
+        borderTable.add(toolsTable);
+        //borderTable.padLeft(margin); // align the table nicely
+
         toolsTable.pad(margin);
+   
         stage.addActor(rootTable);
 
        
         // Make the Time Column
         timeLabel = new Label("", labelStyle);
-        toolsTable.add(clock).size(30, 30).padRight(10);
-        toolsTable.add(timeLabel).left(); 
+        toolsTable.add(clock).size(30, 30).padRight(20);
+        toolsTable.add(timeLabel).left().size(35, 25); 
         toolsTable.row();                
 
         // Make the Crops Column
@@ -135,36 +172,160 @@ public class Hud {
         // Make extra Table only for the Icons
         Table toolsGrid = new Table();
         
-        toolsGrid.add(fertilizer).size(30, 30).padLeft(5);
-        toolsGrid.add(wateringCan).size(30, 30).padLeft(5);
-        toolsGrid.add(shovelIcon).size(30, 30);
+        toolsGrid.add(fertilizer).size(30, 30).padLeft(10);
+        toolsGrid.add(wateringCan).size(30, 30).padLeft(10);
+        toolsGrid.add(shovelIcon).size(30, 30).padLeft(10);
         
 
         // We need to add this one the the inner table
         toolsTable.add(toolsGrid).colspan(2).left().padTop(10);
         toolsTable.row();
 
+        Table exitShowTable = new Table();
+
 
         exitLabel = new Label("EXIT", labelStyle);
-        toolsTable.add(exitLabel).colspan(2).center().padTop(20);
+        exitShowTable.add(exitLabel).colspan(3).center().padTop(10).padLeft(10);
+
+        toolsTable.add(exitShowTable).center().colspan(2);
+
+        // Texture branchTexture = new Texture(Gdx.files.internal("assets/texture/Wood/885.jpg"));
+
+        // TextureRegionDrawable branchDrawable = new TextureRegionDrawable(new TextureRegion(branchTexture));
+
+        // borderTable.setBackground(branchDrawable);
+
+        
+
+        /** We reuse the same logic to make a Black Border of the Table */
+        Pixmap blackBorder = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        blackBorder.setColor(new Color(0.26f, 0.16f, 0.06f, 1f)); 
+        blackBorder.fill();
+        // Create a Texture from that pixel
+        Texture blackTexture = new Texture(blackBorder);
+        // Create a Drawable that the Table can use
+        TextureRegionDrawable blackBorders = new TextureRegionDrawable(new TextureRegion(blackTexture));
+        // Clean up the pixmap 
+        blackBorder.dispose();
+        // Set the background of the table
+        borderTable.setBackground(blackBorders);
 
         /** CURRENTLY ONLY TESTING CODE -> NICE BACKGROUND WILL FOLLOW */
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(new Color(0.5f, 0.3f, 0.1f, 0.8f)); 
+        pixmap.setColor(new Color(0.82f, 0.57f, 0.20f, 1f)); 
+        // comments for filling
         pixmap.fill();
-
         // Create a Texture from that pixel
         Texture solidTexture = new Texture(pixmap);
-
         // Create a Drawable that the Table can use
         TextureRegionDrawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(solidTexture));
-
         // Clean up the pixmap 
         pixmap.dispose();
-
         // Set the background of the table
         toolsTable.setBackground(backgroundDrawable);
+
+        /**
+         * 
+         * Make the Pause Table for pausing and resuming options
+         * 
+         */
+
+        this.pauseTable = new Table();
+
+        pauseTable.setFillParent(true); // Make the table fill the stage
+        stage.addActor(pauseTable); // Add the table to the stage
+
+        // Add a label as a title
+        pauseTable.add(new Label("Welcome warrior, take a Rest!", this.skin)).padBottom(40).row();
+
+        // Create and add a button to go to the game screen
+        TextButton resumeButtom     = new TextButton("Resume the game.", this.skin);
+        TextButton settingsButton   = new TextButton("Settings.", this.skin);
+        TextButton scaryButton      = new TextButton("Become a lost warrior!", this.skin);
+
+
+        pauseTable.add(resumeButtom).width(425).row();
+        pauseTable.row();
+        pauseTable.add(settingsButton).width(425).row();
+        pauseTable.row();
+        pauseTable.add(scaryButton).width(425).row();
         
+        pauseTable.setVisible(false); // Set the pauseTable to False by Default
+
+        /**
+         * We have to define several EventListener like HTML
+         */
+
+        resumeButtom.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameScreen.resume();
+            }
+        });
+
+        scaryButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameScreen.scared();
+            }
+        });
+
+
+
+        /**
+         * 
+         * Make EXIT and WINNING BUTTONS
+         * => Will be displayed if the Player fullfills the Crop quota
+         */
+
+        this.exitTable = new Table();
+
+        exitTable.setFillParent(true); // Make the table fill the stage
+        stage.addActor(exitTable); // Add the table to the stage
+
+        // Add a label as a title
+        exitTable.add(new Label("YOU WON THE GAME, what next", this.skin)).padBottom(40).row();
+
+        // Create and add a button to go to the game screen
+        TextButton winningButtom       = new TextButton("Keep Farming!", this.skin);
+        TextButton continueButton      = new TextButton("Enjoy the Harvest and make Beer!", this.skin);
+
+
+        exitTable.add(winningButtom).width(650).row();
+        exitTable.row();
+        exitTable.add(continueButton).width(650).row();
+        exitTable.row();
+       
+        exitTable.setVisible(false); // Set the pauseTable to False by Default
+
+        /**
+         * We have to define several EventListener like HTML
+         */
+
+        winningButtom.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                continueFarming();
+                gameScreen.resume();
+                
+            }
+        });
+
+        continueButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameScreen.scared();
+            }
+        });
+
+        exitTable.setVisible(false); // By default set to false
+
+
+
+        // /** Debugging -> uncomment if needed */
+        // toolsTable.setDebug(true); // Uncomment for nice Debugging
+        // exitTable.setDebug(true); // Uncomment for nice Debugging
+        // pauseTable.setDebug(true); // Uncomment for nice Debugging
     }
 
     /**
@@ -177,13 +338,33 @@ public class Hud {
         shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 0.5f);
+        shapeRenderer.setColor(0, 0, 0, 0.0f);
         shapeRenderer.rect(x, y, hudWidth, hudHeight);
         shapeRenderer.end();
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
         // Start drawing
         spriteBatch.begin();
+
+
+        // Draw the HUD elements
+        font.draw(spriteBatch, "Esc to Pause!",  Gdx.graphics.getWidth() - 250, 30);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         int minutes = (int) timeRemaining / 60;
         int seconds = (int) timeRemaining % 60;
@@ -229,34 +410,37 @@ public class Hud {
 
 
 
+        /** Need to reset only after time passes */
+        if (clockTicking <= 0) {
+            clockTicking = 120; 
+        }
+
+        if (clockTicking <= 0) {
+            
+            clock.setDrawable(clockLow);
+        } 
+        else if (clockTicking <= 30) {
+            
+            clock.setDrawable(clock3);
+        } 
+        else if (clockTicking <= 60) {
+            clock.setDrawable(clock2);
+        } 
+        else if (clockTicking <= 90) {
+            
+            clock.setDrawable(clock1);
+        }
+        else {
+            clock.setDrawable(clockHigh);
+        }
+        
+
+
+
         fertilizerCooloff--;
         wateringCanCooloff--;
-
-
-        // Draw the HUD elements
-        // font.draw(spriteBatch, "Press Esc to Pause!", 10, Gdx.graphics.getHeight() -
-        // 10);
-        // message for the Time left
-        // font.draw(spriteBatch, "Time left: " + (int) timeRemaining / 60 + ":" + (int) timeRemaining % 60, 10,
-        //         Gdx.graphics.getHeight() - 10);
-        // // Displayes the harvested crops in the left hand corner.
-        // font.draw(spriteBatch, "Harvested crops: " + player.getCurrentHarvest() + "/" + player.getHarvesting(), 10,
-        //         Gdx.graphics.getHeight() - 40);
-        // // Displayes the tools.
-        // font.draw(spriteBatch, "Tools: ", 10, Gdx.graphics.getHeight() - 80);
-        // /** Graphics for HUD  */
-
-        // draw(spriteBatch, Textures.SHOVEL, 80, 80, 25, Gdx.graphics.getHeight() - 150);
-        // // Displays the EXIT option.
-        // // At the start the Exit font color is displayed red.
-        // // If the the harvesting Quota is reached, font color is changed to green.
-        // if (player.isWinning()) {
-        //     font.setColor(0, 255, 0, 0.5f);
-        // } else {
-        //     font.setColor(255, 0, 0, 0.5f);
-        // }
-        // font.draw(spriteBatch, "EXIT ", 25, Gdx.graphics.getHeight() - 120);
-        // font.setColor(255, 255, 255, 0.5f);
+        clockTicking--;
+        
 
         /** Display message for any interactions with hidden items */
         if (player.messageCooldown() > 0) {
@@ -320,4 +504,38 @@ public class Hud {
         spriteBatch.draw(texture, drawX, drawY, drawWidth, drawHeight);
     }
 
+
+    /**
+     * Will be called by the GameScreen when the user presses ESC -> i.e. Pauses the Game
+     * 
+     * Also triggers the inputProcessor for the interactive pauseButtons 
+     * 
+     * @param isPaused
+     */
+    public void setPaused(boolean isPaused) {
+        this.pauseTable.setVisible(isPaused);
+        if (isPaused) {
+            Gdx.input.setInputProcessor(stage);
+        }
+        else {
+            Gdx.input.setInputProcessor(null);
+        } 
+    }
+
+
+    public void showVictoryMenu() {
+        this.exitTable.setVisible(true);
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    public void continueFarming() {
+        this.exitTable.setVisible(false);
+        Gdx.input.setInputProcessor(null);
+    }
+
+    
+
+
 }
+
+

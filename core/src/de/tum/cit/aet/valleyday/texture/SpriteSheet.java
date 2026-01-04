@@ -37,7 +37,11 @@ public enum SpriteSheet {
     DEBRIS("Branches.png", 16,16),
 
     // HUD STUFF
-    CLOCK("clock.png", 16, 16),
+    CLOCK1("clock/clock0.png", 16,16),
+    CLOCK2("clock/clock1.png", 16,16),
+    CLOCK3("clock/clock2.png", 16,16),
+    CLOCK4("clock/clock3.png", 16,16),
+    CLOCK5("clock/clock4.png", 16,16),
     // Items
     TOOLS("tools.png", 16,16),
     // HARVESTSTUFF

@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Textures {
     
     public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
-    public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 5, 1, 1); 
+    public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 2, 1, 1); 
     public static final TextureRegion ICE     = SpriteSheet.BASIC_TILES.at(3, 6);
     public static final TextureRegion GRAS    = SpriteSheet.BASIC_TILES.at(2, 1);
     public static final TextureRegion WALL    = SpriteSheet.BASIC_TILES.at(3, 1);
@@ -79,15 +79,20 @@ public class Textures {
     public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 1, 1, 1); 
     public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
 
-    public static final TextureRegion MAIS_INIT = SpriteSheet.CROPS.at(12, 29, 1, 1); 
-    public static final TextureRegion MAIS_GROWING = SpriteSheet.CROPS.at(14, 29, 1, 1); 
-    public static final TextureRegion MAIS_MATURING = SpriteSheet.CROPS.at(18, 29, 1, 1); 
+    public static final TextureRegion MAIS_INIT = SpriteSheet.CROPS.at(12, 31, 1, 1); 
+    public static final TextureRegion MAIS_GROWING = SpriteSheet.CROPS.at(14, 31, 1, 1); 
+    public static final TextureRegion MAIS_MATURING = SpriteSheet.CROPS.at(18, 31, 1, 1); 
     public static final TextureRegion MAIS_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
 
-    public static final TextureRegion LEMON_INIT = SpriteSheet.CROPS.at(14, 22, 1, 1); 
-    public static final TextureRegion LEMON_GROWING = SpriteSheet.CROPS.at(16, 22, 1, 1); 
-    public static final TextureRegion LEMON_MATURING = SpriteSheet.CROPS.at(18, 22, 1, 1); 
-    public static final TextureRegion LEMON_MATURED = SpriteSheet.CROPS.at(20, 22, 2, 1); 
+    public static final TextureRegion LEMON_INIT = SpriteSheet.CROPS.at(2, 10, 1, 1); 
+    public static final TextureRegion LEMON_GROWING = SpriteSheet.CROPS.at(4, 10, 1, 1); 
+    public static final TextureRegion LEMON_MATURING = SpriteSheet.CROPS.at(8, 10, 1, 1); 
+    public static final TextureRegion LEMON_MATURED = SpriteSheet.CROPS.at(11, 10, 1, 1); 
+
+    public static final TextureRegion SELLERIE_INIT     = SpriteSheet.CROPS.at(2, 12, 1, 1); 
+    public static final TextureRegion SELLERIE_GROWING  = SpriteSheet.CROPS.at(4, 12, 1, 1); 
+    public static final TextureRegion SELLERIE_MATURING = SpriteSheet.CROPS.at(8, 12, 1, 1); 
+    public static final TextureRegion SELLERIE_MATURED  = SpriteSheet.CROPS.at(11, 12, 1, 1); 
 
 
 
@@ -117,10 +122,22 @@ public class Textures {
         LEMON_MATURED
     };
 
+    // The crop array which will greatly increase scalability and clean code :)
+    public static final TextureRegion[] SELLERIE_STAGES = {
+        SELLERIE_INIT, // Index 0 => Will be the just planted crop
+        SELLERIE_GROWING ,
+        SELLERIE_MATURING,
+        SELLERIE_MATURED
+    };
+
 
 
     // Textures for the HUD
-    public static final TextureRegion CLOCK = SpriteSheet.CLOCK.at(1,1);
+    public static final TextureRegion CLOCK1 = SpriteSheet.CLOCK1.at(1,1, 3 ,3);
+    public static final TextureRegion CLOCK2 = SpriteSheet.CLOCK2.at(1,1,3 ,3);
+    public static final TextureRegion CLOCK3 = SpriteSheet.CLOCK3.at(1,1,3 ,3);
+    public static final TextureRegion CLOCK4 = SpriteSheet.CLOCK4.at(1,1,3 ,3);
+    public static final TextureRegion CLOCK5 = SpriteSheet.CLOCK5.at(1,1,3 ,3);
 
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 

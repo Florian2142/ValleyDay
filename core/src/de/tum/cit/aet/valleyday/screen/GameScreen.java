@@ -50,6 +50,10 @@ public class GameScreen implements Screen {
     private final OrthographicCamera mapCamera;
 
 
+    /** Game options */
+    private boolean isPaused = false;
+
+
     /** Stuff for the Time runner */
     private float remainingTime;
     private int tick = 60;
@@ -63,7 +67,7 @@ public class GameScreen implements Screen {
         this.game = game;
         this.spriteBatch = game.getSpriteBatch();
         this.map = game.getMap();
-        this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), map.getPlayer());
+        this.hud = new Hud(spriteBatch, game.getSkin().getFont("font"), map.getPlayer(), this);
         // Create and configure the camera for the game view
         this.mapCamera = new OrthographicCamera();
         this.mapCamera.setToOrtho(false);
@@ -82,9 +86,12 @@ public class GameScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.goToMenu();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !isPaused) {
+            pause();
         }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && isPaused){
+            resume();
+        }   
         
         // Clear the previous frame from the screen, or else the picture smears
         ScreenUtils.clear(Color.BLACK);
@@ -92,31 +99,51 @@ public class GameScreen implements Screen {
         // Cap frame time to 250ms to prevent spiral of death
         float frameTime = Math.min(deltaTime, 0.250f);
         
-        // Update the map state
-        map.tick(frameTime);
+        if (isPaused) {
+            // Simply do nothing
+        }
+        else {
+                // Update the map state
+            map.tick(frameTime);
+            
+            // Update the camera
+            updateCamera();
         
-        // Update the camera
-        updateCamera();
+            
+            // Render the HUD on the screen
+            /** Every 60 frames goes a second */
         
-        // Render the map on the screen
-        renderMap();
-        
-        // Render the HUD on the screen
-        /** Every 60 frames goes a second */
-        if (tick == 0) {
-            remainingTime--;
-            tick = 60;
+            if (tick == 0) {
+                remainingTime--;
+                tick = 60;
+            }
+
+            
+
+
+
+            
+
+
+            /** tick counter for various activities */
+            
+            tick--;
         }
 
-        //After every start, the remaining time is displayed.
-        hud.render(this.remainingTime);
-        //If time is over, game screen appears.
-        if (remainingTime <= 0d) {game.goToMenu();}
+        // Render the map on the screen
+            renderMap();
+            //After every start, the remaining time is displayed.
+            hud.render(this.remainingTime);
+            
+            //If time is over, game screen appears.
+            if (remainingTime <= 0d) {game.goToMenu();}
+
+        }
 
 
-        /** tick counter for various activities */
-        tick--;
-    }
+        
+    
+    
     
     /**
      * Updates the camera to follow the player but only 80% viewport (stated in the task)
@@ -305,11 +332,23 @@ public class GameScreen implements Screen {
     // Unused methods from the Screen interface
     @Override
     public void pause() {
+        this.isPaused = true;
+        hud.setPaused(isPaused);
     }
 
     @Override
     public void resume() {
+        this.isPaused = false;
+        hud.setPaused(isPaused);
+        
     }
+
+    public void onVictory() {
+        this.isPaused = true;
+        hud.showVictoryMenu();
+    }
+
+    
 
     @Override
     public void show() {
@@ -322,6 +361,14 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+    }
+
+    /**
+     * Gets called when pushing on button quit from the HUD pausescreen
+     */
+    public void scared() {
+        Gdx.input.setInputProcessor(null);
+        game.goToMenu();
     }
 
 }
