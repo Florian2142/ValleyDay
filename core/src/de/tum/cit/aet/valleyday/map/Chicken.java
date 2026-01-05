@@ -5,6 +5,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 
 import de.tum.cit.aet.valleyday.texture.Animations;
+import de.tum.cit.aet.valleyday.map.Entity.Direction;
+import de.tum.cit.aet.valleyday.pathfinding.*;
+
+import java.util.*;
 
 
 
@@ -22,6 +26,19 @@ public class Chicken extends Entity {
 
     private float yVelocity = 0;
     private float xVelocity = 0;
+
+    /** GPS to next Crop */
+    private List<GridNode> highwayToHeaven = new LinkedList<>();
+
+    private GridNode start;
+    private GridNode goal;
+    private GridNode nextMove;
+
+    private int offsetX;
+    private int offsetY;
+
+    private Crop goalCrop;
+
 
     
     public Chicken(World world, float x, float y) {
@@ -49,51 +66,106 @@ public class Chicken extends Entity {
 
         if (timeToNextMove <= 0) {
 
-            // lets take a random number TESTING
-            int randomDir = MathUtils.random(0 , 4);
+            System.out.println("Well this works potenically");
 
-            // SEt the current velocity to 0
-            xVelocity = 0;
-            yVelocity = 0;
 
-            moving = true;
+            if (highwayToHeaven == null || highwayToHeaven.size() == 0) {
 
-            switch (randomDir) {
-                case 0: // UP
-                    currDirection = Direction.UP;
-                    yVelocity++;
-                    break;
-                case 1: // DOWN ,
-                    currDirection = Direction.DOWN;
-                    yVelocity--;
-                    break;
-                case 2: // LEFT 
-                    currDirection = Direction.LEFT;
-                    xVelocity--;
-                    break;
-                case 3: // RIGHT
-                    currDirection = Direction.RIGHT;
-                    xVelocity++;
-                    break;
-                default: 
-                    // do nothing
-                    moving = false;
-                    break;
+                System.out.println("Currently its null");
+
+                goalCrop = map.randomCrop();
+
+                if (goalCrop != null) {
+
+                    start = new GridNode(currX, currY, 0, 0, null);
+                    goal  = new GridNode((int) goalCrop.getX(), (int) goalCrop.getY(), 0, 0, null);
+
+                    highwayToHeaven = Gps.findPath(start, goal, map);
+
+                    if (highwayToHeaven != null) {
+                        System.out.println("Path found! Steps: " + highwayToHeaven.size());
+                    }
+                }
+                else {
+                    highwayToHeaven = null;
+                }
+
+                
+
+                
+            }
+
+            if (highwayToHeaven == null || highwayToHeaven.size() == 0) {
+                // lets take a random number TESTING
+                int randomDir = MathUtils.random(0 , 4);
+
+                // Set the current velocity to 0
+                xVelocity = 0;
+                yVelocity = 0;
+
+                moving = true;
+
+                switch (randomDir) {
+                    case 0: // UP
+                        currDirection = Direction.UP;
+                        yVelocity++;
+                        break;
+                    case 1: // DOWN ,
+                        currDirection = Direction.DOWN;
+                        yVelocity--;
+                        break;
+                    case 2: // LEFT 
+                        currDirection = Direction.LEFT;
+                        xVelocity--;
+                        break;
+                    case 3: // RIGHT
+                        currDirection = Direction.RIGHT;
+                        xVelocity++;
+                        break;
+                    default: 
+                        // do nothing
+                        moving = false;
+                        break;
             
-            }       
-
-            
-
-
-
-
-
+                    }       
+                }
 
             // WE NEED TO RESET THE TIMER for next Brainmove
             timeToNextMove = 2.0f;
 
             
         }
+
+        /** The smart movement of the chicken */
+
+        if (highwayToHeaven != null && highwayToHeaven.size() > 0) {
+
+                nextMove = highwayToHeaven.get(0);
+
+                System.out.println("The current TileX which is better: " + nextMove.getX());
+                System.out.println("The current TileX which is better: " + nextMove.getY());
+
+                offsetX = nextMove.getX();
+                offsetY = nextMove.getY();
+
+                xVelocity = offsetX - currX;
+                yVelocity = offsetY - currY;
+
+                if      (xVelocity > 0) currDirection = Direction.RIGHT;
+                else if (xVelocity < 0) currDirection = Direction.LEFT;
+                else if (yVelocity > 0) currDirection = Direction.UP;
+                else if (yVelocity < 0) currDirection = Direction.DOWN;
+
+                // set moving to true as always
+                moving = true;
+
+                if (currX == offsetX && currY == offsetY) {
+
+                        highwayToHeaven.remove(0);
+                    }           
+            }
+        
+        
 
         // Make the chicken eat the crop
         if (map.getCrop(currX, currY) != null) {
