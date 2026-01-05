@@ -22,6 +22,10 @@ public class Chicken extends Entity {
 
     private float yVelocity = 0;
     private float xVelocity = 0;
+    private boolean isScurrying;
+    private float scurryTimer;
+    private float playerX;
+    private float playerY;
 
     
     public Chicken(World world, float x, float y) {
@@ -102,6 +106,13 @@ public class Chicken extends Entity {
         }
         map.eatCrop(currX, currY);
 
+        if (isScurrying && scurryTimer >= 0) {
+            scurryAway(playerX, playerY);
+        }
+        else {
+            isScurrying = false;
+        }
+
         // decrement the time in order for brainpower restorage -> Move requires loads of energy
         timeToNextMove -= frameTime;
         eatTimer--;
@@ -111,7 +122,19 @@ public class Chicken extends Entity {
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
+    public void scurryAway(float playerX, float playerY) {
+        
+        float sprint = 10f;
+        this.xVelocity = (this.getX() - playerX) * sprint;
+        this.yVelocity = (this.getY() - playerY) * sprint;
+    }
+    public void scurry(float playerX, float playerY) {
+        this.isScurrying = true;
+        this.scurryTimer = 0.5f;
 
+        this.playerX = playerX;
+        this.playerY = playerY;
+    }
 
     @Override
     public TextureRegion getCurrentAppearance() {

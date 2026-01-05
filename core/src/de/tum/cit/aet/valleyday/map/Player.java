@@ -1,4 +1,5 @@
 package de.tum.cit.aet.valleyday.map;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -38,6 +39,7 @@ public class Player extends Entity implements Drawable {
     float sprintSpeed = 10f;
 
 
+
     /** Create a memory for the movement of the player*/
 
     /** offset x,y for the direction he is interacting with */
@@ -58,6 +60,14 @@ public class Player extends Entity implements Drawable {
     private float gameOverTimer = 1.0f;
     private boolean isScared = false;
     private float escapeX, escapeY;
+
+    /* Handles the startled state */
+    public void startle(float chickenOnTileX, float chickenOnTileY) {
+        this.isScared = true;
+
+        this.escapeX = this.getX() - chickenOnTileX;
+        this.escapeY = this.getY() - chickenOnTileY;
+    }
 
     /** Method to switch through the options */
 
@@ -126,8 +136,6 @@ public class Player extends Entity implements Drawable {
         int currY = Math.round(getY()); // same for Y
 
         
-
-        
         // Make the player move in a circle with radius 2 tiles
         // You can change this to make the player move differently, e.g. in response to user input.
         // See Gdx.input.isKeyPressed() for keyboard input
@@ -139,7 +147,18 @@ public class Player extends Entity implements Drawable {
         this.offsetY = currY;
         // offset the coordinates given the direction the Player is looking at
         offsetDirection(currDirection);
-    
+        
+        /**
+         * we define a constant speed here
+         */
+
+         if (isScared) {
+            gameOverTimer -= frameTime;
+            float moveX = escapeX * frameTime;
+            float moveY = escapeY * frameTime;
+
+            
+        }
 
         float speed = 5f;
 
@@ -157,7 +176,7 @@ public class Player extends Entity implements Drawable {
         boolean isSprinting = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && sprintCooldown <= 0 && stamina > 0;
 
         if (isSprinting) {
-            speed = sprintSpeed;
+            speed = 10f;
             this.moving = true;
             stamina -= drainRate * frameTime;
         }
@@ -176,7 +195,7 @@ public class Player extends Entity implements Drawable {
         // we want to increase the stepping sound or the frequency when he is sprinting
         float stepInterval = isSprinting ? 0.2f : STEP_SOUND_INTERVAL;
 
-        if (Gdx.input.isKeyPressed(Keys.UP) && !isScared) {
+        if (Gdx.input.isKeyPressed(Keys.UP)) {
             yVelocity += speed;
             this.currDirection = Direction.UP;
             this.moving = true;
@@ -317,9 +336,7 @@ public class Player extends Entity implements Drawable {
 
         }
         
-        if (Gdx.input.isKeyJustPressed(Keys.S)) {
-           
-        }
+        
 
 
         /**
@@ -377,6 +394,7 @@ public class Player extends Entity implements Drawable {
 
         for (Chicken chicken : map.getActiveChickens()) {
             startle(Math.round(chicken.getX()), Math.round(chicken.getY()), currX, currY, chicken);
+            shooChicken(chicken);
         }
 
 
@@ -394,11 +412,26 @@ public class Player extends Entity implements Drawable {
 
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
+
+    public void shooChicken(Chicken chicken) {
+            if (Gdx.input.isKeyPressed(Keys.S)) {
+
+                    int chickenX = Math.round(chicken.getX());
+                    int chickenY = Math.round(chicken.getY());
+
+                    if (chickenX == offsetX && chickenY == offsetY) {
+                        chicken.scurry(this.getX(), this.getY());
+                        System.out.println("Shooed the chicken !");
+                       
+                    }
+                
+            }
+        }
     
     @Override
     public TextureRegion getCurrentAppearance() {
-        // Get the frame of the walk down animation that corresponds to the current time.
-        if (isScared) {
+
+         if (isScared) {
             switch (this.currDirection) {
                     case RIGHT: return  Animations.CHARACTER_HARVEST_RIGHT.getKeyFrame(this.harvestTime, false);
                     case LEFT : return  Animations.CHARACTER_HARVEST_LEFT.getKeyFrame(this.harvestTime, false);
@@ -407,7 +440,8 @@ public class Player extends Entity implements Drawable {
                 
             }
         }
-        else if (isHarvesting()) {
+        // Get the frame of the walk down animation that corresponds to the current time.
+        if (isHarvesting()) {
             switch (this.currDirection) {
                     case RIGHT: return  Animations.CHARACTER_HARVEST_RIGHT.getKeyFrame(this.harvestTime, false);
                     case LEFT : return  Animations.CHARACTER_HARVEST_LEFT.getKeyFrame(this.harvestTime, false);
@@ -435,7 +469,6 @@ public class Player extends Entity implements Drawable {
                     default   : return  Animations.CHARACTER_WALK_DOWN_IDLE.getKeyFrame(this.elapsedTime, true);
         }
     }}
-
 
     /* Handles the startled state */
     public void startle(int chickenOnTileX, int chickenOnTileY, int playerX, int playerY, Chicken chicken) {
@@ -503,6 +536,8 @@ public class Player extends Entity implements Drawable {
             }
 
     }
+
+
     public void setHarvesting(int winningQuota) {
         this.harvesting = winningQuota;
     }

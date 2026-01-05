@@ -61,6 +61,18 @@ public class Animations {
     public static final Animation<TextureRegion> CHARACTER_WALK_RIGHT_IDLE = new Animation<>(0.1f,
         SpriteSheet.CHARACTER.at(2,1)
     );
+    public static final Animation<TextureRegion> CHARACTER_RUN_DOWN = new Animation<>(0.1f, 
+        SpriteSheet.CHARACTER.at(1, 10)
+    );
+    public static final Animation<TextureRegion> CHARACTER_RUN_UP = new Animation<>(0.1f, 
+        SpriteSheet.CHARACTER.at(3, 10)
+    );
+    public static final Animation<TextureRegion> CHARACTER_RUN_LEFT = new Animation<>(0.1f, 
+        SpriteSheet.CHARACTER.at(4, 10)
+    );
+    public static final Animation<TextureRegion> CHARACTER_RUN_RIGHT = new Animation<>(0.1f, 
+        SpriteSheet.CHARACTER.at(2, 10)
+    );
 
     /** The Chicken Animation for Movement */
     public static final Animation<TextureRegion> CHICKEN_WALKING = new Animation<>(0.1f,
@@ -119,5 +131,3 @@ public class Animations {
     );
 
 }
-
-
