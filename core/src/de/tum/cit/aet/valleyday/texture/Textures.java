@@ -74,15 +74,15 @@ public class Textures {
     /**
      * CROPS AND HARVESTING
      */
-    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 1, 1, 1); 
-    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 1, 1, 1); 
-    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 1, 1, 1); 
-    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
+    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 13, 1, 1); 
+    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 13, 1, 1); 
+    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 13, 1, 1); 
+    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(11, 11, 2, 1); 
 
-    public static final TextureRegion MAIS_INIT = SpriteSheet.CROPS.at(12, 31, 1, 1); 
-    public static final TextureRegion MAIS_GROWING = SpriteSheet.CROPS.at(14, 31, 1, 1); 
-    public static final TextureRegion MAIS_MATURING = SpriteSheet.CROPS.at(18, 31, 1, 1); 
-    public static final TextureRegion MAIS_MATURED = SpriteSheet.CROPS.at(11, 5, 2, 1); 
+    public static final TextureRegion MAIS_INIT = SpriteSheet.CROPS.at(2, 11, 1, 1); 
+    public static final TextureRegion MAIS_GROWING = SpriteSheet.CROPS.at(4, 11, 1, 1); 
+    public static final TextureRegion MAIS_MATURING = SpriteSheet.CROPS.at(8, 11, 1, 1); 
+    public static final TextureRegion MAIS_MATURED = SpriteSheet.CROPS.at(10, 11, 1, 1); 
 
     public static final TextureRegion LEMON_INIT = SpriteSheet.CROPS.at(2, 10, 1, 1); 
     public static final TextureRegion LEMON_GROWING = SpriteSheet.CROPS.at(4, 10, 1, 1); 

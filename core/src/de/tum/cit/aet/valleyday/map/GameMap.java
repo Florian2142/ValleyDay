@@ -514,6 +514,18 @@ public class GameMap {
         }
     }
 
+    public Crop randomCrop() {
+        if (activeCrops.size() != 0) {
+            Random rand = new Random();
+            int randNum = rand.nextInt(activeCrops.size());
+
+            return activeCrops.get(randNum);
+        }
+        else {
+            return null;
+        }
+    }
+
 
 
 
@@ -559,6 +571,34 @@ public class GameMap {
         return false;
     }
 
+    /**
+     * Method to ask if the tiles are walkable 
+     * 
+     * IMPORTANT, DO NOT CHANGE -> Pathfinding
+     * 
+     * 
+     * @param x the x position of the tile
+     * @param y the y position of the tile
+     * @return true if the tiles are walkable
+     */
+    public boolean isWalkable(int x, int y) {
+        if (!inBound(x, y)) {
+            return false;
+        }
+        
+        if (getObstacle(x, y) != null) {
+            return false;
+        }
+
+        if (getBigObject(x, y) != null) {
+            return false;
+        }
+
+        // Else its supposed to be walkable
+        return true;
+
+    }
+
 
     /** Make safety checks for inbound to avoid NullPointerExceptions */
     public boolean inBound(int x, int y) {
@@ -567,6 +607,7 @@ public class GameMap {
         }
         return false;
     }
+    
 
 
 

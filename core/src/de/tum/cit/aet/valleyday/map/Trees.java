@@ -2,6 +2,7 @@ package de.tum.cit.aet.valleyday.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+
 import de.tum.cit.aet.valleyday.texture.Textures;
 
 public class Trees extends Obstacle {
