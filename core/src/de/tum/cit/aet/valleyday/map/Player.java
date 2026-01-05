@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import de.tum.cit.aet.valleyday.texture.Animations;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.audio.SoundEffect;
+import de.tum.cit.aet.valleyday.map.Entity.Direction;
 import de.tum.cit.aet.valleyday.screen.GameScreen;
 import de.tum.cit.aet.valleyday.screen.Hud;
 
