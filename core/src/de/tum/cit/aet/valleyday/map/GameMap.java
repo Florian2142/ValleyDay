@@ -252,15 +252,22 @@ public class GameMap {
                     soils[r][c] = new Tiles(r, c, TileType.SOIL);
                     break;
 
-                case 10: // THE CHICKEN WILL SPAWN HERE
-                    this.activeChickens.add(new Chicken(world, r, c));
+                case 10: // THE CHICKEN WILL SPAWN HERE 
+                    // White chickens follow random movements.
+                    double random = Math.random();
+                    if (random <= 0.5d) {
+                        this.activeChickens.add(new WhiteChicken(world, r, c));
+                    }
+                    else {
+                        this.activeChickens.add(new BrownChicken(world, r, c));
+                    }
                     break;
 
                 case 11: // CUTSCENE TRIGGER -> Only happens in 10 but triggers special Synthwave map for easter egg
                     cutsceneTriggers[r][c] = true;
                     break;
                 case 12:
-                    this.activeChickens.add(new Chicken(world, r, c));
+                    this.activeChickens.add(new WhiteChicken(world, r, c));
 
                     break;
                 case 13:

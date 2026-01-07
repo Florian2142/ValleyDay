@@ -75,7 +75,7 @@ public class Animations {
     );
 
     /** The Chicken Animation for Movement */
-    public static final Animation<TextureRegion> CHICKEN_WALKING = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> WHITE_CHICKEN_WALKING = new Animation<>(0.1f,
         SpriteSheet.FARM_THINGS.at(1,5),
         SpriteSheet.FARM_THINGS.at(1,6),
         SpriteSheet.FARM_THINGS.at(1,7),
@@ -84,12 +84,33 @@ public class Animations {
 
     /** The Animation for the standing Chicken */
 
-    public static final Animation<TextureRegion> CHICKEN_NOT_WALKING = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> WHITE_CHICKEN_NOT_WALKING = new Animation<>(0.1f,
             SpriteSheet.FARM_THINGS.at(1,5)
     );
 
     /** Animation for eating Chicken */
-    public static final Animation<TextureRegion> CHICKEN_EATING = new Animation<>(0.1f,
+    public static final Animation<TextureRegion> WHITE_CHICKEN_EATING = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.at(2,5),
+        SpriteSheet.FARM_THINGS.at(2,6),
+        SpriteSheet.FARM_THINGS.at(2,5)
+        
+    );
+
+    public static final Animation<TextureRegion> BROWN_CHICKEN_WALKING = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.at(1,5),
+        SpriteSheet.FARM_THINGS.at(1,6),
+        SpriteSheet.FARM_THINGS.at(1,7),
+        SpriteSheet.FARM_THINGS.at(1,8)
+    );
+
+    /** The Animation for the standing Chicken */
+
+    public static final Animation<TextureRegion> BROWN_CHICKEN_NOT_WALKING = new Animation<>(0.1f,
+            SpriteSheet.FARM_THINGS.at(1,5)
+    );
+
+    /** Animation for eating Chicken */
+    public static final Animation<TextureRegion> BROWN_CHICKEN_EATING = new Animation<>(0.1f,
         SpriteSheet.FARM_THINGS.at(2,5),
         SpriteSheet.FARM_THINGS.at(2,6),
         SpriteSheet.FARM_THINGS.at(2,5)
