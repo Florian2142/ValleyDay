@@ -41,6 +41,39 @@ public class Animations {
         SpriteSheet.CHARACTER.at(2,3),
         SpriteSheet.CHARACTER.at(2,4)
     );
+
+    
+    /**
+     * The animation for the character walking down.
+     */
+    public static final Animation<TextureRegion> CHARACTER_SHOO_DOWN = new Animation<>(0.1f,
+            SpriteSheet.CHARACTERSHOO.at(5, 1),
+            SpriteSheet.CHARACTERSHOO.at(5, 2),
+            SpriteSheet.CHARACTERSHOO.at(5, 3),
+            SpriteSheet.CHARACTERSHOO.at(5, 4)
+    );
+
+    public static final Animation<TextureRegion> CHARACTER_SHOO_UP = new Animation<>(0.1f, 
+        SpriteSheet.CHARACTERSHOO.at(6,1),
+        SpriteSheet.CHARACTERSHOO.at(6,2),
+        SpriteSheet.CHARACTERSHOO.at(6,3),
+        SpriteSheet.CHARACTERSHOO.at(6,4)
+
+    );
+
+    public static final Animation<TextureRegion> CHARACTER_SHOO_LEFT = new Animation<>(0.1f,
+        SpriteSheet.CHARACTERSHOO.at(8,1),
+        SpriteSheet.CHARACTERSHOO.at(8,2),
+        SpriteSheet.CHARACTERSHOO.at(8,3),
+        SpriteSheet.CHARACTERSHOO.at(8,4)
+    );
+
+    public static final Animation<TextureRegion> CHARACTER_SHOO_RIGHT = new Animation<>(0.1f,
+        SpriteSheet.CHARACTERSHOO.at(7,1),
+        SpriteSheet.CHARACTERSHOO.at(7,2),
+        SpriteSheet.CHARACTERSHOO.at(7,3),
+        SpriteSheet.CHARACTERSHOO.at(7,4)
+    );
     
 
     /**

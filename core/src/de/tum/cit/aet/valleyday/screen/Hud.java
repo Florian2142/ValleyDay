@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 /** Import the libraries for 2D Tables */
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -93,6 +94,7 @@ public class Hud {
     /** To access the HUD via Gamescreen for Pausing and resuming option adding global Variables */
     private Table pauseTable;
     private Table exitTable;
+    private Table gameOverTable;
 
     private Skin skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json"));
 
@@ -298,6 +300,29 @@ public class Hud {
        
         exitTable.setVisible(false); // Set the pauseTable to False by Default
 
+        // Create gameOver table
+        this.gameOverTable = new Table();
+        gameOverTable.setFillParent(true);
+        stage.addActor(gameOverTable);
+
+        // Create Label which displays that player is an idiot
+        gameOverTable.add(new Label("YOU LOST!!", this.skin)).padBottom(40).row();
+
+        // Create button which lets player go to the menuScreen
+        TextButton losingButton = new TextButton("GET LOST !!!!", this.skin);
+
+        gameOverTable.add(losingButton).width(650).row();
+        gameOverTable.setVisible(false);
+    
+
+        losingButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameScreen.gameOver();
+                
+            }
+        });
+
         /**
          * We have to define several EventListener like HTML
          */
@@ -314,7 +339,33 @@ public class Hud {
         continueButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                gameScreen.scared();
+                // We make the nice anonymous class !:)
+                Dialog dialog = new Dialog("Already leaving, are you scared?", skin) {
+
+                @Override
+                protected void result(Object answerOfUser) {
+                    boolean exit = (Boolean) answerOfUser;
+                    if (exit) {
+                        gameScreen.scared(); // Close the game if true
+                        } 
+                    else {
+                        // If false, the dialog just closes automatically
+                        System.out.println("The warrior stays!"); 
+                        }
+                    }
+                };
+
+                dialog.text("Are you sure you want to quit?");
+
+
+
+                dialog.button("Yes", true);  // Sends 'true' to result()
+                dialog.button("No", false);  // Sends 'false' to result()
+
+
+                dialog.show(stage);
+                
+                
             }
         });
 
@@ -533,9 +584,141 @@ public class Hud {
         Gdx.input.setInputProcessor(null);
     }
 
+    public void showLosingMenu() {
+        this.gameOverTable.setVisible(true);
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    public SpriteBatch getSpriteBatch() {
+        return spriteBatch;
+    }
+
+    public BitmapFont getFont() {
+        return font;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public ShapeRenderer getShapeRenderer() {
+        return shapeRenderer;
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getHudWidth() {
+        return hudWidth;
+    }
+
+    public float getHudHeight() {
+        return hudHeight;
+    }
+
+    public float getMargin() {
+        return margin;
+    }
+
+    public Label getTimeLabel() {
+        return timeLabel;
+    }
+
+    public Label getCropsLabel() {
+        return cropsLabel;
+    }
+
+    public Label getExitLabel() {
+        return exitLabel;
+    }
+
+    public Image getShovelIcon() {
+        return shovelIcon;
+    }
+
+    public Image getWateringCan() {
+        return wateringCan;
+    }
+
+    public Image getFertilizer() {
+        return fertilizer;
+    }
+
+    public Image getClock() {
+        return clock;
+    }
+
+    public Image getCrop() {
+        return crop;
+    }
+
+    public com.badlogic.gdx.scenes.scene2d.utils.Drawable getClockHigh() {
+        return clockHigh;
+    }
+
+    public com.badlogic.gdx.scenes.scene2d.utils.Drawable getClock1() {
+        return clock1;
+    }
+
+    public com.badlogic.gdx.scenes.scene2d.utils.Drawable getClock2() {
+        return clock2;
+    }
+
+    public com.badlogic.gdx.scenes.scene2d.utils.Drawable getClock3() {
+        return clock3;
+    }
+
+    public com.badlogic.gdx.scenes.scene2d.utils.Drawable getClockLow() {
+        return clockLow;
+    }
+
+    public int getFertilizerCooloff() {
+        return fertilizerCooloff;
+    }
+
+    public int getWateringCanCooloff() {
+        return wateringCanCooloff;
+    }
+
+    public int getClockTicking() {
+        return clockTicking;
+    }
+
+    public Table getPauseTable() {
+        return pauseTable;
+    }
+
+    public Table getExitTable() {
+        return exitTable;
+    }
+
+    public Table getGameOverTable() {
+        return gameOverTable;
+    }
+
+    public Skin getSkin() {
+        return skin;
+    }
+
+
     
-
-
 }
 
 

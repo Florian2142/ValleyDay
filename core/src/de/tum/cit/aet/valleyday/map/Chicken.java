@@ -1,5 +1,8 @@
 package de.tum.cit.aet.valleyday.map;
 
+import de.tum.cit.aet.valleyday.texture.Drawable;
+
+
 /******
  * Interface Chicken 
  * Implements the scurry function and scurryAway fuction for each chicken.
@@ -7,7 +10,7 @@ package de.tum.cit.aet.valleyday.map;
  * The scurryAway function enables the chicken to run away.
  * 
  * */
-public interface Chicken{
+public interface Chicken extends Drawable{
     
     public void scurryAway(float playerX, float playerY); 
     

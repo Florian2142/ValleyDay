@@ -24,6 +24,8 @@ public abstract class Entity implements Drawable {
     protected final Body hitbox;
 
 
+    protected final static float radius = 0.3f;
+
     /*
     *   Make a private ENUM TYPE
     */

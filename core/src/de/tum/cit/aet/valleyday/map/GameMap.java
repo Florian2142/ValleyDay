@@ -59,7 +59,7 @@ public class GameMap {
     private final Chest chest;
 
     /** Difficulty of the game */
-    private int difficulty;
+    private String difficulty;
 
 
     /***
@@ -101,10 +101,12 @@ public class GameMap {
 
 
 
-    public GameMap(ValleyDayGame game, FileHandle map) throws mapInputExcepetion{
+    public GameMap(ValleyDayGame game, FileHandle map, String difficulty) throws mapInputExcepetion{
         this.game = game;
         this.world = new World(Vector2.Zero, true);
         // Create a player with initial position (1, 3)
+
+        this.difficulty = difficulty;
 
         
         this.harvesting = 3; // UPDATE TO DIFFICULTY
@@ -113,7 +115,7 @@ public class GameMap {
         this.chest = new Chest(world, 3, 3);
 
         /** Set difficulty, UPDATE LATER FOR REAL DIFFICULTY */
-        this.difficulty = 0;
+        this.difficulty = difficulty;
         /*
         * Here we follow the recommended procedure of the project description which is
         * 1.0 Store the whole file content in one very big string
@@ -535,11 +537,6 @@ public class GameMap {
 
 
 
-
-
-
-
-
     public boolean consumeCutsceneTrigger(int x, int y) {
         if (inBound(x, y) && cutsceneTriggers[x][y]) {
             cutsceneTriggers[x][y] = false;
@@ -671,7 +668,7 @@ public class GameMap {
         return height;
     }
 
-    public int getDifficulty() {
+    public String getDifficulty() {
         return difficulty;
     }
 

@@ -59,6 +59,7 @@ public class Player extends Entity implements Drawable {
 
     /* Variables to store the state of wether the player is scared and wether the game is over */
     private float gameOverTimer = 1.0f;
+    private float shooAwayTimer = 0f;
     private boolean isScared = false;
     private float escapeX, escapeY;
 
@@ -155,11 +156,18 @@ public class Player extends Entity implements Drawable {
 
          if (isScared) {
             gameOverTimer -= frameTime;
-            float moveX = escapeX * frameTime;
-            float moveY = escapeY * frameTime;
+
+            xVelocity = escapeX * sprintSpeed;
+            yVelocity = escapeY * sprintSpeed;
+
+            if (gameOverTimer <= 0) {
+                ((GameScreen)map.getGame().getScreen()).gameOverScreen();
+            }
+
 
             
         }
+        else {
 
         float speed = 5f;
 
@@ -384,6 +392,7 @@ public class Player extends Entity implements Drawable {
         harvestCooloff--;
         harvestingAnimationCooloff--;
         exitCooloff--;
+        shooAwayTimer--;
 
 
 
@@ -394,22 +403,16 @@ public class Player extends Entity implements Drawable {
          */
 
         for (Chicken chicken : map.getActiveChickens()) {
-            startle(Math.round(chicken.getX()), Math.round(chicken.getY()), currX, currY, chicken);
+            startle(chicken.getX(), chicken.getY(), currX, currY, chicken);
             shooChicken(chicken);
         }
 
 
-        if (isScared) {
-            gameOverTimer -= frameTime;
-            xVelocity = escapeX * sprintSpeed;
-            yVelocity = escapeY * sprintSpeed;
-
-            if (gameOverTimer <= 0) {
-                ((GameScreen)map.getGame().getScreen()).gameOver();
-            }
-
+        
+           
             
-        }
+            
+         }
 
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
@@ -417,27 +420,42 @@ public class Player extends Entity implements Drawable {
     public void shooChicken(Chicken chicken) {
             if (Gdx.input.isKeyPressed(Keys.S)) {
 
-                    int chickenX = Math.round(chicken.getX());
-                    int chickenY = Math.round(chicken.getY());
+                    shooAwayTimer = 30f;
+                    float range = 1.10955f;
 
-                    if (chickenX == offsetX && chickenY == offsetY) {
-                        chicken.scurry(this.getX(), this.getY());
-                        System.out.println("Shooed the chicken !");
-                       
-                    }
-                
+                    float targetX = this.offsetX; 
+                    float targetY = this.offsetY;
+
+                    float chickenX = chicken.getX();
+                    float chickenY = chicken.getY();
+
+                    /**
+                     * Instead of simple offset tiles we ask if the chicken is in a eucledian distance from us
+                     */
+                    float distSq = (targetX - chickenX) * (targetX - chickenX) + 
+                       (targetY - chickenY) * (targetY - chickenY);
+
+                    if (distSq < range * range) {
+            
+                            shooAwayTimer = 30f;
+
+                            // Call the scurry method -> Chicken runs away
+                            chicken.scurry(this.getX(), this.getY());
+
+                            System.out.println("Shooed the chicken! Distance was: " + Math.sqrt(distSq));
             }
         }
+    }
     
     @Override
     public TextureRegion getCurrentAppearance() {
 
          if (isScared) {
             switch (this.currDirection) {
-                    case RIGHT: return  Animations.CHARACTER_HARVEST_RIGHT.getKeyFrame(this.harvestTime, false);
-                    case LEFT : return  Animations.CHARACTER_HARVEST_LEFT.getKeyFrame(this.harvestTime, false);
-                    case UP   : return  Animations.CHARACTER_HARVEST_UP.getKeyFrame(this.harvestTime, false);
-                    default   : return  Animations.CHARACTER_HARVEST_DOWN.getKeyFrame(this.harvestTime, false);
+                    case RIGHT: return  Animations.CHARACTER_RUN_RIGHT.getKeyFrame(this.harvestTime, false);
+                    case LEFT : return  Animations.CHARACTER_RUN_LEFT.getKeyFrame(this.harvestTime, false);
+                    case UP   : return  Animations.CHARACTER_RUN_UP.getKeyFrame(this.harvestTime, false);
+                    default   : return  Animations.CHARACTER_RUN_DOWN.getKeyFrame(this.harvestTime, false);
                 
             }
         }
@@ -452,6 +470,16 @@ public class Player extends Entity implements Drawable {
         } 
         
         // if the player is not harvesting he can move
+        if (shooAwayTimer >= 0) {
+
+            switch (this.currDirection) {
+                    case RIGHT: return  Animations.CHARACTER_SHOO_RIGHT.getKeyFrame(this.harvestTime, true);
+                    case LEFT : return  Animations.CHARACTER_SHOO_LEFT.getKeyFrame(this.harvestTime, true);
+                    case UP   : return  Animations.CHARACTER_SHOO_UP.getKeyFrame(this.harvestTime, true);
+                    default   : return  Animations.CHARACTER_SHOO_DOWN.getKeyFrame(this.harvestTime, true);
+            }
+
+        }
         else if (isMoving()) {
             switch (this.currDirection) {
                     case RIGHT: return  Animations.CHARACTER_WALK_RIGHT.getKeyFrame(this.elapsedTime, true);
@@ -472,10 +500,10 @@ public class Player extends Entity implements Drawable {
     }}
 
     /* Handles the startled state */
-    public void startle(int chickenOnTileX, int chickenOnTileY, int playerX, int playerY, Chicken chicken) {
+    public void startle(float chickenOnTileX, float chickenOnTileY, float playerX, float playerY, Chicken chicken) {
 
 
-        if (chickenOnTileX == playerX && chickenOnTileY == playerY) {
+          if ((Math.pow(chickenOnTileX - playerX, 2) + Math.pow(chickenOnTileY - playerY, 2)) < Math.pow(Entity.radius, 2)) {
             this.isScared = true;
 
             // for distance offseting running aways in opposite Direction

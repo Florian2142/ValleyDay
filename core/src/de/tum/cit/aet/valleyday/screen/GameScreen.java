@@ -74,9 +74,27 @@ public class GameScreen implements Screen {
 
 
         /** DUMMY VARIABLES CHANGE LATER TO DIFFICULTY */
-        this.remainingTime = 314;
-        // Set harvesting quota 
-        map.getPlayer().setHarvesting(5); 
+        String diff = map.getDifficulty();
+
+        System.out.println("Difficulty is: " + diff);
+
+        if (diff.equals("Easy")) {
+           this.remainingTime = 300; 
+           map.getPlayer().setHarvesting(5);
+        }
+        else if(diff.equals("Medium")) {
+            this.remainingTime = 200;
+            map.getPlayer().setHarvesting(5);
+        }
+        else if (diff.equals("Hard")) {
+            this.remainingTime = 180;
+            map.getPlayer().setHarvesting(6);
+        }
+        else if (diff.equals("TUM")){
+            this.remainingTime = 10;
+            map.getPlayer().setHarvesting(10);
+        }
+
     }
     
     /**
@@ -118,12 +136,6 @@ public class GameScreen implements Screen {
                 tick = 60;
             }
 
-            
-
-
-
-            
-
 
             /** tick counter for various activities */
             
@@ -136,7 +148,7 @@ public class GameScreen implements Screen {
             hud.render(this.remainingTime);
             
             //If time is over, game screen appears.
-            if (remainingTime <= 0d) {game.goToMenu();}
+            if (remainingTime <= 0d) {gameOverScreen();}
 
         }
 
@@ -371,9 +383,71 @@ public class GameScreen implements Screen {
         game.goToMenu();
     }
 
+    public void gameOverScreen() {
+        setPaused(true);
+        hud.showLosingMenu();
+
+    }
+
+
      /** IF touch the chicken */
     public void gameOver() {
         game.goToMenu();
+       
     }
+
+     public static int getTileSizePx() {
+         return TILE_SIZE_PX;
+     }
+
+     public static int getScale() {
+         return SCALE;
+     }
+
+     public ValleyDayGame getGame() {
+         return game;
+     }
+
+     public SpriteBatch getSpriteBatch() {
+         return spriteBatch;
+     }
+
+     public GameMap getMap() {
+         return map;
+     }
+
+     public Hud getHud() {
+         return hud;
+     }
+
+     public OrthographicCamera getMapCamera() {
+         return mapCamera;
+     }
+
+     public boolean isPaused() {
+         return isPaused;
+     }
+
+     public void setPaused(boolean isPaused) {
+         this.isPaused = isPaused;
+     }
+
+     public float getRemainingTime() {
+         return remainingTime;
+     }
+
+     public void setRemainingTime(float remainingTime) {
+         this.remainingTime = remainingTime;
+     }
+
+     public int getTick() {
+         return tick;
+     }
+
+     public void setTick(int tick) {
+         this.tick = tick;
+     }
+
+    
 
 }

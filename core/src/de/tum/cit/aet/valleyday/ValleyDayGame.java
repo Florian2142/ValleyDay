@@ -40,6 +40,8 @@ public class ValleyDayGame extends Game {
      */
     private final NativeFileChooser fileChooser;
 
+    private FileHandle pendingMapFile;
+
     
     
     /**
@@ -48,6 +50,9 @@ public class ValleyDayGame extends Game {
      * because the map should not be destroyed if we temporarily switch to another screen.
      */
     private GameMap map;
+
+    // Make a global variable
+    private String difficulty;
 
     /**
      * Constructor for ValleyDayGame.
@@ -76,6 +81,8 @@ public class ValleyDayGame extends Game {
 
         MusicTrack.BACKGROUND.play(); // Play some background music
         goToMenu(); // Navigate to the menu screen
+
+        
     }
 
         // THe actualy map is already handled in the NativeFileChooser in the ChosenFile
@@ -105,17 +112,13 @@ public class ValleyDayGame extends Game {
         @Override
         public void onFileChosen(FileHandle file) {
             // return the map we have chosen by the user
-            try {
-                // Load the map
-                ValleyDayGame.this.map = new GameMap(ValleyDayGame.this, file);
-                
-                // Go to game after selecting file
-                goToGame(); 
-                
-            } catch (Exception e) {
-                System.err.println("Map parsing failed!");
-                e.printStackTrace();
-            }
+
+            System.out.println("File selected: " + file.name());
+
+            ValleyDayGame.this.pendingMapFile = file;
+
+            System.out.println("Map loaded! Please select difficulty next.");
+
         }
 
                 @Override
@@ -133,6 +136,31 @@ public class ValleyDayGame extends Game {
 
        
     }
+
+    public void startGame() {
+        // Check if we have everything we need
+        if (this.pendingMapFile == null) {
+            System.err.println("Cannot start: No map selected!");
+            return;
+        }
+
+        if (this.difficulty == null) {
+            System.err.println("Cannot start: No difficulty selected! Default will be medium due to your Indecisiveness.");
+            this.difficulty = "Medium";
+        }
+
+        try {
+            // Create the map now that we have all ingredients
+            this.map = new GameMap(this, this.pendingMapFile, this.difficulty);
+
+            // Switch to the game screen
+            goToGame();
+
+        } catch (Exception e) {
+            System.err.println("Failed to create map: " + e.getMessage());
+            e.printStackTrace();
+        }
+}
 
     /**
      * Switches to the menu screen.
@@ -184,4 +212,15 @@ public class ValleyDayGame extends Game {
         spriteBatch.dispose(); // Dispose the spriteBatch
         skin.dispose(); // Dispose the skin
     }
+
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    
 }
