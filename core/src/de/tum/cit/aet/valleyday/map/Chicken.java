@@ -21,5 +21,5 @@ public interface Chicken extends Drawable{
     public float getX();
     public float getY();
 
-    public void setShocked(); // sets the chicken in a schocked mode
+    public void setShocked();
 }

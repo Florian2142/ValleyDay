@@ -11,15 +11,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Textures {
     
-    public static final TextureRegion FLOWERS = SpriteSheet.BASIC_TILES.at(2, 5);
-    public static final TextureRegion SOIL    = SpriteSheet.CROPS.at(10, 2, 1, 1); 
-    public static final TextureRegion ICE     = SpriteSheet.BASIC_TILES.at(3, 6);
-    public static final TextureRegion GRAS    = SpriteSheet.BASIC_TILES.at(2, 1);
-    public static final TextureRegion WALL    = SpriteSheet.BASIC_TILES.at(3, 1);
-    public static final TextureRegion STONE     = SpriteSheet.BASIC_TILES.at(2, 6);
-    public static final TextureRegion SNOW     = SpriteSheet.BASIC_TILES.at(8, 8);
-    public static final TextureRegion WATER    = SpriteSheet.FARM_THINGS.at(6, 7);
-    public static final TextureRegion SAND    = SpriteSheet.BASIC_TILES.at(2, 3);
+    public static final TextureRegion FLOWERS               = SpriteSheet.BASIC_TILES.at(2, 5);
+    public static final TextureRegion SOIL                  = SpriteSheet.CROPS.at(10, 2, 1, 1); 
+    public static final TextureRegion ICE                   = SpriteSheet.BASIC_TILES.at(3, 6);
+    public static final TextureRegion GRAS                  = SpriteSheet.BASIC_TILES.at(9, 2);
+    public static final TextureRegion WALL                  = SpriteSheet.BASIC_TILES.at(3, 1);
+    public static final TextureRegion STONE                 = SpriteSheet.BASIC_TILES.at(2, 6);
+    public static final TextureRegion STONES                = SpriteSheet.BASIC_TILES.at(7, 3);
+    public static final TextureRegion PATH                  = SpriteSheet.BASIC_TILES.at(3, 1);
+    public static final TextureRegion FOUNTAIN              = SpriteSheet.BASIC_TILES.at(4, 8);
+    public static final TextureRegion SMALLPLANT            = SpriteSheet.BASIC_TILES.at(3, 5);
+    public static final TextureRegion BRIDGE_VERTICAL       = SpriteSheet.BASIC_TILES.at(12, 1);
+    public static final TextureRegion BRIDGE_HORIZONTAL     = SpriteSheet.BASIC_TILES.at(12, 2);
+    public static final TextureRegion TORCH                 = SpriteSheet.BASIC_TILES.at(7, 5);
+    public static final TextureRegion SNOW                  = SpriteSheet.BASIC_TILES.at(8, 8);
+    public static final TextureRegion WATER                 = SpriteSheet.FARM_THINGS.at(6, 7);
+    public static final TextureRegion SAND                  = SpriteSheet.BASIC_TILES.at(2, 3);
 
     // STRAIGHT PIECES
     public static final TextureRegion FENCE_HORIZ = SpriteSheet.FARM_THINGS.at(6, 2);
@@ -138,6 +145,8 @@ public class Textures {
     public static final TextureRegion CLOCK3 = SpriteSheet.CLOCK3.at(1,1,3 ,3);
     public static final TextureRegion CLOCK4 = SpriteSheet.CLOCK4.at(1,1,3 ,3);
     public static final TextureRegion CLOCK5 = SpriteSheet.CLOCK5.at(1,1,3 ,3);
+
+    public static final TextureRegion HEART = SpriteSheet.OBJECTS_SMALL.at(4,1);
 
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 

@@ -16,8 +16,8 @@ public enum CropType {
  
         CORN(Textures.CORN_STAGES, 45f),
         MAIS(Textures.MAIS_STAGES, 55f),
-        LEMON(Textures.LEMON_STAGES, 75f),
-        SELLERIE(Textures.SELLERIE_STAGES, 100f);
+        LEMON(Textures.LEMON_STAGES, 90f),
+        SELLERIE(Textures.SELLERIE_STAGES, 150f);
       
         
 

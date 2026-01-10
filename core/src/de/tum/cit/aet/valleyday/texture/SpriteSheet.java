@@ -24,7 +24,7 @@ public enum SpriteSheet {
     /** Things about the farm like the fence and gates and other stuff */
     FARM_THINGS("farmthings.png",16 ,16),
     /** Objects like Debris and many more */
-    OBJECTS_SMALL("objects.png", 22,22),
+    OBJECTS_SMALL("objects.png", 16,16),
     /** Big objects (4x4) */
     OBJECTS_BIG("objects.png", 22, 16),
     /** basics like the branch removal */
@@ -98,6 +98,17 @@ public enum SpriteSheet {
                 this.height
         );
     }
+
+    public TextureRegion atInverted(int row, int column) {
+        return new TextureRegion(
+                spritesheet,
+                (column) * this.width,
+                (row - 1) * this.height,
+                - this.width,
+                this.height
+        );
+    }
+
 
     /**
      * Returns the TextureRegion at the specified row and column (3-BASED-COORDINATES)

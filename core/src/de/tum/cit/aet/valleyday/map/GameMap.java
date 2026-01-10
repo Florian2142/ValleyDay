@@ -218,88 +218,146 @@ public class GameMap {
             c = Integer.valueOf(splitt[1].trim());
 
             switch (Integer.valueOf(fillTiles.get(tile))) {
-                // Fence
-                case 0: // Indestructible FENCE -> Needs to be updated Later
-                    obstacles[r][c] = new Fence(world, r, c);
-                    break;
-                case 1: // Destructible DEBRIS  -> Overwrites GROUND Layer
-                    obstacles[r][c] = new Debris(world, r, c);
-                    // 
-                    debrList.add(obstacles[r][c]); // add the Debris for later randomization
-                    break;
-                case 2: // The Entrace LATER
-                    this.startX = r;
-                    this.startY = c;
-                    break;
-                case 3: // PUTS Shovel on the Map and puts DEBRIS on top -> Later Wildlife Visitor
-                    hiddenObjects[r][c] = new Shovel(r, c, this);
-                    obstacles[r][c] = new Debris(world, r, c);
-                    break;
-                case 4: // EXIT 
-                    hiddenObjects[r][c] = new Exit(r, c, this);
-                    obstacles[r][c]     = new Debris(world, r, c);// put debris again, guaranteeing its debris
-                    exitExists = true;
-                    break;
-                case 5: // Fertilizer
-                    hiddenObjects[r][c] = new Fertilizer(r, c, this);
-                    obstacles[r][c] = new Debris(world, r, c);
-                    break;
-                case 6: // Watering Can
-                    hiddenObjects[r][c] = new WateringCan(r, c, this);
-                    obstacles[r][c] = new Debris(world, r, c);
-                    break;
-                case 7: // Shovel
 
-                case 8:
-                    soils[r][c] = new Tiles(r, c, TileType.SOIL);
-                    break;
 
-                case 10: // THE CHICKEN WILL SPAWN HERE 
-                    // White chickens follow random movements.
-                    double random = Math.random();
-                    if (random <= 0.5d) {
-                        this.activeChickens.add(new WhiteChicken(world, r, c));
-                    }
-                    else {
-                        this.activeChickens.add(new BrownChicken(world, r, c));
-                    }
-                    break;
+            case 0: // Indestructible FENCE -> Needs to be updated Later
+                obstacles[r][c] = new Fence(world, r, c);
+                break;
 
-                case 11: // CUTSCENE TRIGGER -> Only happens in 10 but triggers special Synthwave map for easter egg
-                    cutsceneTriggers[r][c] = true;
-                    break;
-                case 12:
+            case 1: // Destructible DEBRIS  -> Overwrites GROUND Layer
+                obstacles[r][c] = new Debris(world, r, c);
+                debrList.add(obstacles[r][c]); // add the Debris for later randomization
+                break;
+
+            case 2: // The Entrance
+                this.startX = r;
+                this.startY = c;
+                break;
+
+            case 3: // THE CHICKEN WILL SPAWN HERE
+            double random = Math.random();
+                if (random <= 0.5d) {
                     this.activeChickens.add(new WhiteChicken(world, r, c));
+                } else {
+                    this.activeChickens.add(new BrownChicken(world, r, c));
+                }
+                break;
+         
 
-                    break;
-                case 13:
-                    // Make a TREE
-                    this.bigUnpassableObjects[r][c] = new Trees(world, r, c);
-                    break;
-                // case 14: 
-                //     // Water
-                //     this.bigObjects[r][c] = new Tiles(r, c,TileType.WATER);
-                //     break;
-                // case 15:
-                //     // sand
-                //     this.bigObjects[r][c] = new Tiles(r, c,TileType.SAND);
-                //     break;
-                // case 16: 
-                //     // snow
-                //     this.bigObjects[r][c] = new Tiles(r, c,TileType.SNOW);
-                //     break;
-                case 17:
-                    // House
-                    // this.bigUnpassableObjects[r][c] = new Tiles(r, c,TileType.HOUSE);
-                    break;
-                case 18:
-                    // other
-                    
+            case 4: // EXIT (hidden under debris)
+                hiddenObjects[r][c] = new Exit(r, c, this);
+                obstacles[r][c]     = new Debris(world, r, c);
+                exitExists = true;
+                break;
 
-                default: // Dirt -> Already set by default
+            case 5: // Fertilizer (hidden under debris)
+                hiddenObjects[r][c] = new Fertilizer(r, c, this);
+                obstacles[r][c] = new Debris(world, r, c);
+                break;
 
-                    break;
-            }
+            case 6: // Watering Can (hidden under debris)
+                hiddenObjects[r][c] = new WateringCan(r, c, this);
+                obstacles[r][c] = new Debris(world, r, c);
+                break;
+
+            case 7: // Shovel (VISIBLE / not under debris)
+                hiddenObjects[r][c] = new Shovel(r, c, this);
+                obstacles[r][c] = new Debris(world, r, c);
+                break;
+
+            case 8: // Soil (separate soil layer)
+                soils[r][c] = new Tiles(r, c, TileType.SOIL);
+                break;
+
+            case 9: // Grass
+                tiles[r][c] = new Tiles(r, c, TileType.GRAS);
+                break;
+
+            case 10: 
+                
+
+            case 11: // CUTSCENE TRIGGER
+                cutsceneTriggers[r][c] = true;
+                break;
+
+            case 12: // Force white chicken
+                this.activeChickens.add(new WhiteChicken(world, r, c));
+                break;
+
+            case 13: // TREE (big unpassable object)
+                this.bigUnpassableObjects[r][c] = new Trees(world, r, c);
+                break;
+
+            case 14: // Water
+                this.tiles[r][c] = new Tiles(r, c, TileType.WATER);
+                break;
+
+            case 15: // Sand
+                this.tiles[r][c] = new Tiles(r, c, TileType.SAND);
+                break;
+
+            case 16: // Snow
+                this.tiles[r][c] = new Tiles(r, c, TileType.SNOW);
+                break;
+
+            case 17: // House (blocking)
+                this.tiles[r][c] = new Tiles(r, c, TileType.HOUSE);
+                // If you have a real House object, prefer that instead:
+                // this.bigUnpassableObjects[r][c] = new House(world, r, c);
+                break;
+
+            case 18: // Wall (blocking)
+                this.tiles[r][c] = new Tiles(r, c, TileType.WALL);
+                // Alternatively, if WALL is a big sprite:
+                // this.bigUnpassableObjects[r][c] = new Wall(world, r, c);
+                break;
+
+            case 19: // ICE (walkable ground)
+                this.tiles[r][c] = new Tiles(r, c, TileType.ICE);
+                break;
+
+            case 20: // FLOWERS (walkable decoration ground)
+                this.tiles[r][c] = new Tiles(r, c, TileType.FLOWERS);
+                break;
+
+            case 21: // PATH (walkable ground)
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH);
+                break;
+
+            case 22: // STONE (walkable ground)
+                this.tiles[r][c] = new Tiles(r, c, TileType.STONE);
+                break;
+
+            case 23: // STONES (walkable ground)
+                this.tiles[r][c] = new Tiles(r, c, TileType.STONES);
+                break;
+
+            case 24: // FOUNTAIN (blocking structure)
+                this.tiles[r][c] = new Tiles(r, c, TileType.FOUNTAIN);
+                // If fountain is a multi-tile/big sprite, use bigUnpassableObjects instead
+                break;
+
+            case 25: // SMALLPLANT (walkable decoration)
+                this.tiles[r][c] = new Tiles(r, c, TileType.SMALLPLANT);
+                break;
+
+            case 26: // BRIDGE_VERTICAL (walkable)
+                this.tiles[r][c] = new Tiles(r, c, TileType.BRIDGE_VERTICAL);
+                break;
+
+            case 27: // BRIDGE_HORIZONTAL (walkable)
+                this.tiles[r][c] = new Tiles(r, c, TileType.BRIDGE_HORIZONTAL);
+                break;
+
+            case 28: // TORCH (blocking decoration)
+                this.tiles[r][c] = new Tiles(r, c, TileType.TORCH);
+                // or obstacles[r][c] = new Torch(world, r, c); if Torch is an object
+                break;
+
+
+            default: // Dirt -> Already set by default
+                break;
+}
 
         }
 
@@ -390,7 +448,7 @@ public class GameMap {
     }
 
     /** Harvest the inquired Crop if its inbound and not null */
-    public boolean harvestCrop(int x, int y) {
+    public Crop harvestCrop(int x, int y) {
         if (inBound(x, y)) {
             Crop newCrop = getCrop(x, y);
             if (newCrop != null) {
@@ -398,12 +456,12 @@ public class GameMap {
                 crops[x][y] = null;
                 // Also remove the crop from the active Crops -> Not active anymore
                 int index = activeCrops.indexOf(newCrop);
-                activeCrops.remove(index);
+                
 
-                return true;
+                return activeCrops.remove(index);
             }
         }
-        return false;
+        return null;
     }
 
     /** Revive the crop if a Watering Can was picked up */
