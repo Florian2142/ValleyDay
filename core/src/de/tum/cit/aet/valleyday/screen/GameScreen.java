@@ -52,6 +52,7 @@ public class GameScreen implements Screen {
 
     /** Game options */
     private boolean isPaused = false;
+    private boolean isGameEnded = false;
 
 
     /** Stuff for the Time runner */
@@ -77,22 +78,27 @@ public class GameScreen implements Screen {
         String diff = map.getDifficulty();
 
         System.out.println("Difficulty is: " + diff);
+        Player player = map.getPlayer();
 
         if (diff.equals("Easy")) {
            this.remainingTime = 300; 
-           map.getPlayer().setHarvesting(5);
+           player.setHarvesting(5);
+           player.setHealth(3);
         }
         else if(diff.equals("Medium")) {
             this.remainingTime = 200;
-            map.getPlayer().setHarvesting(5);
+            player.setHarvesting(10);
+           player.setHealth(3);
         }
         else if (diff.equals("Hard")) {
             this.remainingTime = 180;
-            map.getPlayer().setHarvesting(6);
+            player.setHarvesting(15);
+           player.setHealth(2);
         }
         else if (diff.equals("TUM")){
-            this.remainingTime = 10;
-            map.getPlayer().setHarvesting(10);
+            this.remainingTime = 120;
+            player.setHarvesting(15);
+           player.setHealth(1);
         }
 
     }
@@ -104,12 +110,13 @@ public class GameScreen implements Screen {
     @Override
     public void render(float deltaTime) {
         // Check for escape key press to go back to the menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !isPaused) {
-            pause();
+       if (!isGameEnded) { 
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !isPaused) {
+                pause();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && isPaused) {
+                resume();
+            }
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && isPaused){
-            resume();
-        }   
         
         // Clear the previous frame from the screen, or else the picture smears
         ScreenUtils.clear(Color.BLACK);
@@ -148,7 +155,7 @@ public class GameScreen implements Screen {
             hud.render(this.remainingTime);
             
             //If time is over, game screen appears.
-            if (remainingTime <= 0d) {gameOverScreen();}
+            if (remainingTime <= 0d && !isGameEnded) {gameOverScreen();}
 
         }
 
@@ -337,7 +344,7 @@ public class GameScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
-        mapCamera.setToOrtho(false);
+        mapCamera.setToOrtho(false, width, height);
         hud.resize(width, height);
     }
 
@@ -356,7 +363,8 @@ public class GameScreen implements Screen {
     }
 
     public void onVictory() {
-        this.isPaused = true;
+        setPaused(true);
+        this.isGameEnded = true;
         hud.showVictoryMenu();
     }
 
@@ -385,6 +393,7 @@ public class GameScreen implements Screen {
 
     public void gameOverScreen() {
         setPaused(true);
+        this.isGameEnded = true;
         hud.showLosingMenu();
 
     }
