@@ -9,6 +9,30 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * These can be referenced anywhere they are needed.
  */
 public class Animations {
+
+    /**
+     * Creates a complex animation where each frame can have a different duration.
+     * @param frameDuration The base speed (e.g. 0.05f).
+     * @param textures The list of images to use.
+     * @param framesCounts How long each image should stay on screen (1 = 1 tick, 10 = 10 ticks).
+     */
+    public static Animation<TextureRegion> createComplexAnimation(float frameDuration, TextureRegion[] textures, int[] framesCounts) {
+        int totalFrames = 0;
+        for (int count : framesCounts) {
+            totalFrames += count;
+        }
+
+        TextureRegion[] frameSequence = new TextureRegion[totalFrames];
+        int k = 0;
+
+        for (int i = 0; i < textures.length; i++) {
+            for (int j = 0; j < framesCounts[i]; j++) {
+                frameSequence[k++] = textures[i];
+            }
+        }
+        
+        return new Animation<>(frameDuration, frameSequence);
+    }
     
     /**
      * The animation for the character walking down.
@@ -42,7 +66,6 @@ public class Animations {
         SpriteSheet.CHARACTER.at(2,4)
     );
 
-    
     /**
      * The animation for the character walking down.
      */
@@ -115,9 +138,22 @@ public class Animations {
         SpriteSheet.FARM_THINGS.at(1,8)
     );
 
+    public static final Animation<TextureRegion> WHITE_CHICKEN_WALKING_LEFT = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.atInverted(1,5),
+        SpriteSheet.FARM_THINGS.atInverted(1,6),
+        SpriteSheet.FARM_THINGS.atInverted(1,7),
+        SpriteSheet.FARM_THINGS.atInverted(1,8)
+    );
+
+
+
     /** The Animation for the standing Chicken */
 
     public static final Animation<TextureRegion> WHITE_CHICKEN_NOT_WALKING = new Animation<>(0.1f,
+            SpriteSheet.FARM_THINGS.at(1,5)
+    );
+
+    public static final Animation<TextureRegion> WHITE_CHICKEN_NOT_WALKING_LEFT = new Animation<>(0.1f,
             SpriteSheet.FARM_THINGS.at(1,5)
     );
 
@@ -129,25 +165,143 @@ public class Animations {
         
     );
 
-    public static final Animation<TextureRegion> BROWN_CHICKEN_WALKING = new Animation<>(0.1f,
-        SpriteSheet.FARM_THINGS.at(1,5),
-        SpriteSheet.FARM_THINGS.at(1,6),
-        SpriteSheet.FARM_THINGS.at(1,7),
-        SpriteSheet.FARM_THINGS.at(1,8)
+    public static final Animation<TextureRegion> WHITE_CHICKEN_EATING_LEFT = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.atInverted(2,5),
+        SpriteSheet.FARM_THINGS.atInverted(2,6),
+        SpriteSheet.FARM_THINGS.atInverted(2,5)
+        
     );
+
+    public static final Animation<TextureRegion> WHITE_CHICKEN_SCARED = createComplexAnimation(0.05f, 
+    new TextureRegion[] {
+
+        SpriteSheet.FARM_THINGS.at(3, 5), 
+        SpriteSheet.FARM_THINGS.at(3, 6), 
+        SpriteSheet.FARM_THINGS.at(3, 7), 
+        
+        
+        SpriteSheet.FARM_THINGS.at(1, 5), 
+        SpriteSheet.FARM_THINGS.at(1, 6),
+        SpriteSheet.FARM_THINGS.at(1, 7),
+        SpriteSheet.FARM_THINGS.at(1, 8)
+    }, 
+    new int[] { 
+        
+        2, 16, 2,   // Jump timings
+        1, 1, 1, 1 // Run timings
+    }
+);
+
+    public static final Animation<TextureRegion> WHITE_CHICKEN_SCARED_LEFT = createComplexAnimation(0.05f, 
+    new TextureRegion[] {
+
+       
+        SpriteSheet.FARM_THINGS.atInverted(3, 5), 
+        SpriteSheet.FARM_THINGS.atInverted(3, 6), 
+        SpriteSheet.FARM_THINGS.atInverted(3, 7), 
+        
+     
+        SpriteSheet.FARM_THINGS.atInverted(1, 5), 
+        SpriteSheet.FARM_THINGS.atInverted(1, 6),
+        SpriteSheet.FARM_THINGS.atInverted(1, 7),
+        SpriteSheet.FARM_THINGS.atInverted(1, 8)
+    }, 
+    new int[] { 
+        
+        2, 16, 2,   
+        1, 1, 1, 1 
+    }
+    );
+
+    
+    public static final Animation<TextureRegion> BROWN_CHICKEN_WALKING = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.at(1, 1),
+        SpriteSheet.FARM_THINGS.at(1, 2),
+        SpriteSheet.FARM_THINGS.at(1, 3),
+        SpriteSheet.FARM_THINGS.at(1, 4)
+    );
+
+ 
+    public static final Animation<TextureRegion> BROWN_CHICKEN_WALKING_LEFT = new Animation<>(0.1f,
+        SpriteSheet.FARM_THINGS.atInverted(1,1),
+        SpriteSheet.FARM_THINGS.atInverted(1,2),
+        SpriteSheet.FARM_THINGS.atInverted(1,3),
+        SpriteSheet.FARM_THINGS.atInverted(1,4)
+    );
+
+
+    public static final Animation<TextureRegion> BROWN_CHICKEN_SCARED = createComplexAnimation(0.05f, 
+    new TextureRegion[] {
+
+        SpriteSheet.FARM_THINGS.at(3, 1), 
+        SpriteSheet.FARM_THINGS.at(3, 2), 
+        SpriteSheet.FARM_THINGS.at(3, 3), 
+        
+
+        SpriteSheet.FARM_THINGS.at(1, 1), 
+        SpriteSheet.FARM_THINGS.at(1, 2),
+        SpriteSheet.FARM_THINGS.at(1, 3),
+        SpriteSheet.FARM_THINGS.at(1, 4)
+    }, 
+    new int[] { 
+        
+        2, 16, 2,   
+        1, 1, 1, 1 
+    }
+);
+
+    public static final Animation<TextureRegion> BROWN_CHICKEN_SCARED_LEFT = createComplexAnimation(0.05f, 
+    new TextureRegion[] {
+
+        SpriteSheet.FARM_THINGS.atInverted(3, 1), 
+        SpriteSheet.FARM_THINGS.atInverted(3, 2), 
+        SpriteSheet.FARM_THINGS.atInverted(3, 3), 
+        
+
+        SpriteSheet.FARM_THINGS.atInverted(1, 1), 
+        SpriteSheet.FARM_THINGS.atInverted(1, 2),
+        SpriteSheet.FARM_THINGS.atInverted(1, 3),
+        SpriteSheet.FARM_THINGS.atInverted(1, 4)
+    }, 
+    new int[] { 
+        
+        2, 16, 2,   
+        1, 1, 1, 1 
+    }
+);
 
     /** The Animation for the standing Chicken */
 
     public static final Animation<TextureRegion> BROWN_CHICKEN_NOT_WALKING = new Animation<>(0.1f,
-            SpriteSheet.FARM_THINGS.at(1,5)
+            SpriteSheet.FARM_THINGS.at(1,1)
     );
 
-    /** Animation for eating Chicken */
-    public static final Animation<TextureRegion> BROWN_CHICKEN_EATING = new Animation<>(0.1f,
-        SpriteSheet.FARM_THINGS.at(2,5),
-        SpriteSheet.FARM_THINGS.at(2,6),
-        SpriteSheet.FARM_THINGS.at(2,5)
-        
+     public static final Animation<TextureRegion> BROWN_CHICKEN_NOT_WALKING_LEFT = new Animation<>(0.1f,
+            SpriteSheet.FARM_THINGS.atInverted(1,1)
+    );
+
+
+    public static final Animation<TextureRegion> BROWN_CHICKEN_EATING = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+           
+            SpriteSheet.FARM_THINGS.at(2, 1), 
+            SpriteSheet.FARM_THINGS.at(2, 2), 
+            SpriteSheet.FARM_THINGS.at(2, 1), 
+            
+        }, 
+        new int[] {2, 15, 2} 
+    );
+
+    
+    public static final Animation<TextureRegion> BROWN_CHICKEN_EATING_LEFT = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+           
+            SpriteSheet.FARM_THINGS.atInverted(2, 1),
+            SpriteSheet.FARM_THINGS.atInverted(2, 2),
+            SpriteSheet.FARM_THINGS.atInverted(2, 1),
+           
+        }, 
+        new int[] {2, 15, 2}
     );
 
 
