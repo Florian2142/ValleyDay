@@ -22,6 +22,7 @@ public class Crop implements Drawable{
     private int currState;
     private TextureRegion[] cropTexture;
     private float timeElapsed;
+    private CropType cropType;
 
 
     private float timeToMaturity;
@@ -40,6 +41,7 @@ public class Crop implements Drawable{
      */
     public Crop(CropType croptype, float x, float y) {
         this.cropTexture = croptype.getTextures();
+        this.cropType = croptype;
         this.x = x;
         this.y = y;
         this.timeElapsed = 0;
@@ -91,6 +93,7 @@ public class Crop implements Drawable{
             currState++; // Now its rotten
             timeElapsed = 0;
         }
+        
         
     }
 
@@ -149,6 +152,59 @@ public class Crop implements Drawable{
         return false;
     }
 
+    public void setPlanted(boolean planted) {
+        this.planted = planted;
+    }
+
+    public int getCurrState() {
+        return currState;
+    }
+
+    public void setCurrState(int currState) {
+        this.currState = currState;
+    }
+
+    public TextureRegion[] getCropTexture() {
+        return cropTexture;
+    }
+
+    public void setCropTexture(TextureRegion[] cropTexture) {
+        this.cropTexture = cropTexture;
+    }
+
+    public float getTimeElapsed() {
+        return timeElapsed;
+    }
+
+    public void setTimeElapsed(float timeElapsed) {
+        this.timeElapsed = timeElapsed;
+    }
+
+    public CropType getCropType() {
+        return cropType;
+    }
+
+    public void setCropType(CropType cropType) {
+        this.cropType = cropType;
+    }
+
+    public float getTimeToMaturity() {
+        return timeToMaturity;
+    }
+
+    public void setTimeToMaturity(float timeToMaturity) {
+        this.timeToMaturity = timeToMaturity;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    
     
 
 

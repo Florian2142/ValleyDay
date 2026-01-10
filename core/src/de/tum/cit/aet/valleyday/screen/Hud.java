@@ -5,6 +5,9 @@ import de.tum.cit.aet.valleyday.map.Player;
 import de.tum.cit.aet.valleyday.map.Shovel;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.texture.Textures;
+import de.tum.cit.aet.valleyday.screen.*;
+
+import org.w3c.dom.Text;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -69,6 +72,7 @@ public class Hud {
     private Label timeLabel;
     private Label cropsLabel;
     private Label exitLabel;
+    private Label essentialsLabel;
 
     /** Images for the HUD */
 
@@ -77,6 +81,19 @@ public class Hud {
     Image fertilizer  = new Image(Textures.FERTILIZER);
     Image clock       = new Image(Textures.CLOCK1);
     Image crop        = new Image(Textures.CORN_MATURING);
+
+    Image crop1    = new Image(Textures.CORN_MATURING);
+
+
+    Image heart1 = new Image(Textures.HEART); 
+    Image heart2 = new Image(Textures.HEART);
+    Image heart3 = new Image(Textures.HEART);
+    
+    
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable cornDrawable     = new TextureRegionDrawable(Textures.CORN_MATURING);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable maisDrawable     = new TextureRegionDrawable(Textures.MAIS_MATURING);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable lemonDrawable    = new TextureRegionDrawable(Textures.LEMON_MATURING);
+    com.badlogic.gdx.scenes.scene2d.utils.Drawable sellerieDrawable = new TextureRegionDrawable(Textures.SELLERIE_MATURING);
 
     /** For the clock ticking */
     com.badlogic.gdx.scenes.scene2d.utils.Drawable clockHigh = (com.badlogic.gdx.scenes.scene2d.utils.Drawable) new TextureRegionDrawable(Textures.CLOCK1);
@@ -225,6 +242,62 @@ public class Hud {
         pixmap.dispose();
         // Set the background of the table
         toolsTable.setBackground(backgroundDrawable);
+
+
+/**
+         * Switches and displays the different Crop types && health bar
+         */
+        Table essentialsTable = new Table();
+        Table borderTwoTable = new Table(); 
+        Table displayTable = new Table();   
+
+        stage.addActor(essentialsTable);
+        essentialsTable.setFillParent(true);
+        
+        // Position top-right
+        essentialsTable.add(borderTwoTable).expand().top().right(); 
+        essentialsTable.padTop(margin);
+        essentialsTable.padRight(margin);
+
+        // Style the outer border
+        borderTwoTable.setBackground(blackBorders); 
+        borderTwoTable.pad(marginBorder);
+        borderTwoTable.add(displayTable);
+
+        // Style the inner content
+        displayTable.setBackground(backgroundDrawable); 
+        displayTable.pad(10); 
+
+     
+        Table cropRow = new Table();
+        essentialsLabel = new Label("Yields PTS: 1", labelStyle); 
+        
+        cropRow.add(crop1).size(30, 30).padRight(10); 
+        cropRow.add(essentialsLabel).left();
+        
+        displayTable.add(cropRow).left().row(); 
+    
+        Image separator = new Image(blackBorders); 
+        displayTable.add(separator).growX().height(2).padTop(5).padBottom(5).row();
+
+    
+        Table healthRow = new Table();
+        
+        
+        healthRow.add(heart1).size(25, 25).padRight(5);
+        healthRow.add(heart2).size(25, 25).padRight(5);
+        healthRow.add(heart3).size(25, 25);
+        
+        displayTable.add(healthRow).left();
+
+
+
+
+
+
+
+
+
 
         /**
          * 
@@ -459,6 +532,51 @@ public class Hud {
             wateringCan.setVisible(false);
         }
 
+        int currentOption = player.getOption();
+
+        // Switches through the available crops which bring different points
+        if (currentOption == 0) {
+            crop1.setDrawable(cornDrawable);
+            essentialsLabel.setText("Yields PTS: 1");
+        } 
+        else if (currentOption == 1) {
+            crop1.setDrawable(maisDrawable);
+            essentialsLabel.setText("Yields PTS: 1");
+        }
+        else if (currentOption == 2) {
+            crop1.setDrawable(lemonDrawable);
+            essentialsLabel.setText("Yields PTS: 2");
+        }
+        else if (currentOption == 3) {
+            crop1.setDrawable(sellerieDrawable);
+            essentialsLabel.setText("Yields PTS: 3");
+        }
+
+        int currentHealth = player.getHealth();
+
+        
+        if (currentHealth >= 3) {
+            heart1.setVisible(true);
+            heart2.setVisible(true);
+            heart3.setVisible(true);
+        } 
+        else if (currentHealth == 2) {
+            heart1.setVisible(true);
+            heart2.setVisible(true);
+            heart3.setVisible(false);
+        } 
+        else if (currentHealth == 1) {
+            heart1.setVisible(true);
+            heart2.setVisible(false);
+            heart3.setVisible(false);
+        } 
+        else {
+            // Dead (0 or less)
+            heart1.setVisible(false);
+            heart2.setVisible(false);
+            heart3.setVisible(false);
+        }
+
 
 
         /** Need to reset only after time passes */
@@ -525,37 +643,12 @@ public class Hud {
         camera.setToOrtho(false, width, height);
 
         stage.getViewport().update(width, height, true);
+
+        x = width - hudWidth - margin;
+        y = height - hudHeight - margin;
     }
 
-    private static void draw(SpriteBatch spriteBatch, TextureRegion textureRegion, float height, float width, 
-        float x, float y) {
-        TextureRegion texture = textureRegion;
-
-        // 1. Calculate the size of the logical tile on screen
-        // float tilePx = TILE_SIZE_PX * SCALE; // e.g., 64 pixels
-
-        // 2. Calculate the size of the sprite to draw
-        float drawWidth = width;
-        float drawHeight = height;
-
-        // 3. Calculate Position
-        // Base X/Y is the bottom-left corner of the TILE
-        float baseX = x;
-        float baseY = y;
-
-        //
-
-        float drawX = baseX + (drawWidth) / 2;
-
-        // ALIGN BOTTOM vertically
-        // This ensures the object's "feet" sit on the bottom of the tile
-        // and the "head" sticks up into the tile above.
-        float drawY = baseY;
-
-        spriteBatch.draw(texture, drawX, drawY, drawWidth, drawHeight);
-    }
-
-
+    
     /**
      * Will be called by the GameScreen when the user presses ESC -> i.e. Pauses the Game
      * 

@@ -15,6 +15,7 @@ import de.tum.cit.aet.valleyday.audio.SoundEffect;
 import de.tum.cit.aet.valleyday.map.Entity.Direction;
 import de.tum.cit.aet.valleyday.screen.GameScreen;
 import de.tum.cit.aet.valleyday.screen.Hud;
+import de.tum.cit.aet.valleyday.map.CropType;
 
 
 /**
@@ -28,7 +29,7 @@ public class Player extends Entity implements Drawable {
 
     private float harvestTime; /** var for harvesting time to make an Animation of the Harvesting */
     
-    
+
 
     float MaxStamina = 100f;
     float stamina = 100f;
@@ -108,9 +109,21 @@ public class Player extends Entity implements Drawable {
     /** Winning conditions */
     private int currentHarvest;
 
+    /** Player has health  
+     * 
+     * If health == 0: GameOver
+     * 
+     * Player looses health by touching a chicken or gets hit by enemies (Spider)
+     * 
+    */
+    private int health;
+
+
+
     private float harvestCooloff = 0;
     private float harvestingAnimationCooloff = 0;
     private float exitCooloff = 120f;
+    private float touchChickenCoolOff = 0;
 
     private int harvesting ; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
@@ -284,7 +297,7 @@ public class Player extends Entity implements Drawable {
 
             option = option % types.length; // Wrapper -> Circular Array
 
-            currentCropType = CropType.values()[option];
+            currentCropType = types[option];
 
             System.out.println("Switched to: " + currentCropType);
 
@@ -319,9 +332,9 @@ public class Player extends Entity implements Drawable {
                         // we must check if the Crop is in state 2 (implying we can harvest this one)
                         if (currentCrop.canHarvest()) {
                             System.out.println("IS THE CROP ACTUALLY HARVESTABLE");
-                            map.harvestCrop(offsetX, offsetY); // harvest the crop
+                            int score = score(map.harvestCrop(offsetX, offsetY)); // harvest the crop
                             /** INCREMENTING THE WINNING CONDITION */
-                            this.currentHarvest++;
+                            this.currentHarvest += MathUtils.clamp(score, 1, 3);
 
                             messageForHarvest = "You just harvested: " + currentCrop.getClass().getSimpleName() + ". Only " + (harvesting - currentHarvest) + "left!";
                         }
@@ -393,6 +406,7 @@ public class Player extends Entity implements Drawable {
         harvestingAnimationCooloff--;
         exitCooloff--;
         shooAwayTimer--;
+        touchChickenCoolOff--;
 
 
 
@@ -441,6 +455,7 @@ public class Player extends Entity implements Drawable {
 
                             // Call the scurry method -> Chicken runs away
                             chicken.scurry(this.getX(), this.getY());
+                            chicken.setShocked();
 
                             System.out.println("Shooed the chicken! Distance was: " + Math.sqrt(distSq));
             }
@@ -504,11 +519,21 @@ public class Player extends Entity implements Drawable {
 
 
           if ((Math.pow(chickenOnTileX - playerX, 2) + Math.pow(chickenOnTileY - playerY, 2)) < Math.pow(Entity.radius, 2)) {
-            this.isScared = true;
 
-            // for distance offseting running aways in opposite Direction
-            this.escapeX = -(chicken.getX() - getX()); 
-            this.escapeY = -(chicken.getY() - getY());
+            if (touchChickenCoolOff <= 0) {
+                health--;
+                touchChickenCoolOff = 90f;
+            };
+
+            if (health <= 0) {
+                this.isScared = true;
+
+                // for distance offseting running aways in opposite Direction
+                this.escapeX = -(chicken.getX() - getX()); 
+                this.escapeY = -(chicken.getY() - getY());
+            }
+            
+            
 
         }
         else {
@@ -564,6 +589,18 @@ public class Player extends Entity implements Drawable {
                this.offsetX--;
             }
 
+    }
+
+    public int score(Crop type) {
+        if (type.getCropType() == CropType.CORN || type.getCropType() == CropType.MAIS) {
+            return 1;
+        }
+        else if (type.getCropType() == CropType.LEMON) {
+            return 2;
+        }
+        else {
+            return 3;
+        }
     }
 
 
@@ -704,6 +741,58 @@ public class Player extends Entity implements Drawable {
     public boolean hasWateringCan() {
         return wateringCanCount > 0;
     } */
+
+    public float getHarvestTime() {
+        return harvestTime;
+    }
+
+    public float getSprintSpeed() {
+        return sprintSpeed;
+    }
+
+    public int getHarvestedCrops() {
+        return harvestedCrops;
+    }
+
+    public float getGameOverTimer() {
+        return gameOverTimer;
+    }
+
+    public float getShooAwayTimer() {
+        return shooAwayTimer;
+    }
+
+    public boolean isScared() {
+        return isScared;
+    }
+
+    public float getEscapeX() {
+        return escapeX;
+    }
+
+    public float getEscapeY() {
+        return escapeY;
+    }
+
+    public int getOption() {
+        return option;
+    }
+
+    public CropType getCurrentCropType() {
+        return currentCropType;
+    }
+
+    public float getExitCooloff() {
+        return exitCooloff;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+    public void setHealth(int health) {
+        this.health = health;
+    }
+    
 
     
 
