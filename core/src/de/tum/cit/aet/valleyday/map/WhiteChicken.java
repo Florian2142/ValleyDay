@@ -38,6 +38,8 @@ public class WhiteChicken extends Entity implements Chicken{
     // contains the value of wether the chicken is scurrying.
     private boolean isScurrying;
     private float scurryTimer;
+    private float scurryAnimTimer;
+    private float schocked;
     private float playerX;
     private float playerY;
 
@@ -84,17 +86,21 @@ public class WhiteChicken extends Entity implements Chicken{
         int currX = Math.round(getX()); // retrieve the currX always, reduces the function calls
         int currY = Math.round(getY()); // same for Y
 
+        
+
 
         if (timeToNextMove <= 0) {
+
+            // Set the current velocity to 0
+            xVelocity = 0;
+            yVelocity = 0;
 
             System.out.println("Well this works potenically");
 
                 // lets take a random number TESTING
                 int randomDir = MathUtils.random(0 , 4);
 
-                // Set the current velocity to 0
-                xVelocity = 0;
-                yVelocity = 0;
+                
 
                 moving = true;
 
@@ -120,11 +126,13 @@ public class WhiteChicken extends Entity implements Chicken{
                         moving = false;
                         break;
             
-                    }       
+                    }   
+                    
+                    // WE NEED TO RESET THE TIMER for next Brainmove
+                 timeToNextMove = 2.0f;  
                 }
 
-            // WE NEED TO RESET THE TIMER for next Brainmove
-            timeToNextMove = 2.0f;   
+             
 
         // Make the chicken eat the crop
         // If the chicken found a crop, the chicken eats it.
@@ -143,14 +151,35 @@ public class WhiteChicken extends Entity implements Chicken{
         }
         else {
             isScurrying = false;
+            scurryAnimTimer = 0f;
         }
 
         // decrement the time in order for brainpower restorage -> Move requires loads of energy
         timeToNextMove -= frameTime;
-        eatTimer--;
+        if (eatTimer > 0) {
+            eatTimer--;
+        }
+        if (scurryTimer > 0){
+            scurryTimer-=frameTime;
+        }
+        if (isScurrying) {
+            scurryAnimTimer += frameTime;
+        }
+        if (schocked > 0) {
+            schocked -= frameTime;
+        }
 
 
         if (eatTimer <= 0) {isEating = false;} // reset the eating animation
+
+        if (Math.abs(xVelocity) > 0.1f) {
+            if (xVelocity > 0) {
+                currDirection = Direction.RIGHT;
+            } else {
+                currDirection = Direction.LEFT;
+            }
+        }
+
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
@@ -161,19 +190,41 @@ public class WhiteChicken extends Entity implements Chicken{
      */
     public void scurryAway(float playerX, float playerY) {
         
-        float sprint = 10f;
-        this.xVelocity = (this.getX() - playerX) * sprint;
-        this.yVelocity = (this.getY() - playerY) * sprint;
+        float diffX = this.getX() - playerX;
+        float diffY = this.getY() - playerY;
+
+        float angle = MathUtils.atan2(diffY, diffX);
+
+        // Constant sprint speed (e.g., 5 meters per second)
+        float sprintSpeed = 3f; 
+        
+        // Set velocity using simple trigonometry
+        if (schocked <= 0) {
+            this.xVelocity = MathUtils.cos(angle) * sprintSpeed;
+            this.yVelocity = MathUtils.sin(angle) * sprintSpeed;
+        }
+        else {
+            this.xVelocity = 0;
+            this.yVelocity = 0;
+        }
     }
     /**The scurry function takes the position of the player in the x and y direction. 
     // If the player is on tile before, behind, above or below the chicken, isScuyying is set to true and called 
     // in the if statement that checkes for wether isScurrying is true.*/
     public void scurry(float playerX, float playerY) {
         this.isScurrying = true;
-        this.scurryTimer = 0.5f;
+        this.scurryTimer = 2f;
+        this.scurryAnimTimer = 0f;
 
         this.playerX = playerX;
         this.playerY = playerY;
+
+        // This stops it from walking back to the old path after running away.
+        this.highwayToHeaven = null; 
+        this.goalCrop = null;
+        
+        // Optional: Make it wait a moment before picking a new target after panicking
+        this.timeToNextMove = 1.0f;
     }
 
     @Override
@@ -182,13 +233,36 @@ public class WhiteChicken extends Entity implements Chicken{
     
         // if the player is not harvesting he can move
         if (isEating()) {
+            if (currDirection == Direction.LEFT) {
+                return Animations.WHITE_CHICKEN_EATING_LEFT.getKeyFrame(this.eatTimer, false);
+            }
             return Animations.WHITE_CHICKEN_EATING.getKeyFrame(this.eatTimer, false);
 
         }
+        else if (isScurrying()) {
+            if (currDirection == Direction.LEFT) {
+                if (scurryAnimTimer <= Animations.WHITE_CHICKEN_SCARED_LEFT.getAnimationDuration()) {
+                    return Animations.WHITE_CHICKEN_SCARED_LEFT.getKeyFrame(scurryAnimTimer, false);
+                }
+                return Animations.WHITE_CHICKEN_WALKING_LEFT.getKeyFrame(scurryAnimTimer, true);
+            }
+            if (scurryAnimTimer <= Animations.WHITE_CHICKEN_SCARED.getAnimationDuration()) {
+                return Animations.WHITE_CHICKEN_SCARED.getKeyFrame(scurryAnimTimer, false);
+            }
+            return Animations.WHITE_CHICKEN_WALKING.getKeyFrame(scurryAnimTimer, true);
+        }
         else if (isMoving()) {
+            if (currDirection == Direction.LEFT) {
+                return  Animations.WHITE_CHICKEN_WALKING_LEFT.getKeyFrame(this.moveTimer, true);
+            }
+           
             return  Animations.WHITE_CHICKEN_WALKING.getKeyFrame(this.moveTimer, true);
+        
         }
         else {
+            if (currDirection == Direction.LEFT) {
+                return  Animations.WHITE_CHICKEN_NOT_WALKING_LEFT.getKeyFrame(this.moveTimer, true);   
+            }
             return  Animations.WHITE_CHICKEN_NOT_WALKING.getKeyFrame(this.moveTimer, true);    
         }
     };
@@ -411,6 +485,20 @@ public class WhiteChicken extends Entity implements Chicken{
         this.goalCrop = goalCrop;
     }
 
+
+
+    public float getSchocked() {
+        return schocked;
+    }
+
+
+    @Override
+    public void setShocked() {
+        // TODO Auto-generated method stub
+        this.schocked = 1f;
+    }
+
+    
 
 
     

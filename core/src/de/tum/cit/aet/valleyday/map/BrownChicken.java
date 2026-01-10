@@ -39,8 +39,13 @@ public class BrownChicken extends Entity implements Chicken{
     // contains the value of wether the chicken is scurrying.
     private boolean isScurrying;
     private float scurryTimer;
+    private float scurryAnimTimer;
+    private float catchBreath;
+    private float shocked;
     private float playerX;
     private float playerY;
+
+    private static final float NORMAL_SPEED = 0.6f;
 
     /** GPS to next Crop */
     private List<GridNode> highwayToHeaven = new LinkedList<>();
@@ -53,6 +58,10 @@ public class BrownChicken extends Entity implements Chicken{
     private int offsetY;
 
     private Crop goalCrop;
+
+    private GameMap map;
+
+    private boolean bool = false;
 
 
     /**
@@ -82,11 +91,23 @@ public class BrownChicken extends Entity implements Chicken{
 
         this.moveTimer += frameTime;
 
+        if (!bool) {
+            this.map = map;
+            bool = true;
+        }
+        
+
+        
+
         int currX = Math.round(getX()); // retrieve the currX always, reduces the function calls
         int currY = Math.round(getY()); // same for Y
 
         // right before next move
         if (timeToNextMove <= 0) {
+
+            // Set the current velocity to 0
+            xVelocity = 0;
+            yVelocity = 0;
 
             System.out.println("Well this works potentially");
 
@@ -118,7 +139,7 @@ public class BrownChicken extends Entity implements Chicken{
                 
             }
 
-            if (highwayToHeaven == null || highwayToHeaven.size() == 0) {
+            if (highwayToHeaven == null || highwayToHeaven.isEmpty()) {
                 // lets take a random number TESTING
                 int randomDir = MathUtils.random(0 , 4);
 
@@ -131,19 +152,19 @@ public class BrownChicken extends Entity implements Chicken{
                 switch (randomDir) {
                     case 0: // UP
                         currDirection = Direction.UP;
-                        yVelocity++;
+                        yVelocity = NORMAL_SPEED;
                         break;
                     case 1: // DOWN ,
                         currDirection = Direction.DOWN;
-                        yVelocity--;
+                        yVelocity = -NORMAL_SPEED;
                         break;
                     case 2: // LEFT 
                         currDirection = Direction.LEFT;
-                        xVelocity--;
+                        xVelocity = -NORMAL_SPEED;
                         break;
                     case 3: // RIGHT
                         currDirection = Direction.RIGHT;
-                        xVelocity++;
+                        xVelocity = NORMAL_SPEED;
                         break;
                     default: 
                         // do nothing
@@ -161,7 +182,7 @@ public class BrownChicken extends Entity implements Chicken{
 
         /** The smart movement of the chicken */
 
-        if (highwayToHeaven != null && highwayToHeaven.size() > 0) {
+        if (highwayToHeaven != null && highwayToHeaven.size() > 0 && isScurrying != true && catchBreath <= 0) {
                 // When the chicken has a path, it looks at first node in the List.
                 nextMove = highwayToHeaven.get(0);
 
@@ -173,8 +194,8 @@ public class BrownChicken extends Entity implements Chicken{
                 
                 // The velocity is calculated by taking the difference of the target tile (offset)
                 // and the current tile currX.
-                xVelocity = offsetX - currX;
-                yVelocity = offsetY - currY;
+                xVelocity = (offsetX - currX) * NORMAL_SPEED;
+                yVelocity = (offsetY - currY) * NORMAL_SPEED;
 
                 // Based on wether the difference is positive or negative, in the x-Direction, 
                 // the Chicken moves to the right or left direction respectively.
@@ -210,35 +231,111 @@ public class BrownChicken extends Entity implements Chicken{
         }
         else {
             isScurrying = false;
+            scurryAnimTimer = 0f;
         }
 
         // decrement the time in order for brainpower restorage -> Move requires loads of energy
         timeToNextMove -= frameTime;
-        eatTimer--;
+        if (eatTimer > 0) {
+            eatTimer--;
+        }
+        if (scurryTimer > 0){
+            scurryTimer-=frameTime;
+        }
+        if (isScurrying) {
+            scurryAnimTimer += frameTime;
+        }
+        if (shocked > 0) {
+            shocked -= frameTime;
+        }
+        if (catchBreath >= 0) {
+            catchBreath-=frameTime;
+        }
+        
 
 
         if (eatTimer <= 0) {isEating = false;} // reset the eating animation
+
+        if (Math.abs(xVelocity) > 0.1f) {
+            if (xVelocity > 0) {
+                currDirection = Direction.RIGHT;
+            } else {
+                currDirection = Direction.LEFT;
+            }
+}
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
+
+
 
     // The scurryAway function of the chicken, takes the x and y positions of the player as arguments.
     // When true, the x and y velocity is calculated by the current tile the chicken is standing on 
     // and the postion of the player multiplied by the sprint speed of 10. The chicken moves and sprints away.
     public void scurryAway(float playerX, float playerY) {
+
+        float diffX = this.getX() - playerX;
+        float diffY = this.getY() - playerY;
+
+        float angle = MathUtils.atan2(diffY, diffX);
+
+        // Constant sprint speed (e.g., 5 meters per second)
+        float sprintSpeed = 3f; 
         
-        float sprint = 10f;
-        this.xVelocity = (this.getX() - playerX) * sprint;
-        this.yVelocity = (this.getY() - playerY) * sprint;
+        // Set velocity using simple trigonometry
+        if (shocked <= 0) {
+            this.xVelocity = MathUtils.cos(angle) * sprintSpeed;
+            this.yVelocity = MathUtils.sin(angle) * sprintSpeed;
+        }
+        else {
+            this.xVelocity = 0;
+            this.yVelocity = 0;
+        }
+
+        
+        
     }
     /**The scurry function takes the position of the player in the x and y direction. 
     // If the player is on tile before, behind, above or below the chicken, isScuyying is set to true and called 
     // in the if statement that checkes for wether isScurrying is true.*/
     public void scurry(float playerX, float playerY) {
         this.isScurrying = true;
-        this.scurryTimer = 0.5f;
+        /** WE WILL CHANGE THIS VALUES ACCORDING TO DIFFICULTY */
+
+        // Difficulty Settings
+        String difficulty = map.getDifficulty();
+        
+        // deciding how fast the chicken should be
+        switch (difficulty) {
+            case "TUM":
+                this.scurryTimer = 1.185f;
+                this.catchBreath = 1.5f;
+                break;
+            case "Hard":
+                this.scurryTimer = 1.5f;
+                this.catchBreath = 2f;
+                break;
+            case "Medium":
+            default: 
+                this.scurryTimer = 2f;
+                this.catchBreath = 2.5f;
+                break;
+        }
+        
+        this.scurryAnimTimer = 0f;
+
+        // Note that we must erase former memory of the optimal solution.
+        this.highwayToHeaven = null; 
+        this.goalCrop = null;
 
         this.playerX = playerX;
         this.playerY = playerY;
+
+        // This stops it from walking back to the old path after running away.
+        this.highwayToHeaven = null; 
+        this.goalCrop = null;
+        
+        // Optional: Make it wait a moment before picking a new target after panicking
+        this.timeToNextMove = 1.0f;
     }
 
     @Override
@@ -247,13 +344,35 @@ public class BrownChicken extends Entity implements Chicken{
     
         // if the player is not harvesting he can move
         if (isEating()) {
+            if (currDirection == Direction.LEFT) {
+                return Animations.BROWN_CHICKEN_EATING_LEFT.getKeyFrame(this.eatTimer, false);
+            }
             return Animations.BROWN_CHICKEN_EATING.getKeyFrame(this.eatTimer, false);
 
         }
+        /* Used a quite different approach here, such that the animation time goes aslong as the chicken is really scared */
+        else if (isScurrying()) {
+            if (currDirection == Direction.LEFT) {
+                if (scurryAnimTimer <= Animations.BROWN_CHICKEN_SCARED_LEFT.getAnimationDuration()) {
+                    return Animations.BROWN_CHICKEN_SCARED_LEFT.getKeyFrame(scurryAnimTimer, false);
+                }
+                return Animations.BROWN_CHICKEN_WALKING_LEFT.getKeyFrame(scurryAnimTimer, true);
+            }
+            if (scurryAnimTimer <= Animations.BROWN_CHICKEN_SCARED.getAnimationDuration()) {
+                return Animations.BROWN_CHICKEN_SCARED.getKeyFrame(scurryAnimTimer, false);
+            }
+            return Animations.BROWN_CHICKEN_WALKING.getKeyFrame(scurryAnimTimer, true);
+        }
         else if (isMoving()) {
+            if (currDirection == Direction.LEFT) {
+                return  Animations.BROWN_CHICKEN_WALKING_LEFT.getKeyFrame(this.moveTimer, true);
+            }
             return  Animations.BROWN_CHICKEN_WALKING.getKeyFrame(this.moveTimer, true);
         }
         else {
+            if (currDirection == Direction.LEFT) {
+                return  Animations.BROWN_CHICKEN_NOT_WALKING_LEFT.getKeyFrame(this.moveTimer, true);
+            }
             return  Animations.BROWN_CHICKEN_NOT_WALKING.getKeyFrame(this.moveTimer, true);    
         }
     };
@@ -261,224 +380,49 @@ public class BrownChicken extends Entity implements Chicken{
 
 
 
-
-    public boolean isMoving() {
-        return moving;
-    }
-
-
-
-    public boolean isEating() {
-        return isEating;
-    }
-
-
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
-
-
-    public void setEating(boolean isEating) {
-        this.isEating = isEating;
-    }
-
-
-
-    public float getMoveTimer() {
-        return moveTimer;
-    }
-
-
-
-    public void setMoveTimer(float moveTimer) {
-        this.moveTimer = moveTimer;
-    }
-
-
-
-    public float getEatTimer() {
-        return eatTimer;
-    }
-
-
-
-    public void setEatTimer(float eatTimer) {
-        this.eatTimer = eatTimer;
-    }
-
-
-
-    public float getTimeToNextMove() {
-        return timeToNextMove;
-    }
-
-
-
-    public void setTimeToNextMove(float timeToNextMove) {
-        this.timeToNextMove = timeToNextMove;
-    }
-
-
-
-    public float getyVelocity() {
-        return yVelocity;
-    }
-
-
-
-    public void setyVelocity(float yVelocity) {
-        this.yVelocity = yVelocity;
-    }
-
-
-
-    public float getxVelocity() {
-        return xVelocity;
-    }
-
-
-
-    public void setxVelocity(float xVelocity) {
-        this.xVelocity = xVelocity;
-    }
-
-
-
-    public boolean isScurrying() {
-        return isScurrying;
-    }
-
-
-
-    public void setScurrying(boolean isScurrying) {
-        this.isScurrying = isScurrying;
-    }
-
-
-
-    public float getScurryTimer() {
-        return scurryTimer;
-    }
-
-
-
-    public void setScurryTimer(float scurryTimer) {
-        this.scurryTimer = scurryTimer;
-    }
-
-
-
-    public float getPlayerX() {
-        return playerX;
-    }
-
-
-
-    public void setPlayerX(float playerX) {
-        this.playerX = playerX;
-    }
-
-
-
-    public float getPlayerY() {
-        return playerY;
-    }
-
-
-
-    public void setPlayerY(float playerY) {
-        this.playerY = playerY;
-    }
-
-
-
-    public List<GridNode> getHighwayToHeaven() {
-        return highwayToHeaven;
-    }
-
-
-
-    public void setHighwayToHeaven(List<GridNode> highwayToHeaven) {
-        this.highwayToHeaven = highwayToHeaven;
-    }
-
-
-
-    public GridNode getStart() {
-        return start;
-    }
-
-
-
-    public void setStart(GridNode start) {
-        this.start = start;
-    }
-
-
-
-    public GridNode getGoal() {
-        return goal;
-    }
-
-
-
-    public void setGoal(GridNode goal) {
-        this.goal = goal;
-    }
-
-
-
-    public GridNode getNextMove() {
-        return nextMove;
-    }
-
-
-
-    public void setNextMove(GridNode nextMove) {
-        this.nextMove = nextMove;
-    }
-
-
-
-    public int getOffsetX() {
-        return offsetX;
-    }
-
-
-
-    public void setOffsetX(int offsetX) {
-        this.offsetX = offsetX;
-    }
-
-
-
-    public int getOffsetY() {
-        return offsetY;
-    }
-
-
-
-    public void setOffsetY(int offsetY) {
-        this.offsetY = offsetY;
-    }
-
-
-
-    public Crop getGoalCrop() {
-        return goalCrop;
-    }
-
-
-
-    public void setGoalCrop(Crop goalCrop) {
-        this.goalCrop = goalCrop;
-    }
-
-
-
-    
-    
-    
+// --- Getters & Setters ---
+    public boolean isMoving() { return moving; }
+    public void setMoving(boolean moving) { this.moving = moving; }
+    public boolean isEating() { return isEating; }
+    public void setEating(boolean isEating) { this.isEating = isEating; }
+    public float getMoveTimer() { return moveTimer; }
+    public void setMoveTimer(float moveTimer) { this.moveTimer = moveTimer; }
+    public float getEatTimer() { return eatTimer; }
+    public void setEatTimer(float eatTimer) { this.eatTimer = eatTimer; }
+    public float getTimeToNextMove() { return timeToNextMove; }
+    public void setTimeToNextMove(float timeToNextMove) { this.timeToNextMove = timeToNextMove; }
+    public float getyVelocity() { return yVelocity; }
+    public void setyVelocity(float yVelocity) { this.yVelocity = yVelocity; }
+    public float getxVelocity() { return xVelocity; }
+    public void setxVelocity(float xVelocity) { this.xVelocity = xVelocity; }
+    public boolean isScurrying() { return isScurrying; }
+    public void setScurrying(boolean isScurrying) { this.isScurrying = isScurrying; }
+    public float getScurryTimer() { return scurryTimer; }
+    public void setScurryTimer(float scurryTimer) { this.scurryTimer = scurryTimer; }
+    public float getPlayerX() { return playerX; }
+    public void setPlayerX(float playerX) { this.playerX = playerX; }
+    public float getPlayerY() { return playerY; }
+    public void setPlayerY(float playerY) { this.playerY = playerY; }
+    public List<GridNode> getHighwayToHeaven() { return highwayToHeaven; }
+    public void setHighwayToHeaven(List<GridNode> highwayToHeaven) { this.highwayToHeaven = highwayToHeaven; }
+    public GridNode getStart() { return start; }
+    public void setStart(GridNode start) { this.start = start; }
+    public GridNode getGoal() { return goal; }
+    public void setGoal(GridNode goal) { this.goal = goal; }
+    public GridNode getNextMove() { return nextMove; }
+    public void setNextMove(GridNode nextMove) { this.nextMove = nextMove; }
+    public int getOffsetX() { return offsetX; }
+    public void setOffsetX(int offsetX) { this.offsetX = offsetX; }
+    public int getOffsetY() { return offsetY; }
+    public void setOffsetY(int offsetY) { this.offsetY = offsetY; }
+    public Crop getGoalCrop() { return goalCrop; }
+    public void setGoalCrop(Crop goalCrop) { this.goalCrop = goalCrop; }
+    public float getShocked() { return shocked; }
+    public void setShocked() { this.shocked = 1f; }
 }
+    
+
+    
+    
+    
+

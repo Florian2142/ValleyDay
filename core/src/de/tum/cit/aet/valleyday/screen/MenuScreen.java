@@ -57,16 +57,26 @@ public class MenuScreen implements Screen {
         table.add(new Label("Welcome to TryCatchReturn35's Project", game.getSkin(), "title")).padBottom(80).row();
 
         // Create and add a button to go to the game screen
-        TextButton goToGameButton   = new TextButton("Start the Game", game.getSkin());
+        TextButton goToCampagneButton   = new TextButton("Experience the marvelous warrior Story", game.getSkin());
+        TextButton goToGameButton   = new TextButton("Start with random Map", game.getSkin());
         TextButton mapButtom        = new TextButton("Choose the Map.", game.getSkin());
         TextButton settingsButton   = new TextButton("Choose Difficulty.", game.getSkin());
         TextButton scaryButton      = new TextButton("Become a lost warrior!", game.getSkin());
 
-
+        table.add(goToCampagneButton).width(750).row();
+        table.row();
         table.add(goToGameButton).width(750).row();
         table.add(mapButtom).width(750).row();
         table.add(settingsButton).width(750).row();
         table.add(scaryButton).width(750).row();
+
+
+        goToCampagneButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.selectMap();
+            }
+        });
 
 
         mapButtom.addListener(new ChangeListener() {

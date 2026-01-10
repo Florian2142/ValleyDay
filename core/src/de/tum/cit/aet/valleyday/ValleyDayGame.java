@@ -18,6 +18,15 @@ import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+
+
+
+
 /**
  * The ValleyDayGame class represents the core of the Valley Day game.
  * It manages the screens and global resources like SpriteBatch and Skin.
@@ -41,6 +50,11 @@ public class ValleyDayGame extends Game {
     private final NativeFileChooser fileChooser;
 
     private FileHandle pendingMapFile;
+
+    /** We will use a list to make sequential maps and make a winner */
+    private List<FileHandle> winnersRoad = new ArrayList<>();
+    
+    private int currentMapIndex = 0;
 
     
     
