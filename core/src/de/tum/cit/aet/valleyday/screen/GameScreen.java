@@ -51,6 +51,7 @@ public class GameScreen implements Screen {
 
 
     /** Game options */
+    // While the game is running, isPaused is set to false and isGameEnded is set to false.
     private boolean isPaused = false;
     private boolean isGameEnded = false;
 
@@ -61,7 +62,7 @@ public class GameScreen implements Screen {
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
-     *
+     * It also sets Hud and the SpriteBatch. 
      * @param game The main game class, used to access global resources and methods.
      */
     public GameScreen(ValleyDayGame game) {
@@ -80,21 +81,40 @@ public class GameScreen implements Screen {
         System.out.println("Difficulty is: " + diff);
         Player player = map.getPlayer();
 
+        /**
+         * Gets the difficulty from the gameMap. 
+         * Based on what difficulty is chosen before starting the game. 
+         * When the easy difficulty is selected, the timer is set to 300 seconds.
+         * 5 crops have to be harvested and the health is 3 Hearts.
+         */
         if (diff.equals("Easy")) {
            this.remainingTime = 300; 
            player.setHarvesting(5);
            player.setHealth(3);
         }
+        /**
+         * When the medium difficulty is selected, the timer is set to 200 seconds.
+         * 10 crops have to be harvested and the health is 3 Hearts.
+         */
         else if(diff.equals("Medium")) {
             this.remainingTime = 200;
             player.setHarvesting(10);
            player.setHealth(3);
         }
+        /**
+         * When the hard difficulty is selected, the timer is set to 180 seconds.
+         * 15 crops have to be harvested and the health is 2 Hearts.
+         */
         else if (diff.equals("Hard")) {
             this.remainingTime = 180;
             player.setHarvesting(15);
            player.setHealth(2);
         }
+        /**
+         * The TUM difficulty is the hardest difficulty in the game, the timer is set to 120 seconds.
+         * 15 crops have to be harvested and the health is 1 Heart. 
+         * If you touch a chicken the game is lost Immediately. 
+         */
         else if (diff.equals("TUM")){
             this.remainingTime = 120;
             player.setHarvesting(15);

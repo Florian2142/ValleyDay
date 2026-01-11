@@ -4,17 +4,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 
 import de.tum.cit.aet.valleyday.texture.Textures;
-/**
- * Makes a Debris class which extends an Obstacle 
- * 
- * Implements a Destructible => Can be destroyed
- */
 
-public class Debris extends Obstacle implements Destructible{
+public class StoneDebris extends Obstacle implements Destructible {
+    
 
-
-
-    private boolean destructed = false;
+     private boolean destructed = false;
 
     private final int lifeTIME = 4;
 
@@ -31,7 +25,7 @@ public class Debris extends Obstacle implements Destructible{
      * @param x x-axis coordinate
      * @param y y-axis coordinate
      */
-    public Debris(World world, float x, float y) {
+    public StoneDebris(World world, float x, float y) {
         super(world, x, y);
         this.currState = lifeTIME;
         this.hit = 12;
