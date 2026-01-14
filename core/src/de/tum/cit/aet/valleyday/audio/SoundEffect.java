@@ -9,7 +9,14 @@ import com.badlogic.gdx.audio.Sound;
 public enum SoundEffect {
 
     BRANCHES("branchesShort.wav", 0.6f),
-    STEPS_DIRT("steps2.wav", 0.6f);
+    STEPS_DIRT("walk-on-dirt-3-291983.mp3", 0.15f),
+    SWORD_SLICE("sword-slice-2-393845.mp3", 0.25f),
+    GAMEOVER("pixel-death-66829.mp3", 0.5f),
+    CROP_PICKUP("CropPickup.wav", 0.3f),
+    CROP_PLANTING("walk-on-dirt-1-291981.mp3", 0.7f),
+    EQUIP("equip-sound-272428.mp3", 0.7f),
+    NEXTLEVEL("cute-level-up-3-189853.mp3", 0.75f),
+    DEBRISREMOVAL("branch-drag-329004.mp3", 0.25f);
 
     private final Sound sound;
     private final float volume;
