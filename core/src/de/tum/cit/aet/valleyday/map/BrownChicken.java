@@ -189,10 +189,6 @@ public class BrownChicken extends Entity implements Chicken{
                 System.out.println("The current TileX which is better: " + nextMove.getX());
                 System.out.println("The current TileX which is better: " + nextMove.getY());
 
-                if (!map.getActiveCrops().contains(goalCrop)) {
-                    highwayToHeaven = null;
-                }
-
                 offsetX = nextMove.getX();
                 offsetY = nextMove.getY();
                 
@@ -212,7 +208,7 @@ public class BrownChicken extends Entity implements Chicken{
                 // set moving to true as always
                 moving = true;
 
-                if (currX == offsetX && currY == offsetY && highwayToHeaven != null) {
+                if (currX == offsetX && currY == offsetY) {
 
                         highwayToHeaven.remove(0);
                     }           
@@ -231,7 +227,6 @@ public class BrownChicken extends Entity implements Chicken{
         // If the chicken is on the tile that is one next to or before the player, the chicken knows the 
         // x and y postion of the player and isScurrying is true. 
         if (isScurrying && scurryTimer >= 0) {
-            this.highwayToHeaven = null; // chicken is so scared it forgets its path!
             scurryAway(playerX, playerY);
         }
         else {
@@ -288,8 +283,8 @@ public class BrownChicken extends Entity implements Chicken{
         
         // Set velocity using simple trigonometry
         if (shocked <= 0) {
-            this.xVelocity = MathUtils.clamp(MathUtils.cos(angle) * sprintSpeed, MathUtils.cos(angle) * sprintSpeed, 1);
-            this.yVelocity = MathUtils.clamp(MathUtils.sin(angle) * sprintSpeed, MathUtils.sin(angle) * sprintSpeed, 1);
+            this.xVelocity = MathUtils.cos(angle) * sprintSpeed;
+            this.yVelocity = MathUtils.sin(angle) * sprintSpeed;
         }
         else {
             this.xVelocity = 0;

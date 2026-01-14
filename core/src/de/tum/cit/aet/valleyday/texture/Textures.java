@@ -54,6 +54,13 @@ public class Textures {
     public static final TextureRegion DEBRIS_TWO   = SpriteSheet.DEBRIS.at(1,3);;
     public static final TextureRegion DEBRIS_THREE = SpriteSheet.DEBRIS.at(1,5);
     public static final TextureRegion DEBRIS_FINAL = SpriteSheet.DEBRIS.at(1,5);
+
+    // Stone Debris
+    public static final TextureRegion STONE_DEBRIS_FULL = SpriteSheet.STONE_DEBRIS.at(3, 3);
+    public static final TextureRegion STONE_DEBRIS_ONE = SpriteSheet.STONE_DEBRIS.at(3, 4);
+    public static final TextureRegion STONE_DEBRIS_TWO = SpriteSheet.STONE_DEBRIS.at(3, 5);
+    public static final TextureRegion STONE_DEBRIS_THREE = SpriteSheet.STONE_DEBRIS.at(3, 7);
+    public static final TextureRegion STONE_DEBRIS_FINAL = SpriteSheet.STONE_DEBRIS.at(3, 7);
    
 
 
@@ -66,6 +73,16 @@ public class Textures {
         DEBRIS_FULL // the super healthy debris object untouched of human cruelty.
     };
 
+    // add all Stone Debris Stages within an array for easy access.
+
+    public static final TextureRegion[] STONE_DEBRIS_STATES = {
+        STONE_DEBRIS_FINAL,
+        STONE_DEBRIS_THREE, 
+        STONE_DEBRIS_TWO,
+        STONE_DEBRIS_ONE,
+        STONE_DEBRIS_FULL,
+    };
+
     /**
     * ITEMS 
     */
@@ -75,6 +92,8 @@ public class Textures {
     public static final TextureRegion WATERING_CAN = SpriteSheet.TOOLS.at(1,3);
     // FERTILIZER
     public static final TextureRegion FERTILIZER = SpriteSheet.TOOLS.at(1,4);
+    // PICKAXE
+    public static final TextureRegion PICKAXE = SpriteSheet.TOOLS.at(0, 0);
     
      
 
@@ -147,6 +166,7 @@ public class Textures {
     public static final TextureRegion CLOCK5 = SpriteSheet.CLOCK5.at(1,1,3 ,3);
 
     public static final TextureRegion HEART = SpriteSheet.OBJECTS_SMALL.at(4,1);
+    public static final TextureRegion COIN = SpriteSheet.OBJECTS_SMALL.at(5,1);
 
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 

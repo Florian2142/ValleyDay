@@ -13,7 +13,9 @@ import com.badlogic.gdx.audio.Music;
  */
 public enum MusicTrack {
     
-    BACKGROUND("background.mp3", 0.005f);
+    BACKGROUND("background.mp3", 0.1f),
+    EASTER_EGG("White Bat Audio - Inception.wav", 0.33f),
+    GAME("game-music-loop-6-144641.mp3", 0.15f);
     
     /** The music file owned by this variant. */
     private final Music music;
@@ -26,9 +28,21 @@ public enum MusicTrack {
     
     /**
      * Play this music track.
-     * This will not stop other music from playing - if you add more tracks, you will have to handle that yourself.
+     * This will not stop other music from playing
      */
     public void play() {
         this.music.play();
+    }
+
+    public void stop() {
+        this.music.stop();
+    }
+
+    /** 
+     * Checks if the music is currently playing.
+     * @return true if playing, false otherwise.
+     */
+    public boolean isPlaying() {
+        return this.music.isPlaying();
     }
 }

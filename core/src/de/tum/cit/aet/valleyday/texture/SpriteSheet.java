@@ -36,7 +36,7 @@ public enum SpriteSheet {
 
     // BASICS("basics.png", 303, 132);
     DEBRIS("Branches.png", 16,16),
-    STONE_DEBRIS("objects.png", 16, 16),
+    STONE_DEBRIS("objects.png", 32, 32),
 
     // HUD STUFF
     CLOCK1("clock/clock0.png", 16,16),

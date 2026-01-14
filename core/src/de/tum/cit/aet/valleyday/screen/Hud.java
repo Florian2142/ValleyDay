@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import de.tum.cit.aet.valleyday.audio.SoundEffect;
 
 
 /**
@@ -71,6 +72,7 @@ public class Hud {
      */
     private Label timeLabel;
     private Label cropsLabel;
+    private Label scoreLabel;
     private Label exitLabel;
     private Label essentialsLabel;
 
@@ -80,6 +82,7 @@ public class Hud {
     Image wateringCan = new Image(Textures.WATERING_CAN);
     Image fertilizer  = new Image(Textures.FERTILIZER);
     Image clock       = new Image(Textures.CLOCK1);
+    Image coin       = new Image(Textures.COIN);
     Image crop        = new Image(Textures.CORN_MATURING);
 
     Image crop1    = new Image(Textures.CORN_MATURING);
@@ -126,7 +129,7 @@ public class Hud {
         this.gameScreen = gameScreen;
         this.shapeRenderer = new ShapeRenderer();
         //Define global settings 
-        hudWidth = 220;
+        hudWidth = 250;
         hudHeight = 150;
         margin = 20;
         float screenWidth = Gdx.graphics.getWidth();
@@ -187,6 +190,11 @@ public class Hud {
         toolsTable.add(cropsLabel).left().padTop(5);
         toolsTable.row();                
 
+        // Make the Time Column
+        scoreLabel = new Label(": 0", labelStyle);
+        toolsTable.add(coin).size(30, 30).padRight(10);
+        toolsTable.add(scoreLabel).left().size(60,30).padTop(5);
+        toolsTable.row(); 
 
         // Make extra Table only for the Icons
         Table toolsGrid = new Table();
@@ -294,11 +302,6 @@ public class Hud {
 
 
 
-
-
-
-
-
         /**
          * 
          * Make the Pause Table for pausing and resuming options
@@ -363,10 +366,13 @@ public class Hud {
 
         // Create and add a button to go to the game screen
         TextButton winningButtom       = new TextButton("Keep Farming!", this.skin);
+        TextButton advanceButton       = new TextButton("Advance to the next level!", this.skin);
         TextButton continueButton      = new TextButton("Enjoy the Harvest and make Beer!", this.skin);
 
 
         exitTable.add(winningButtom).width(650).row();
+        exitTable.row();
+        exitTable.add(advanceButton).width(650).row();
         exitTable.row();
         exitTable.add(continueButton).width(650).row();
         exitTable.row();
@@ -405,6 +411,14 @@ public class Hud {
             public void changed(ChangeEvent event, Actor actor) {
                 continueFarming();
                 gameScreen.resume();
+                
+            }
+        });
+
+        advanceButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameScreen.getGame().nextLevel(); // intialize next level
                 
             }
         });
@@ -459,12 +473,12 @@ public class Hud {
      */
     public void render(float timeRemaining) {
 
-        shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 0.0f);
-        shapeRenderer.rect(x, y, hudWidth, hudHeight);
-        shapeRenderer.end();
+        //shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+//
+        //shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        //shapeRenderer.setColor(0, 0, 0, 0.0f);
+        //shapeRenderer.rect(x, y, hudWidth, hudHeight);
+        //shapeRenderer.end();
         // Render from the camera's perspective
         spriteBatch.setProjectionMatrix(camera.combined);
         // Start drawing
@@ -578,6 +592,8 @@ public class Hud {
         }
 
 
+        /** For score just set the TEXT of the scoreLabel */
+        scoreLabel.setText(": " + gameScreen.getGame().getScore());
 
         /** Need to reset only after time passes */
         if (clockTicking <= 0) {
@@ -602,6 +618,8 @@ public class Hud {
         else {
             clock.setDrawable(clockHigh);
         }
+
+
         
 
 
@@ -670,6 +688,7 @@ public class Hud {
     public void showVictoryMenu() {
         this.exitTable.setVisible(true);
         Gdx.input.setInputProcessor(stage);
+        SoundEffect.NEXTLEVEL.play();
     }
 
     public void continueFarming() {

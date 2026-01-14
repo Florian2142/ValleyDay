@@ -56,6 +56,13 @@ public class ValleyDayGame extends Game {
     
     private int currentMapIndex = 0;
 
+    /** We have a score depending on the hits the player took, the harvest he had, the speed he finished the given level */
+    private int score = 0;
+
+    private final int TOTAL_MAPS = 5;
+
+    private boolean isCampaignMode = false; // indicates if the user is currently in the 
+
     
     
     /**
@@ -167,6 +174,29 @@ public class ValleyDayGame extends Game {
             // Create the map now that we have all ingredients
             this.map = new GameMap(this, this.pendingMapFile, this.difficulty);
 
+            if (pendingMapFile.name().equals("mapaEG.properties")) {
+                
+                // If it is the Easter Egg map:
+                if (MusicTrack.BACKGROUND.isPlaying()) {
+                    MusicTrack.BACKGROUND.stop(); // Stop standard music
+                }
+                MusicTrack.GAME.stop();
+                MusicTrack.EASTER_EGG.play();     // Play special music
+                
+            } else {
+                // If it is a NORMAL map:
+                // WE Will stop any other music and make a lighter music
+                if (MusicTrack.EASTER_EGG.isPlaying()) {
+                    MusicTrack.EASTER_EGG.stop();
+                }
+                
+                // Resume standard music if it isn't playing
+                if (!MusicTrack.GAME.isPlaying()) {
+                    MusicTrack.BACKGROUND.stop();
+                    MusicTrack.GAME.play();
+                }
+            }
+
             // Switch to the game screen
             goToGame();
 
@@ -174,7 +204,83 @@ public class ValleyDayGame extends Game {
             System.err.println("Failed to create map: " + e.getMessage());
             e.printStackTrace();
         }
-}
+    }
+
+
+    /** Initializes the sequential maps 
+     * 
+     * Lets user play more levels and an actual game (We had enough time so we just decided to implement this)
+    */
+    public void initCampaign() {
+
+        winnersRoad.clear(); // just clear for good practise
+
+        winnersRoad.add(Gdx.files.internal("maps/map1.properties"));
+        winnersRoad.add(Gdx.files.internal("maps/map2.properties"));
+        winnersRoad.add(Gdx.files.internal("maps/map3.properties"));
+        winnersRoad.add(Gdx.files.internal("maps/map4.properties"));
+        winnersRoad.add(Gdx.files.internal("maps/mapEG.properties"));
+
+    }
+
+    public void startCampaign() {
+        
+        // initialize the campaign and load the maps
+        initCampaign();
+
+        this.currentMapIndex = 0; // reset the index to zero at first
+
+        isCampaignMode = true;
+
+        if (!this.winnersRoad.isEmpty()) {
+
+            
+            // Get the starting map -> Later we will increment the index as the player moves on
+            this.pendingMapFile = winnersRoad.get(currentMapIndex);
+            
+            startGame(); // just call starting the game with the first map
+        }
+        else {
+            System.err.println("Well how can the warrior start its journey with no targets!");
+            return;
+        }
+    }
+
+    public void nextLevel() {
+        if (!isCampaignMode) {
+            System.err.println("Well you decided not to actually go the warriors road, so nothing to see here");
+            return;
+        }
+        
+        if (currentMapIndex++ <= TOTAL_MAPS && currentMapIndex < winnersRoad.size()) {
+            
+            // Now we simply load the next map
+            this.pendingMapFile = winnersRoad.get(currentMapIndex);
+            System.out.println("Advancing to Level " + (currentMapIndex + 1));
+            startGame(); 
+        }
+        else {
+            // He beat the whole game nothing left to do, just enjoy your beer!
+            System.out.println("Victory! Campaign Complete. Enjoy!");
+            goToMenu(); 
+    }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Switches to the menu screen.
@@ -235,6 +341,34 @@ public class ValleyDayGame extends Game {
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
     }
+
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
+    }
+
+    public FileHandle getPendingMapFile() {
+        return pendingMapFile;
+    }
+
+    public List<FileHandle> getWinnersRoad() {
+        return winnersRoad;
+    }
+
+    public int getCurrentMapIndex() {
+        return currentMapIndex;
+    }
+
+    public boolean isCampaignMode() {
+        return isCampaignMode;
+    }
+
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int amount) {
+        this.score = amount;
+    }
+    
 
     
 }

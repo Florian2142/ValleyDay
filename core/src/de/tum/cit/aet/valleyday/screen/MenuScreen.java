@@ -58,10 +58,10 @@ public class MenuScreen implements Screen {
 
         // Create and add a button to go to the game screen
         TextButton goToCampagneButton   = new TextButton("Experience the marvelous warrior Story", game.getSkin());
-        TextButton goToGameButton   = new TextButton("Start with random Map", game.getSkin());
-        TextButton mapButtom        = new TextButton("Choose the Map.", game.getSkin());
-        TextButton settingsButton   = new TextButton("Choose Difficulty.", game.getSkin());
-        TextButton scaryButton      = new TextButton("Become a lost warrior!", game.getSkin());
+        TextButton goToGameButton       = new TextButton("Start with random Map", game.getSkin());
+        TextButton mapButtom            = new TextButton("Choose the Map.", game.getSkin());
+        TextButton settingsButton       = new TextButton("Choose Difficulty.", game.getSkin());
+        TextButton scaryButton          = new TextButton("Become a lost warrior!", game.getSkin());
 
         table.add(goToCampagneButton).width(750).row();
         table.row();
@@ -74,7 +74,7 @@ public class MenuScreen implements Screen {
         goToCampagneButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.selectMap();
+                game.startCampaign();
             }
         });
 
