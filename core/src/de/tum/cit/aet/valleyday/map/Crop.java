@@ -49,7 +49,12 @@ public class Crop implements Drawable{
     }
     
     public TextureRegion getCurrentAppearance() {
-        /** Returns the current state, will update if player holds d and eventually destroy the object */
+        /** Returns the current state, will update if player holds d and eventually destroy the object 
+         * Iterates through the four different stages, at their index in the TextureRegion Array. 
+         * Starting at index 0 of the Array, the state will be init type for each cropType in the cropType enum class. 
+         * The appearance of the stages is called by their textures into the enum class.
+         * Each index of the Array has a different sate defined in the textures class. 
+        */
         return cropTexture[currState];
     }
 
@@ -84,10 +89,20 @@ public class Crop implements Drawable{
     public void grow(float deltaTime) {
         timeElapsed += deltaTime; // Increment the method with each tickcall -> We call the method all the time
     
-        // with elapsing time the crop grows
+       /** with elapsing time the crop grows 
+        * Check if before 60s have passed, if the current state is smaller than 2, which means that the crops are either 
+        * in its initial state (index 0) or in its growing state (index 1) in the TextureRegion Array.
+        * As long as the index is smaller than 2, we update the currentState (currState).
+       */
         if (timeElapsed >= timeToMaturity/4 && currState < 2) {
             currState++;
             timeElapsed = 0;
+        /**
+        * We continue moving through the Array until being at index 2. 
+        * At index 2 the crop is maturing and we update the state again, which means we are now at index 3.
+        * At index 3 the crop is rotten and it is the last index of our Array so we don't update anymore. 
+        * Otherwise we would get an indexOutOfBound Exception. 
+        */
         }
         else if (currState == 2 && timeElapsed >= 60) {
             currState++; // Now its rotten
@@ -103,6 +118,7 @@ public class Crop implements Drawable{
     public void revive() {
     
         // with elapsing time the crop grows
+        // As long as the current state is 0, 1 or 2, when using the watering can, it restets the timer for all crops.
         if (currState <= 2) {
             // resets the rot timer FOR all crops
             timeElapsed = 0;

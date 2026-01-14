@@ -4,6 +4,15 @@ import de.tum.cit.aet.valleyday.texture.Textures;
 
 public class Fertilizer extends hiddenObject implements Item{
 
+    /**
+     * The Fertilizer class extends the Parent class "hiddenObject" and implements the "Item" interface.
+     * The constructor takes the x and y coordinate of the hiddenObject which also takes the GameMap as an argument.
+     * It also initializes the texture variable insidfe the HiddenObject class with the textures for the fertilizer.
+     * @param x
+     * @param y
+     * @param map
+     */
+
     public Fertilizer(int x, int y, GameMap map) {
         super(x, y, map);
         super.texture = Textures.FERTILIZER;

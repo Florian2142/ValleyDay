@@ -9,7 +9,9 @@ import de.tum.cit.aet.valleyday.texture.Textures;
  * Different Crop Types which have different growing times 
  * 
  * All crops look different and hence we have a simply TextureRegion[] array
- * 
+ * The enum class "CropType" contains the different types. 
+ * The types contain all stages from the TextureRegion array in the Textures class. 
+ * The enum class also contains the different timeToMaturity for each crop type.
  * 
  */
 public enum CropType {
