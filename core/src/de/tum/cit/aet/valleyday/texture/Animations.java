@@ -338,4 +338,20 @@ public class Animations {
         //SpriteSheet.CHARACTER.at(2,8)
     );
 
+
+    public static final Animation<TextureRegion> EXPLOSION = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+           
+            SpriteSheet.EXPLOSION.at(1, 2),
+            SpriteSheet.EXPLOSION.at(1, 3),
+            SpriteSheet.EXPLOSION.at(1, 4),
+            SpriteSheet.EXPLOSION.at(1, 5),
+            SpriteSheet.EXPLOSION.at(1, 6),
+            SpriteSheet.EXPLOSION.at(1, 7),
+            SpriteSheet.EXPLOSION.at(1, 8),
+           
+        }, 
+        new int[] {2, 2, 2, 2, 2, 2, 2}
+    );
+
 }

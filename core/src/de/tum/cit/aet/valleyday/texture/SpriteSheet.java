@@ -34,9 +34,14 @@ public enum SpriteSheet {
     // BASICS("basics.png", 303, 132);
     ITEMS("Items.png", 16,16),
 
+    COOLITEMS("materials3.png", 16, 16),
+    EXPLOSION("explosion.png", 32, 32),
+
     // BASICS("basics.png", 303, 132);
     DEBRIS("Branches.png", 16,16),
     STONE_DEBRIS("objects.png", 32, 32),
+    STONES("Rocks.png", 16, 16),
+    POKEMON("PokemonTiles.png", 16, 16),
 
     // HUD STUFF
     CLOCK1("clock/clock0.png", 16,16),

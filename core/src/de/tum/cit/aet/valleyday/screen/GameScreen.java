@@ -22,6 +22,7 @@ import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.map.GameMap;
 import de.tum.cit.aet.valleyday.map.Player;
 import de.tum.cit.aet.valleyday.map.Tiles;
+import de.tum.cit.aet.valleyday.map.TileType;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -51,7 +52,6 @@ public class GameScreen implements Screen {
 
 
     /** Game options */
-    // While the game is running, isPaused is set to false and isGameEnded is set to false.
     private boolean isPaused = false;
     private boolean isGameEnded = false;
 
@@ -60,9 +60,12 @@ public class GameScreen implements Screen {
     private float remainingTime;
     private int tick = 60;
 
+    /** We will make the background larger */
+    public static final int VIEWPORT_PADDING = 25;
+
     /**
      * Constructor for GameScreen. Sets up the camera and font.
-     * It also sets Hud and the SpriteBatch. 
+     *
      * @param game The main game class, used to access global resources and methods.
      */
     public GameScreen(ValleyDayGame game) {
@@ -81,40 +84,21 @@ public class GameScreen implements Screen {
         System.out.println("Difficulty is: " + diff);
         Player player = map.getPlayer();
 
-        /**
-         * Gets the difficulty from the gameMap. 
-         * Based on what difficulty is chosen before starting the game. 
-         * When the easy difficulty is selected, the timer is set to 300 seconds.
-         * 5 crops have to be harvested and the health is 3 Hearts.
-         */
         if (diff.equals("Easy")) {
            this.remainingTime = 300; 
            player.setHarvesting(5);
            player.setHealth(3);
         }
-        /**
-         * When the medium difficulty is selected, the timer is set to 200 seconds.
-         * 10 crops have to be harvested and the health is 3 Hearts.
-         */
         else if(diff.equals("Medium")) {
             this.remainingTime = 200;
             player.setHarvesting(10);
            player.setHealth(3);
         }
-        /**
-         * When the hard difficulty is selected, the timer is set to 180 seconds.
-         * 15 crops have to be harvested and the health is 2 Hearts.
-         */
         else if (diff.equals("Hard")) {
             this.remainingTime = 180;
             player.setHarvesting(15);
            player.setHealth(2);
         }
-        /**
-         * The TUM difficulty is the hardest difficulty in the game, the timer is set to 120 seconds.
-         * 15 crops have to be harvested and the health is 1 Heart. 
-         * If you touch a chicken the game is lost Immediately. 
-         */
         else if (diff.equals("TUM")){
             this.remainingTime = 120;
             player.setHarvesting(15);
@@ -202,16 +186,20 @@ public class GameScreen implements Screen {
         float marginX = mapCamera.viewportWidth * 0.10f; 
         float marginY = mapCamera.viewportHeight * 0.10f;
 
+        /** Implement the padding for the ability to view the background */
+        float paddingPx = VIEWPORT_PADDING * TILE_SIZE_PX * SCALE;
+
 
         /* Half of the viewport */
         float halfViewportWidth  = mapCamera.viewportWidth  / 2f - marginX;
         float halfViewportHeight = mapCamera.viewportHeight / 2f - marginY;
 
         /* Clamp to keep map edges in view */
-        float minX = halfViewportWidth;
-        float maxX = mapWidth - halfViewportWidth;
-        float minY = halfViewportHeight;
-        float maxY = mapHeight - halfViewportHeight;
+        float minX = halfViewportWidth - paddingPx;
+        float maxX = mapWidth + paddingPx - halfViewportWidth;
+        // Same for Y
+        float minY = halfViewportHeight - paddingPx;
+        float maxY = mapHeight + paddingPx - halfViewportHeight;
 
         // Remove Math.round() — this is the source of the jumping!
         mapCamera.position.x = MathUtils.clamp(currentX, minX, maxX);
@@ -239,13 +227,26 @@ public class GameScreen implements Screen {
         
         // Loop through every coordinate -> Builts the map from the Groundup
 
-        for (int y = map.getHeight(); y >= 0; y--) {
-            for (int x = 0; x <= map.getWidth(); x++) {
+        /** We want to draw more than the actual gamemap size and have to add a negative starting point */
+        int startX = -VIEWPORT_PADDING;
+        int endX = map.getWidth() + VIEWPORT_PADDING;
+        int startY = -VIEWPORT_PADDING;
+        int endY = map.getHeight() + VIEWPORT_PADDING;
+
+        for (int y = endY; y >= startY; y--) {
+            for (int x = startX; x <= endX; x++) {
 
                 // 1. Draw Ground (Layer 0)
-                Drawable floor = map.getGround(x, y);
-                if (floor != null) {
-                    draw(spriteBatch, floor);
+                if (map.inBound(x, y)) {
+                    // Draw the real tile stored in the map
+                    Drawable floor = map.getBackground(x, y);
+                    if (floor != null) {
+                        draw(spriteBatch, floor);
+                    }
+                } else {
+                    /** We just make the background outside the Map */
+                    Drawable dummyFloor = new Tiles(x, y, TileType.GRAS);
+                    draw(spriteBatch, dummyFloor);
                 }
 
                 // Add the items to the list for later sorting
@@ -259,11 +260,18 @@ public class GameScreen implements Screen {
                     allDrawables.add(obstacles);
                 }
                 // Same for crops
+                // Drawable deco = map.getDecoration(x, y);
+                // if (deco != null && deco.getCurrentAppearance() != null) {
+                //     allDrawables.add(deco);
+                //         }
+                    
+                // Same for decoration
                 Drawable crop = map.getCrop(x, y);
                 if (crop != null && crop.getCurrentAppearance() != null) {
                     allDrawables.add(crop);
                         }
                     }
+                
                 }
                 // Same for chicken
                 for (Chicken chicken : map.getActiveChickens()) {
@@ -271,7 +279,8 @@ public class GameScreen implements Screen {
                         allDrawables.add(chicken);
                     }
                 }
-
+            
+            
                 
             for (int y = map.getHeight(); y >= 0; y--) {
                 for (int x = 0; x <= map.getWidth(); x++) {
@@ -316,10 +325,11 @@ public class GameScreen implements Screen {
                         }
                     }
                 }
-
+            
     
         // Finish drawing, i.e. send the drawn items to the graphics card
         spriteBatch.end();
+        
     }
     
     /**

@@ -57,12 +57,12 @@ public class Player extends Entity implements Drawable {
     private int shovelCount = 0;
     private int fertilizerCount = 0;
     private int wateringCanCount = 0;
-    private int pickaxeCount = 0;
 
     /* Variables to store the state of wether the player is scared and wether the game is over */
     private float gameOverTimer = 1.0f;
     private float shooAwayTimer = 0f;
     private boolean isScared = false;
+    private boolean gotHit   = false;
     private float escapeX, escapeY;
 
     /* Handles the startled state */
@@ -93,11 +93,19 @@ public class Player extends Entity implements Drawable {
     private float chopSoundCooldown = 0f;
     private static final float CHOP_SOUND_INTERVAL = 0.25f;
     private float stepSoundCooldown = 0f;
-    private static final float STEP_SOUND_INTERVAL = 0.35f;
+    private static final float STEP_SOUND_INTERVAL = 0.25f;
+
+    private float harvestSoundCooldown = 0f;
+    private float pickupSoundCooldown = 0f;
+    private float swordSoundCooldown = 0f;
+    private float plantSoundCooldown = 0f;
+    private float equipSoundCooldown = 0f;
+
+    private boolean hasPlayedGameOverSound = false;
 
     /* Variables for Items */
     private boolean hasShovel = false;
-    private boolean hasPickaxe = false;
+    private boolean hasDynamite = false;
 
     /** vars for the HUD */
     private int    messageCoolDown;
@@ -148,6 +156,16 @@ public class Player extends Entity implements Drawable {
         this.elapsedTime += frameTime; // increment the delta of the time elapsed
 
         this.harvestTime += frameTime; // increment the harvest time
+
+        // Decrement the Sound effects timer
+        if (harvestSoundCooldown > 0f) harvestSoundCooldown -= frameTime;
+        if (pickupSoundCooldown > 0f) pickupSoundCooldown -= frameTime;
+        if (stepSoundCooldown > 0f) stepSoundCooldown -= frameTime;
+        if (chopSoundCooldown > 0f) chopSoundCooldown -= frameTime;
+        if (swordSoundCooldown > 0f) swordSoundCooldown -= frameTime;
+        if (plantSoundCooldown > 0f) plantSoundCooldown -= frameTime;
+        if (equipSoundCooldown > 0f) equipSoundCooldown -= frameTime;
+        if (harvestingAnimationCooloff <= 0) {isHarvesting = false;}
 
         int currX = Math.round(getX()); // retrieve the currX always, reduces the function calls
         int currY = Math.round(getY()); // same for Y
@@ -211,10 +229,6 @@ public class Player extends Entity implements Drawable {
         }
         //keep the value of the stamina between 0 and 100. -> The nice clamping from Stefan
         stamina = MathUtils.clamp(stamina, 0, MaxStamina);
-
-        if (stepSoundCooldown > 0f) {
-            stepSoundCooldown -= frameTime;
-        }
 
         // we want to increase the stepping sound or the frequency when he is sprinting
         float stepInterval = isSprinting ? 0.2f : STEP_SOUND_INTERVAL;
@@ -280,8 +294,15 @@ public class Player extends Entity implements Drawable {
             if (map.isDestructible(offsetX, offsetY)) {
                 int damage = hasShovel ? 2 : 1;
                 // destruct the obstacle
-                ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
-                map.getGame().setScore(map.getGame().getScore() + 1);
+                if (map.getObstacle(offsetX, offsetY) instanceof Debris) {
+                    ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
+                }
+                else if (map.getObstacle(offsetX, offsetY) instanceof StoneDebris && hasDynamite) {
+                    ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
+                }
+                
+
+                map.getGame().setScore(map.getGame().getScore() + 1); // player gets score for removing Debris
 
                 if (chopSoundCooldown <= 0f) {
                     SoundEffect.BRANCHES.play(); // play the nice sound for killing branches
@@ -304,6 +325,11 @@ public class Player extends Entity implements Drawable {
             currentCropType = types[option];
 
             System.out.println("Switched to: " + currentCropType);
+
+            if (equipSoundCooldown <= 0f) {
+                SoundEffect.EQUIP.play();
+                equipSoundCooldown = 0.15f; 
+            }
 
         }
 
@@ -339,9 +365,15 @@ public class Player extends Entity implements Drawable {
                             int score = score(map.harvestCrop(offsetX, offsetY)); // harvest the crop
                             /** INCREMENTING THE WINNING CONDITION */
                             this.currentHarvest += MathUtils.clamp(score, 1, 3);
-
-                            map.getGame().setScore(map.getGame().getScore() + score * 100);
-
+                            map.getGame().setScore(map.getGame().getScore() + score * 100); // player gets score depending on harvest
+                            
+                            if (harvestSoundCooldown <= 0f) {
+                                    SoundEffect.CROP_PICKUP.play();
+                                    harvestSoundCooldown = 0.15f; 
+                                }
+                            
+                            
+                            
                             messageForHarvest = "You just harvested: " + currentCrop.getClass().getSimpleName() + ". Only " + (harvesting - currentHarvest) + "left!";
                         }
                         else if (currentCrop.isRotten()) {
@@ -355,7 +387,13 @@ public class Player extends Entity implements Drawable {
                         isHarvesting = true;
                         this.harvestTime = 0;
                     }
-                };
+                }
+                else {
+                    if (plantSoundCooldown <= 0f) {
+                    SoundEffect.CROP_PLANTING.play();
+                    plantSoundCooldown = 0.1f;
+                }
+                }
                 harvestingAnimationCooloff = 30f; // 0.5 Seconds animation for the harvesting
                 isHarvesting = true;
                 this.harvestTime = 0;
@@ -381,6 +419,12 @@ public class Player extends Entity implements Drawable {
                 this.messageCoolDown = 240;
                 // pickup the Item and return the pickup String message
                 this.messageToDisplay = ((Item)currHiddenObject).pickup(this);
+
+                if (pickupSoundCooldown <= 0f) {
+                   
+                    SoundEffect.DEBRISREMOVAL.play();
+                    pickupSoundCooldown = 0.5f; 
+                }
             }
             /** Exit function for exiting the 
              * game 
@@ -415,17 +459,18 @@ public class Player extends Entity implements Drawable {
         touchChickenCoolOff--;
 
 
+        
 
-        if (harvestingAnimationCooloff <= 0) {isHarvesting = false;}
+        
 
         /**
          * we define a constant speed here
          */
 
         for (Chicken chicken : map.getActiveChickens()) {
-            if(startle(chicken.getX(), chicken.getY(), currX, currY, chicken)) {
-                map.getGame().setScore(map.getGame().getScore() - 250);
-            }
+            if (startle(chicken.getX(), chicken.getY(), currX, currY, chicken)) {
+               map.getGame().setScore(map.getGame().getScore() - 250);
+            };
             shooChicken(chicken);
         }
 
@@ -441,6 +486,11 @@ public class Player extends Entity implements Drawable {
 
     public void shooChicken(Chicken chicken) {
             if (Gdx.input.isKeyPressed(Keys.S)) {
+
+                if (swordSoundCooldown <= 0f) {
+                    SoundEffect.SWORD_SLICE.play();
+                    swordSoundCooldown = 0.5f; 
+                }
 
                     shooAwayTimer = 30f;
                     float range = 1.10955f;
@@ -531,22 +581,29 @@ public class Player extends Entity implements Drawable {
             if (touchChickenCoolOff <= 0) {
                 health--;
                 touchChickenCoolOff = 90f;
+
+                
             };
 
             if (health <= 0) {
                 this.isScared = true;
 
+                if (!hasPlayedGameOverSound) {
+                    SoundEffect.GAMEOVER.play();
+                    hasPlayedGameOverSound = true; 
+             }
                 // for distance offseting running aways in opposite Direction
                 this.escapeX = -(chicken.getX() - getX()); 
                 this.escapeY = -(chicken.getY() - getY());
             }
             
             return true;
+            
 
         }
-
         else {
             return false;
+            // do nothing
         }
 
         
@@ -554,9 +611,6 @@ public class Player extends Entity implements Drawable {
 
     public void equipShovel() {
         this.hasShovel = true;
-    }
-    public void equipPickaxe() {
-        this.hasPickaxe = true;
     }
 
     /**
@@ -805,172 +859,8 @@ public class Player extends Entity implements Drawable {
         this.health = health;
     }
 
-    public void setElapsedTime(float elapsedTime) {
-        this.elapsedTime = elapsedTime;
-    }
-
-    public void setHarvestTime(float harvestTime) {
-        this.harvestTime = harvestTime;
-    }
-
-    public void setMaxStamina(float maxStamina) {
-        MaxStamina = maxStamina;
-    }
-
-    public void setStamina(float stamina) {
-        this.stamina = stamina;
-    }
-
-    public void setExhausted(boolean isExhausted) {
-        this.isExhausted = isExhausted;
-    }
-
-    public void setSprintCooldown(float sprintCooldown) {
-        this.sprintCooldown = sprintCooldown;
-    }
-
-    public void setDrainRate(float drainRate) {
-        this.drainRate = drainRate;
-    }
-
-    public void setRegenRate(float regenRate) {
-        this.regenRate = regenRate;
-    }
-
-    public void setSprintSpeed(float sprintSpeed) {
-        this.sprintSpeed = sprintSpeed;
-    }
-
-    public void setOffsetX(int offsetX) {
-        this.offsetX = offsetX;
-    }
-
-    public void setOffsetY(int offsetY) {
-        this.offsetY = offsetY;
-    }
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
-    public void setHarvesting(boolean isHarvesting) {
-        this.isHarvesting = isHarvesting;
-    }
-
-    public void setHarvestedCrops(int harvestedCrops) {
-        this.harvestedCrops = harvestedCrops;
-    }
-
-    public void setShovelCount(int shovelCount) {
-        this.shovelCount = shovelCount;
-    }
-
-    public void setFertilizerCount(int fertilizerCount) {
-        this.fertilizerCount = fertilizerCount;
-    }
-
-    public void setWateringCanCount(int wateringCanCount) {
-        this.wateringCanCount = wateringCanCount;
-    }
-
-    public int getPickaxeCount() {
-        return pickaxeCount;
-    }
-
-    public void setPickaxeCount(int pickaxeCount) {
-        this.pickaxeCount = pickaxeCount;
-    }
-
-    public void setGameOverTimer(float gameOverTimer) {
-        this.gameOverTimer = gameOverTimer;
-    }
-
-    public void setShooAwayTimer(float shooAwayTimer) {
-        this.shooAwayTimer = shooAwayTimer;
-    }
-
-    public void setScared(boolean isScared) {
-        this.isScared = isScared;
-    }
-
-    public void setEscapeX(float escapeX) {
-        this.escapeX = escapeX;
-    }
-
-    public void setEscapeY(float escapeY) {
-        this.escapeY = escapeY;
-    }
-
-    public void setOption(int option) {
-        this.option = option;
-    }
-
-    public void setCurrentCropType(CropType currentCropType) {
-        this.currentCropType = currentCropType;
-    }
-
-    public void setChopSoundCooldown(float chopSoundCooldown) {
-        this.chopSoundCooldown = chopSoundCooldown;
-    }
-
-    public void setStepSoundCooldown(float stepSoundCooldown) {
-        this.stepSoundCooldown = stepSoundCooldown;
-    }
-
-    public void setHasShovel(boolean hasShovel) {
-        this.hasShovel = hasShovel;
-    }
-
-    public boolean isHasPickaxe() {
-        return hasPickaxe;
-    }
-
-    public void setHasPickaxe(boolean hasPickaxe) {
-        this.hasPickaxe = hasPickaxe;
-    }
-
-    public void setMessageCoolDown(int messageCoolDown) {
-        this.messageCoolDown = messageCoolDown;
-    }
-
-    public void setMessageToDisplay(String messageToDisplay) {
-        this.messageToDisplay = messageToDisplay;
-    }
-
-    public void setMessageForHarvest(String messageForHarvest) {
-        this.messageForHarvest = messageForHarvest;
-    }
-
-    public void setWaterCanPickupMessage(String waterCanPickupMessage) {
-        this.waterCanPickupMessage = waterCanPickupMessage;
-    }
-
-    public void setMessageForReviving(String messageForReviving) {
-        this.messageForReviving = messageForReviving;
-    }
-
-    public void setCurrentHarvest(int currentHarvest) {
-        this.currentHarvest = currentHarvest;
-    }
-
-    public void setHarvestCooloff(float harvestCooloff) {
-        this.harvestCooloff = harvestCooloff;
-    }
-
-    public void setHarvestingAnimationCooloff(float harvestingAnimationCooloff) {
-        this.harvestingAnimationCooloff = harvestingAnimationCooloff;
-    }
-
-    public void setExitCooloff(float exitCooloff) {
-        this.exitCooloff = exitCooloff;
-    }
-
-    public float getTouchChickenCoolOff() {
-        return touchChickenCoolOff;
-    }
-
-    public void setTouchChickenCoolOff(float touchChickenCoolOff) {
-        this.touchChickenCoolOff = touchChickenCoolOff;
+    public void equipDynamite() {
+        this.hasDynamite = true;
     }
     
 

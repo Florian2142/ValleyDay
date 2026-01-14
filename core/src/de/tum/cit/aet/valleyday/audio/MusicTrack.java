@@ -14,7 +14,7 @@ import com.badlogic.gdx.audio.Music;
 public enum MusicTrack {
     
     BACKGROUND("background.mp3", 0.1f),
-    EASTER_EGG("White Bat Audio - Inception.wav", 0.33f),
+    EASTER_EGG("level-ten-8-bit-pixel-warriors-chapter-one-415692.mp3", 0.33f),
     GAME("game-music-loop-6-144641.mp3", 0.15f);
     
     /** The music file owned by this variant. */

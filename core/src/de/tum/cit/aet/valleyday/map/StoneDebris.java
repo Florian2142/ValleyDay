@@ -4,18 +4,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.World;
 
 import de.tum.cit.aet.valleyday.texture.Textures;
+import de.tum.cit.aet.valleyday.audio.SoundEffect;
+import de.tum.cit.aet.valleyday.texture.Animations;
+
+
 
 public class StoneDebris extends Obstacle implements Destructible {
     
 
      private boolean destructed = false;
 
-    private final int lifeTIME = 4;
+     private float time;
 
-    private final TextureRegion[] debrisState = Textures.DEBRIS_STATES;
+     private boolean isTriggered = false;
 
-    private int currState;
-    private int hit;
+
+    private final TextureRegion debrisState = Textures.STONE_DEBRIS;
+
+   
 
 
     /**
@@ -27,19 +33,31 @@ public class StoneDebris extends Obstacle implements Destructible {
      */
     public StoneDebris(World world, float x, float y) {
         super(world, x, y);
-        this.currState = lifeTIME;
-        this.hit = 12;
     }
 
     @Override
     public TextureRegion getCurrentAppearance() {
         /** Returns the current state, will update if player holds d and eventually destroy the object */
-        return debrisState[currState];
+        if (isTriggered) {
+            return Animations.EXPLOSION.getKeyFrame(time,false);
+        }
+            return debrisState;
     }
 
     @Override
     public boolean isDestructible() {
         return true;
+    }
+
+    public void tick(float delta, GameMap map) {
+        if (isTriggered) {
+            time += delta;
+        }
+        if (Animations.EXPLOSION.isAnimationFinished(time)) {
+            this.destroyBody(map.getWorld());
+            map.destroyObstacle((int) this.x, (int) this.y);
+            this.destructed = true;
+        }
     }
 
 
@@ -48,18 +66,18 @@ public class StoneDebris extends Obstacle implements Destructible {
      */
     @Override
     public void destruct(GameMap gamemap, int damage) {
-        // if player holds d decrement the lifetime
-        hit -= damage; // faster if player has shovel
-        if (hit <= 0) {
-            currState--;
-            hit = 12;
+        // if player taps d and has dynamite then he destroys the debris
+           if (isTriggered || isDestructed()) {
+            return;
+           }
+            this.isTriggered = true;
+            time = 0f;
+
+            gamemap.addExplodingDebris(this);
+
+            SoundEffect.EXPLOSION.play();
         }
-        if (currState <= 0) {
-            this.destroyBody(gamemap.getWorld());
-            gamemap.destroyObstacle((int) this.x, (int) this.y);
-            this.destructed = true;
-        }
-    }
+    
 
     public boolean isDestructed() {
         return destructed;
@@ -69,28 +87,4 @@ public class StoneDebris extends Obstacle implements Destructible {
         this.destructed = destructed;
     }
 
-    public int getLifeTIME() {
-        return lifeTIME;
-    }
-
-    public TextureRegion[] getDebrisState() {
-        return debrisState;
-    }
-
-    public int getCurrState() {
-        return currState;
-    }
-
-    public void setCurrState(int currState) {
-        this.currState = currState;
-    }
-
-    public int getHit() {
-        return hit;
-    }
-
-    public void setHit(int hit) {
-        this.hit = hit;
-    }
-    
 }

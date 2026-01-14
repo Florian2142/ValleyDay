@@ -18,7 +18,24 @@ public enum TileType {
         GRAS(true, Textures.GRAS),
         ICE(true, Textures.ICE),
         SNOW(true, Textures.SNOW),
+        START(true, Textures.START),
 
+        PATH_FULL(true, Textures.PATH_FULL),                    // Center path
+        PATH_UP(true, Textures.PATH_UP),                        // Top edge
+        PATH_DOWN(true, Textures.PATH_DOWN),                    // Bottom edge
+        PATH_LEFT(true, Textures.PATH_LEFT),                    // Left edge
+        PATH_RIGHT(true, Textures.PATH_RIGHT),                  // Right edge
+
+        PATH_CORNER_TL(true, Textures.PATH_LEFT_CORNER_T),      // Top Left
+        PATH_CORNER_TR(true, Textures.PATH_RIGHT_CORNER_T),     // Top Right
+        PATH_CORNER_BL(true, Textures.PATH_LEFT_CORNER_B),      // Bottom Left
+        PATH_CORNER_BR(true, Textures.PATH_RIGHT_CORNER_B),     // Bottom Right
+
+        SMALL_ROCK(false, Textures.SMALL_ROCK), // Blocks movement
+        TINY_ROCK(true, Textures.TINY_ROCK),    // Decoration (Walkable)
+        BIG_ROCK(false, Textures.BIG_ROCK),     // Large obstacle
+
+        
         SAND(true, Textures.SAND),
         WATER(true, Textures.WATER),
         PATH(true, Textures.PATH),

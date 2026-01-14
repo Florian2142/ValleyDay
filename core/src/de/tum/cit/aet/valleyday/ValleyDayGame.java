@@ -174,13 +174,15 @@ public class ValleyDayGame extends Game {
             // Create the map now that we have all ingredients
             this.map = new GameMap(this, this.pendingMapFile, this.difficulty);
 
-            if (pendingMapFile.name().equals("mapaEG.properties")) {
+            if (pendingMapFile.name().equals("mapEG.properties")) {
                 
                 // If it is the Easter Egg map:
                 if (MusicTrack.BACKGROUND.isPlaying()) {
                     MusicTrack.BACKGROUND.stop(); // Stop standard music
                 }
-                MusicTrack.GAME.stop();
+                if (MusicTrack.GAME.isPlaying()) {
+                    MusicTrack.GAME.stop();
+                }
                 MusicTrack.EASTER_EGG.play();     // Play special music
                 
             } else {

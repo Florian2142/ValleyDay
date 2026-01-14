@@ -14,7 +14,7 @@ public class Textures {
     public static final TextureRegion FLOWERS               = SpriteSheet.BASIC_TILES.at(2, 5);
     public static final TextureRegion SOIL                  = SpriteSheet.CROPS.at(10, 2, 1, 1); 
     public static final TextureRegion ICE                   = SpriteSheet.BASIC_TILES.at(3, 6);
-    public static final TextureRegion GRAS                  = SpriteSheet.BASIC_TILES.at(9, 2);
+    
     public static final TextureRegion WALL                  = SpriteSheet.BASIC_TILES.at(3, 1);
     public static final TextureRegion STONE                 = SpriteSheet.BASIC_TILES.at(2, 6);
     public static final TextureRegion STONES                = SpriteSheet.BASIC_TILES.at(7, 3);
@@ -27,6 +27,31 @@ public class Textures {
     public static final TextureRegion SNOW                  = SpriteSheet.BASIC_TILES.at(8, 8);
     public static final TextureRegion WATER                 = SpriteSheet.FARM_THINGS.at(6, 7);
     public static final TextureRegion SAND                  = SpriteSheet.BASIC_TILES.at(2, 3);
+
+    // Nicer Tiles for realistic texture
+    public static final TextureRegion GRAS                  = SpriteSheet.POKEMON.at(1, 10);
+    public static final TextureRegion PATH_DOWN             = SpriteSheet.POKEMON.at(2, 10);
+    public static final TextureRegion PATH_FULL             = SpriteSheet.POKEMON.at(3, 10);
+    public static final TextureRegion PATH_UP               = SpriteSheet.POKEMON.at(4, 10);
+    public static final TextureRegion PATH_LEFT_CORNER_T    = SpriteSheet.POKEMON.at(2, 9);
+    public static final TextureRegion PATH_LEFT             = SpriteSheet.POKEMON.at(3, 9);
+    public static final TextureRegion PATH_LEFT_CORNER_B    = SpriteSheet.POKEMON.at(4, 9);
+    public static final TextureRegion PATH_RIGHT_CORNER_T   = SpriteSheet.POKEMON.at(2, 11);
+    public static final TextureRegion PATH_RIGHT            = SpriteSheet.POKEMON.at(3, 11);
+    public static final TextureRegion PATH_RIGHT_CORNER_B   = SpriteSheet.POKEMON.at(4, 11);
+
+    // Some big Rocks
+    public static final TextureRegion SMALL_ROCK            = SpriteSheet.STONES.at(2, 12);
+    public static final TextureRegion TINY_ROCK             = SpriteSheet.STONES.at(4, 10);
+    public static final TextureRegion BIG_ROCK              = SpriteSheet.STONES.at(3, 9, 2,2);
+
+
+   
+
+    public static final TextureRegion START                 = SpriteSheet.POKEMON.at(6, 4);
+
+
+
 
     // STRAIGHT PIECES
     public static final TextureRegion FENCE_HORIZ = SpriteSheet.FARM_THINGS.at(6, 2);
@@ -54,13 +79,6 @@ public class Textures {
     public static final TextureRegion DEBRIS_TWO   = SpriteSheet.DEBRIS.at(1,3);;
     public static final TextureRegion DEBRIS_THREE = SpriteSheet.DEBRIS.at(1,5);
     public static final TextureRegion DEBRIS_FINAL = SpriteSheet.DEBRIS.at(1,5);
-
-    // Stone Debris
-    public static final TextureRegion STONE_DEBRIS_FULL = SpriteSheet.STONE_DEBRIS.at(3, 3);
-    public static final TextureRegion STONE_DEBRIS_ONE = SpriteSheet.STONE_DEBRIS.at(3, 4);
-    public static final TextureRegion STONE_DEBRIS_TWO = SpriteSheet.STONE_DEBRIS.at(3, 5);
-    public static final TextureRegion STONE_DEBRIS_THREE = SpriteSheet.STONE_DEBRIS.at(3, 7);
-    public static final TextureRegion STONE_DEBRIS_FINAL = SpriteSheet.STONE_DEBRIS.at(3, 7);
    
 
 
@@ -73,16 +91,9 @@ public class Textures {
         DEBRIS_FULL // the super healthy debris object untouched of human cruelty.
     };
 
-    // add all Stone Debris Stages within an array for easy access.
+    public static final TextureRegion STONE_DEBRIS = SpriteSheet.STONES.at(2,12);
 
-    public static final TextureRegion[] STONE_DEBRIS_STATES = {
-        STONE_DEBRIS_FINAL,
-        STONE_DEBRIS_THREE, 
-        STONE_DEBRIS_TWO,
-        STONE_DEBRIS_ONE,
-        STONE_DEBRIS_FULL,
-    };
-
+    public static final TextureRegion DYNAMITE = SpriteSheet.COOLITEMS.at(8,3);
     /**
     * ITEMS 
     */
@@ -92,8 +103,6 @@ public class Textures {
     public static final TextureRegion WATERING_CAN = SpriteSheet.TOOLS.at(1,3);
     // FERTILIZER
     public static final TextureRegion FERTILIZER = SpriteSheet.TOOLS.at(1,4);
-    // PICKAXE
-    public static final TextureRegion PICKAXE = SpriteSheet.TOOLS.at(0, 0);
     
      
 
@@ -171,6 +180,9 @@ public class Textures {
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 
     public static final TextureRegion HOUSE = SpriteSheet.HARVEST.at(2, 7);
+
+
+
 
 
 

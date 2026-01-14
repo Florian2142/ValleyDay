@@ -78,9 +78,9 @@ public class GameMap {
     private final Tiles[][] tiles;                      // Basic Tiles -> The foundation
     private final hiddenObject[][] hiddenObjects;       // Hidden Objects 
     private final Obstacle[][] obstacles;               // Obstacles like Fence and Debris
-    private final Crop[][] crops;                      // All the harvesting and crops needed for winning
+    private final Crop[][] crops;                       // All the harvesting and crops needed for winning
     private final boolean[][] cutsceneTriggers;         // special cutscene Tiles with trigger nice easter eggs
-    
+    private final Tiles[][] decoration;                 // Nice decorations
     /** Soils  */
     private final Tiles[][] soils;
     /** Decoration */
@@ -91,6 +91,9 @@ public class GameMap {
 
     /** We add a new Chicken Array */
     private final List<Chicken> activeChickens = new ArrayList<>();
+
+    /** We add an explosion list for StoneDebris */
+    private final List<StoneDebris> explodingDebris = new ArrayList<>();
  
     private int width = 0;
     private int height = 0;
@@ -197,17 +200,18 @@ public class GameMap {
         tiles = new Tiles[width + 1][height + 1];
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {               
-                tiles[i][j] = new Tiles(i, j, TileType.FLOWERS);
+                tiles[i][j] = new Tiles(i, j, TileType.GRAS);
             }
         }
 
         // 2.0 Build/Define tthe other layers NON-Default
 
         this.obstacles              = new Obstacle[width + 1][height + 1];                /** Initialize the Obstacle */
-        this.hiddenObjects          = new hiddenObject[width + 1][height + 1];        /** Initialize the hiddenObjects */
-        this.crops                  = new Crop[width + 1][height + 1];               /** Intialize the Crops */
-        this.cutsceneTriggers       = new boolean[width + 1][height + 1];          /** For cutscenes later */
+        this.hiddenObjects          = new hiddenObject[width + 1][height + 1];            /** Initialize the hiddenObjects */
+        this.crops                  = new Crop[width + 1][height + 1];                    /** Intialize the Crops */
+        this.cutsceneTriggers       = new boolean[width + 1][height + 1];                 /** For cutscenes later */
         this.soils                  = new Tiles[width + 1][height + 1];
+        this.decoration             = new Tiles[width + 1][height + 1];
         this.bigUnpassableObjects   = new Obstacle[width + 1][height + 1];
 
         for (String tile : fillTiles.keySet()) {
@@ -230,6 +234,7 @@ public class GameMap {
                 break;
 
             case 2: // The Entrance
+                tiles[r][c] = new Tiles(r, c, TileType.START);
                 this.startX = r;
                 this.startY = c;
                 break;
@@ -269,12 +274,10 @@ public class GameMap {
                 soils[r][c] = new Tiles(r, c, TileType.SOIL);
                 break;
 
-            case 9: // Grass
-                tiles[r][c] = new Tiles(r, c, TileType.GRAS);
+            case 10:
+                hiddenObjects[r][c] = new Dynamite(r, c, this);
+                obstacles[r][c] = new Debris(world, r, c);
                 break;
-
-            case 10: 
-                
 
             case 11: // CUTSCENE TRIGGER
                 cutsceneTriggers[r][c] = true;
@@ -301,7 +304,7 @@ public class GameMap {
                 break;
 
             case 17: // House (blocking)
-                this.tiles[r][c] = new Tiles(r, c, TileType.HOUSE);
+                this.decoration[r][c] = new Tiles(r, c, TileType.HOUSE);
                 // If you have a real House object, prefer that instead:
                 // this.bigUnpassableObjects[r][c] = new House(world, r, c);
                 break;
@@ -317,7 +320,7 @@ public class GameMap {
                 break;
 
             case 20: // FLOWERS (walkable decoration ground)
-                this.tiles[r][c] = new Tiles(r, c, TileType.FLOWERS);
+                //this.bigUnpassableObjects[r][c] = 
                 break;
 
             case 21: // PATH (walkable ground)
@@ -333,7 +336,7 @@ public class GameMap {
                 break;
 
             case 24: // FOUNTAIN (blocking structure)
-                this.tiles[r][c] = new Tiles(r, c, TileType.FOUNTAIN);
+                this.obstacles[r][c] = new StoneDebris(world, r, c);
                 // If fountain is a multi-tile/big sprite, use bigUnpassableObjects instead
                 break;
 
@@ -350,9 +353,43 @@ public class GameMap {
                 break;
 
             case 28: // TORCH (blocking decoration)
-                this.tiles[r][c] = new Tiles(r, c, TileType.TORCH);
+                this.decoration[r][c] = new Tiles(r, c, TileType.TORCH);
                 // or obstacles[r][c] = new Torch(world, r, c); if Torch is an object
                 break;
+            case 30: // PATH_FULL (Center)
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_FULL);
+                break;
+            case 31: // PATH_UP
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_UP);
+                break;
+            case 32: // PATH_DOWN
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_DOWN);
+                break;
+            case 33: // PATH_LEFT
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_LEFT);
+                break;
+            case 34: // PATH_RIGHT
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_RIGHT);
+                break;
+            case 35: // CORNER TOP-LEFT
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_CORNER_TL);
+                break;
+            case 36: // CORNER TOP-RIGHT
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_CORNER_TR);
+                break;
+            case 37: // CORNER BOTTOM-LEFT
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_CORNER_BL);
+                break;
+            case 38: // CORNER BOTTOM-RIGHT
+                this.tiles[r][c] = new Tiles(r, c, TileType.PATH_CORNER_BR);
+                break;
+            case 40: // SMALL_ROCK (Obstacle)
+                this.decoration[r][c] = new Tiles(r, c, TileType.SMALL_ROCK);
+                break;
+            case 41: // TINY_ROCK (Decoration)
+                this.decoration[r][c] = new Tiles(r, c, TileType.TINY_ROCK);
+                break;
+            
 
 
             default: // Dirt -> Already set by default
@@ -401,8 +438,21 @@ public class GameMap {
         for (Chicken chicken: activeChickens) {
             chicken.tick(frameTime, this);
         }
+
+        for (int i = 0;  i < explodingDebris.size(); i++) {
+            StoneDebris stoneDebris = explodingDebris.get(i);
+            stoneDebris.tick(frameTime, this);
+
+            if (stoneDebris.isDestructed()) {
+                explodingDebris.remove(stoneDebris);
+                i--;
+            }
+        }
+        
         this.player.tick(frameTime, this);
         doPhysicsStep(frameTime);
+
+
     }
     
     /**
@@ -507,6 +557,10 @@ public class GameMap {
         return null;
     }
 
+    public Tiles getBackground(int x, int y) {
+        return tiles[x][y];
+    }
+
     public Tiles getSoil(int x, int y) {
         if (inBound(x, y)) {
             return soils[x][y];
@@ -561,6 +615,23 @@ public class GameMap {
         }
         return null;
     }
+
+    /**
+     * 
+     * 
+     * @param x x-axis point 
+     * @param y y-axis point
+     * @return the decoration for drawing
+     */
+
+    public Tiles getDecoration(int x, int y) {
+        if (inBound(x, y)) {
+            return decoration[x][y];
+        }
+        return null;
+    }
+
+    
 
     /**
      * 
@@ -669,7 +740,13 @@ public class GameMap {
         }
         return false;
     }
-    
+
+    /** method for adding exploding debris */
+    public void addExplodingDebris(StoneDebris debris) {
+        if (!explodingDebris.contains(debris)) {
+            explodingDebris.add(debris);
+        }
+    }
 
 
 
