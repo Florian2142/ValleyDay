@@ -332,6 +332,7 @@ public class Hud {
 
         /**
          * We have to define several EventListener like HTML
+         * When the resumeButton is pressed, the game is resumed.
          */
 
         resumeButtom.addListener(new ChangeListener() {
@@ -684,7 +685,7 @@ public class Hud {
         } 
     }
 
-
+    // Victory meni is shown when the first level is passed.
     public void showVictoryMenu() {
         this.exitTable.setVisible(true);
         Gdx.input.setInputProcessor(stage);

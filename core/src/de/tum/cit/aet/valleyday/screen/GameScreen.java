@@ -22,6 +22,7 @@ import de.tum.cit.aet.valleyday.texture.Drawable;
 import de.tum.cit.aet.valleyday.map.GameMap;
 import de.tum.cit.aet.valleyday.map.Player;
 import de.tum.cit.aet.valleyday.map.Tiles;
+import de.tum.cit.aet.valleyday.map.Wildlife;
 import de.tum.cit.aet.valleyday.map.TileType;
 
 /**
@@ -279,7 +280,12 @@ public class GameScreen implements Screen {
                         allDrawables.add(chicken);
                     }
                 }
-            
+                // Same for wildlife
+                for (Wildlife wildlife : map.getActiveWildlife()) {
+                    if (wildlife != null) {
+                        allDrawables.add(wildlife);
+                    }
+                }
             
                 
             for (int y = map.getHeight(); y >= 0; y--) {

@@ -81,6 +81,7 @@ public class GameMap {
     private final Crop[][] crops;                       // All the harvesting and crops needed for winning
     private final boolean[][] cutsceneTriggers;         // special cutscene Tiles with trigger nice easter eggs
     private final Tiles[][] decoration;                 // Nice decorations
+    
     /** Soils  */
     private final Tiles[][] soils;
     /** Decoration */
@@ -94,6 +95,8 @@ public class GameMap {
 
     /** We add an explosion list for StoneDebris */
     private final List<StoneDebris> explodingDebris = new ArrayList<>();
+
+    private final List<Wildlife> activeWildlife = new ArrayList<>();
  
     private int width = 0;
     private int height = 0;
@@ -284,8 +287,9 @@ public class GameMap {
                 break;
 
             case 12: // Force white chicken
-                this.activeChickens.add(new WhiteChicken(world, r, c));
+                this.activeWildlife.add(new Spider(world, r, c));
                 break;
+            
 
             case 13: // TREE (big unpassable object)
                 this.bigUnpassableObjects[r][c] = new Trees(world, r, c);
@@ -843,7 +847,9 @@ public class GameMap {
         return startY;
     }
 
-    
+    public List<Wildlife> getActiveWildlife() {
+        return activeWildlife;
+    }
 
 }
 

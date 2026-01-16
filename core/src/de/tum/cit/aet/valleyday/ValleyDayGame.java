@@ -160,11 +160,13 @@ public class ValleyDayGame extends Game {
 
     public void startGame() {
         // Check if we have everything we need
+        /** If we didn't select any map, a warning will appear. */
         if (this.pendingMapFile == null) {
             System.err.println("Cannot start: No map selected!");
             return;
         }
 
+        /** If no difficulty is selected, a warning will appear. */
         if (this.difficulty == null) {
             System.err.println("Cannot start: No difficulty selected! Default will be medium due to your Indecisiveness.");
             this.difficulty = "Medium";
@@ -174,6 +176,9 @@ public class ValleyDayGame extends Game {
             // Create the map now that we have all ingredients
             this.map = new GameMap(this, this.pendingMapFile, this.difficulty);
 
+            /** If teg endgame map is chosen, the standard backround music will stop playing, 
+             * instead a special music will be playing.
+             */
             if (pendingMapFile.name().equals("mapEG.properties")) {
                 
                 // If it is the Easter Egg map:
@@ -212,6 +217,8 @@ public class ValleyDayGame extends Game {
     /** Initializes the sequential maps 
      * 
      * Lets user play more levels and an actual game (We had enough time so we just decided to implement this)
+     * The function InitCampagn clears all the maps in the list, so that the list is empty.
+     * Then, it loads all the maps into the winnersRoaad List, starting with the map at level 1 until the last level.
     */
     public void initCampaign() {
 
@@ -227,7 +234,10 @@ public class ValleyDayGame extends Game {
 
     public void startCampaign() {
         
-        // initialize the campaign and load the maps
+        /** When starting campaignMode, we run the InitCampaign function from above and set isCampaignMode to true.
+         * We first check if our List winnersRoad is not empty and we select the first map for level 1.
+         * Then the game is started.
+         */
         initCampaign();
 
         this.currentMapIndex = 0; // reset the index to zero at first
@@ -248,6 +258,10 @@ public class ValleyDayGame extends Game {
         }
     }
 
+    /** If we are in CampaignMode and we passed the first Level, we get the next level by moving to index 1 in winnersRoad.
+     * We also check if the currentIndex is smaller than 5 and if it is smaller than than the length of the ArrayList.
+     * If so, we move to the next level.
+     */
     public void nextLevel() {
         if (!isCampaignMode) {
             System.err.println("Well you decided not to actually go the warriors road, so nothing to see here");
