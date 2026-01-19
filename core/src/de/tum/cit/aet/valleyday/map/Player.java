@@ -301,9 +301,6 @@ public class Player extends Entity implements Drawable {
                     ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
                 }
                 
-
-                map.getGame().setScore(map.getGame().getScore() + 1); // player gets score for removing Debris
-
                 if (chopSoundCooldown <= 0f) {
                     SoundEffect.BRANCHES.play(); // play the nice sound for killing branches
                     chopSoundCooldown = CHOP_SOUND_INTERVAL;
@@ -365,7 +362,7 @@ public class Player extends Entity implements Drawable {
                             int score = score(map.harvestCrop(offsetX, offsetY)); // harvest the crop
                             /** INCREMENTING THE WINNING CONDITION */
                             this.currentHarvest += MathUtils.clamp(score, 1, 3);
-                            map.getGame().setScore(map.getGame().getScore() + score * 100); // player gets score depending on harvest
+                            map.getGame().setScore(map.getGame().getScore() + score * 3); // player gets score depending on harvest
                             
                             if (harvestSoundCooldown <= 0f) {
                                     SoundEffect.CROP_PICKUP.play();
@@ -468,8 +465,8 @@ public class Player extends Entity implements Drawable {
          */
 
         for (Chicken chicken : map.getActiveChickens()) {
-            if (startle(chicken.getX(), chicken.getY(), currX, currY, chicken)) {
-               map.getGame().setScore(map.getGame().getScore() - 250);
+            if (startle(chicken.getX(), chicken.getY(), currX, currY, chicken, map)) {
+               // 
             };
             shooChicken(chicken);
         }
@@ -573,13 +570,14 @@ public class Player extends Entity implements Drawable {
     }}
 
     /* Handles the startled state */
-    public boolean startle(float chickenOnTileX, float chickenOnTileY, float playerX, float playerY, Chicken chicken) {
+    public boolean startle(float chickenOnTileX, float chickenOnTileY, float playerX, float playerY, Chicken chicken, GameMap map) {
 
 
           if ((Math.pow(chickenOnTileX - playerX, 2) + Math.pow(chickenOnTileY - playerY, 2)) < Math.pow(Entity.radius, 2)) {
 
             if (touchChickenCoolOff <= 0) {
                 health--;
+                map.getGame().setScore(map.getGame().getScore() - 5);
                 touchChickenCoolOff = 90f;
 
                 

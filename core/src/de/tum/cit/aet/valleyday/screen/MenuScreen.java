@@ -25,7 +25,7 @@ public class MenuScreen implements Screen {
     private final Stage stage;
 
 
-    private String[] difficulty = new String[]{"Easy", "Medium", "Hard", "TUM"};
+    private String[] difficulty = new String[]{"Compliance", "Easy", "Medium", "Hard", "TUM"};
 
     private int current = 0;
 

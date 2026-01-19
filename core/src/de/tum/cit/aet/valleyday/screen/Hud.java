@@ -462,9 +462,9 @@ public class Hud {
 
 
         // /** Debugging -> uncomment if needed */
-        // toolsTable.setDebug(true); // Uncomment for nice Debugging
-        // exitTable.setDebug(true); // Uncomment for nice Debugging
-        // pauseTable.setDebug(true); // Uncomment for nice Debugging
+        toolsTable.setDebug(true); // Uncomment for nice Debugging
+        exitTable.setDebug(true); // Uncomment for nice Debugging
+        pauseTable.setDebug(true); // Uncomment for nice Debugging
     }
 
     /**
@@ -515,6 +515,8 @@ public class Hud {
 
         if (player.isWinning()) {
             exitLabel.setColor(0, 255, 0, 0.5f);
+            gameScreen.getMap().getExit().openExit(); // will visually open the Exit
+            
         } else {
             exitLabel.setColor(255, 0, 0, 0.5f);
         }
@@ -699,6 +701,7 @@ public class Hud {
 
     public void showLosingMenu() {
         this.gameOverTable.setVisible(true);
+        gameScreen.getGame().setScore(0);
         Gdx.input.setInputProcessor(stage);
     }
 

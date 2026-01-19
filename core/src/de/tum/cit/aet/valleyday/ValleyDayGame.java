@@ -381,8 +381,12 @@ public class ValleyDayGame extends Game {
     public int getScore() {
         return score;
     }
+    /**
+     * We set a score if the player scores points via Harvesting and gets points deducted via touching chickens
+     * @param amount
+     */
     public void setScore(int amount) {
-        this.score = amount;
+        this.score = Math.min(Math.max(0, amount), 100);
     }
     
 

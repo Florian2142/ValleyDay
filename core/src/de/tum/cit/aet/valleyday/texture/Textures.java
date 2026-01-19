@@ -71,6 +71,7 @@ public class Textures {
     public static final TextureRegion CHEST = SpriteSheet.FARM_THINGS.at(5, 5);
 
     public static final TextureRegion EXIT = SpriteSheet.BASIC_TILES.at(7, 1);
+    public static final TextureRegion OPEN_EXIT = SpriteSheet.BASIC_TILES.at(8, 2);
 
 
     // testing with specific pixel estimation (bottom-left origin)

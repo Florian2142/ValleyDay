@@ -105,6 +105,9 @@ public class GameMap {
     private int startX = 1;
     private int startY = 1;
 
+    // EXIT
+    private Exit currentExit;
+
 
 
     public GameMap(ValleyDayGame game, FileHandle map, String difficulty) throws mapInputExcepetion{
@@ -253,7 +256,9 @@ public class GameMap {
          
 
             case 4: // EXIT (hidden under debris)
-                hiddenObjects[r][c] = new Exit(r, c, this);
+                Exit exit =  new Exit(r, c, this);
+                hiddenObjects[r][c] = exit;
+                this.currentExit = exit;
                 obstacles[r][c]     = new Debris(world, r, c);
                 exitExists = true;
                 break;
@@ -412,7 +417,10 @@ public class GameMap {
             int x = (int) currDebris.getX();
             int y = (int) currDebris.getY();
 
-            this.hiddenObjects[x][y] = new Exit(x, y, this); // put the new Exit at random Location
+            Exit exit = new Exit(x, y, this);
+
+            this.hiddenObjects[x][y] = exit; // put the new Exit at random Location
+            this.currentExit = exit; // assigns the exit to the global variable
         }
 
 
@@ -849,6 +857,10 @@ public class GameMap {
 
     public List<Wildlife> getActiveWildlife() {
         return activeWildlife;
+    }
+
+    public Exit getExit() {
+        return currentExit;
     }
 
 }
