@@ -95,6 +95,7 @@ public class Textures {
     public static final TextureRegion STONE_DEBRIS = SpriteSheet.STONES.at(2,12);
 
     public static final TextureRegion DYNAMITE = SpriteSheet.COOLITEMS.at(8,3);
+    public static final TextureRegion TIMER = SpriteSheet.COOLITEMS.at(2,1);
     /**
     * ITEMS 
     */
@@ -181,6 +182,7 @@ public class Textures {
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 
     public static final TextureRegion HOUSE = SpriteSheet.HARVEST.at(2, 7);
+
 
 
 
