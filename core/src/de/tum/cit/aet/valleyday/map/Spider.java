@@ -142,9 +142,9 @@ public class Spider extends Entity implements Wildlife{
         // if the player is not harvesting he can move
        
             if (currDirection == Direction.LEFT) {
-                return  Animations.BROWN_CHICKEN_NOT_WALKING_LEFT.getKeyFrame(this.moveTimer, true);
+                return  Animations.SPIDER_CHICKEN_WALKING_LEFT.getKeyFrame(this.moveTimer, true);
             }
-            return  Animations.BROWN_CHICKEN_NOT_WALKING.getKeyFrame(this.moveTimer, true);   
+            return  Animations.SPIDER_CHICKEN_WALKING.getKeyFrame(this.moveTimer, true);   
     }
 
 

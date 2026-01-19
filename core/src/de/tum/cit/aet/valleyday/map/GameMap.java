@@ -341,7 +341,8 @@ public class GameMap {
                 break;
 
             case 23: // STONES (walkable ground)
-                this.tiles[r][c] = new Tiles(r, c, TileType.STONES);
+                this.hiddenObjects[r][c] = new Elixir(r, c, this);
+                this.obstacles[r][c] = new StoneDebris(world, r, c);
                 break;
 
             case 24: // FOUNTAIN (blocking structure)

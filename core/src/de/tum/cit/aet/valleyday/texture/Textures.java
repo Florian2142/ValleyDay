@@ -96,6 +96,8 @@ public class Textures {
 
     public static final TextureRegion DYNAMITE = SpriteSheet.COOLITEMS.at(8,3);
     public static final TextureRegion TIMER = SpriteSheet.COOLITEMS.at(2,1);
+    public static final TextureRegion ELIXIR = SpriteSheet.COOLITEMS.at(1,6);
+
     /**
     * ITEMS 
     */

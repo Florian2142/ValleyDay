@@ -36,6 +36,7 @@ public enum SpriteSheet {
 
     COOLITEMS("materials3.png", 16, 16),
     EXPLOSION("explosion.png", 32, 32),
+    SPIDER("Spider.png", 16, 16),
 
     // BASICS("basics.png", 303, 132);
     DEBRIS("Branches.png", 16,16),
@@ -55,6 +56,7 @@ public enum SpriteSheet {
     HARVEST("Harvest.png", 16,16),
     // HARVESTSTUFF
     OUTSIDE("Outside.png", 16,16),
+
 
     // CROPS
     CROPS("crops.png", 32, 32);

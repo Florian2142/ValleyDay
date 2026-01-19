@@ -854,7 +854,7 @@ public class Player extends Entity implements Drawable {
         return this.health;
     }
     public void setHealth(int health) {
-        this.health = health;
+        this.health = Math.min(Math.max(0, health), 3);
     }
 
     public void equipDynamite() {
