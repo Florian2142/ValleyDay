@@ -345,7 +345,8 @@ public class GameMap {
                 break;
 
             case 25: // SMALLPLANT (walkable decoration)
-                this.tiles[r][c] = new Tiles(r, c, TileType.SMALLPLANT);
+                this.hiddenObjects[r][c] = new Clock(r, c, this);
+                this.obstacles[r][c] = new StoneDebris(world, r, c);
                 break;
 
             case 26: // BRIDGE_VERTICAL (walkable)
