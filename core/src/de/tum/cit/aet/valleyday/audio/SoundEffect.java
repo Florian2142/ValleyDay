@@ -16,7 +16,9 @@ public enum SoundEffect {
     CROP_PLANTING("steps2.wav", 0.33f),
     DEBRISREMOVAL("confirm-tap-394001.mp3", 0.33f),
     SWORD_SLICE("sword-slice-2-393845.mp3", 0.33f),
-    EXPLOSION("explosion-8-bit-14-314686.mp3", 0.5f),
+    EXPLOSION("explosion-8-bit-14-314686.mp3", 1f),
+    SLASH("sword-blade-slicing-flesh-352708.mp3", 0.7f),
+    SPIDERHISS("SpiderHiss.wav", 0.25f),
     NEXTLEVEL("cute-level-up-3-189853.mp3", 0.75f);
    
 

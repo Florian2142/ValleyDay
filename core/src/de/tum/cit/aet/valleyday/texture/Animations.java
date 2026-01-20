@@ -1,4 +1,4 @@
-package de.tum.cit.aet.valleyday.texture;
+     package de.tum.cit.aet.valleyday.texture;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -304,6 +304,63 @@ public class Animations {
         new int[] {2, 15, 2}
     );
 
+    public static final Animation<TextureRegion> SPIDER_CHICKEN_WALKING = new Animation<>(0.1f,
+        SpriteSheet.SPIDER.at(1, 1),
+        SpriteSheet.SPIDER.at(1, 2),
+        SpriteSheet.SPIDER.at(2, 1),
+        SpriteSheet.SPIDER.at(2, 2),
+        SpriteSheet.SPIDER.at(2, 3),
+        SpriteSheet.SPIDER.at(2, 4)
+    );
+
+ 
+    public static final Animation<TextureRegion> SPIDER_CHICKEN_WALKING_LEFT = new Animation<>(0.1f,
+        SpriteSheet.SPIDER.atInverted(1,1),
+        SpriteSheet.SPIDER.atInverted(1,2),
+        SpriteSheet.SPIDER.atInverted(2,1),
+        SpriteSheet.SPIDER.atInverted(2,2),
+        SpriteSheet.SPIDER.atInverted(2,3),
+        SpriteSheet.SPIDER.atInverted(2,4)
+    );
+
+    public static final Animation<TextureRegion> SPIDER_ATTACK_RIGHT = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+        SpriteSheet.SPIDER.at(1, 1),
+        SpriteSheet.SPIDER.at(1, 2),
+        SpriteSheet.SPIDER.at(2, 1),
+        SpriteSheet.SPIDER.at(4, 1),
+        SpriteSheet.SPIDER.at(4, 2),
+        SpriteSheet.SPIDER.at(4, 3),
+        },
+        new int[] {1,1,1,4,4,4}
+    );
+
+ 
+    public static final Animation<TextureRegion> SPIDER_ATTACK_LEFT = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+        SpriteSheet.SPIDER.atInverted(1,1),
+        SpriteSheet.SPIDER.atInverted(1,2),
+        SpriteSheet.SPIDER.atInverted(2,1),
+        SpriteSheet.SPIDER.atInverted(4, 1),
+        SpriteSheet.SPIDER.atInverted(4, 2),
+        SpriteSheet.SPIDER.atInverted(4, 3),
+        },
+        new int[] {1,1,1,4,4,4}
+    );
+
+    public static final Animation<TextureRegion> SPIDER_KILL = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+           
+
+            SpriteSheet.HIT.at(1, 4),
+            SpriteSheet.HIT.at(1, 5),
+            SpriteSheet.HIT.at(1, 6),
+            SpriteSheet.SPIDER.at(5, 1),
+           
+        }, 
+        new int[] {1,1,1, 20}
+    );
+
 
 
     /** Harvesting Animations */
@@ -349,52 +406,11 @@ public class Animations {
             SpriteSheet.EXPLOSION.at(1, 6),
             SpriteSheet.EXPLOSION.at(1, 7),
             SpriteSheet.EXPLOSION.at(1, 8),
+            SpriteSheet.EXPLOSION.at(1, 9),
+            SpriteSheet.EXPLOSION.at(1, 10),
            
         }, 
-        new int[] {2, 2, 2, 2, 2, 2, 2}
-    );
-public static final Animation<TextureRegion> SPIDER_ATTACK_RIGHT = createComplexAnimation(0.05f, 
-        new TextureRegion[] {
-        SpriteSheet.SPIDER.at(1, 1),
-        SpriteSheet.SPIDER.at(1, 2),
-        SpriteSheet.SPIDER.at(2, 1),
-        SpriteSheet.SPIDER.at(4, 1),
-        SpriteSheet.SPIDER.at(4, 2),
-        SpriteSheet.SPIDER.at(4, 3),
-        },
-        new int[] {1,1,1,4,4,4}
-    );
-
- 
-    public static final Animation<TextureRegion> SPIDER_ATTACK_LEFT = createComplexAnimation(0.05f, 
-        new TextureRegion[] {
-        SpriteSheet.SPIDER.atInverted(1,1),
-        SpriteSheet.SPIDER.atInverted(1,2),
-        SpriteSheet.SPIDER.atInverted(2,1),
-        SpriteSheet.SPIDER.atInverted(4, 1),
-        SpriteSheet.SPIDER.atInverted(4, 2),
-        SpriteSheet.SPIDER.atInverted(4, 3),
-        },
-        new int[] {1,1,1,4,4,4}
-    );
-
-   public static final Animation<TextureRegion> SPIDER_CHICKEN_WALKING = new Animation<>(0.1f,
-        SpriteSheet.SPIDER.at(1, 1),
-        SpriteSheet.SPIDER.at(1, 2),
-        SpriteSheet.SPIDER.at(2, 1),
-        SpriteSheet.SPIDER.at(2, 2),
-        SpriteSheet.SPIDER.at(2, 3),
-        SpriteSheet.SPIDER.at(2, 4)
-    );
-
- 
-    public static final Animation<TextureRegion> SPIDER_CHICKEN_WALKING_LEFT = new Animation<>(0.1f,
-        SpriteSheet.SPIDER.atInverted(1,1),
-        SpriteSheet.SPIDER.atInverted(1,2),
-        SpriteSheet.SPIDER.atInverted(2,1),
-        SpriteSheet.SPIDER.atInverted(2,2),
-        SpriteSheet.SPIDER.atInverted(2,3),
-        SpriteSheet.SPIDER.atInverted(2,4)
+        new int[] {2, 2, 2, 2, 2, 2, 2, 2, 2}
     );
 
 }

@@ -5,5 +5,9 @@ import de.tum.cit.aet.valleyday.texture.Drawable;
 public interface Wildlife extends Drawable {
 
     public void kill();
+
+    public boolean isRemovable();
+
+    public boolean isDead();
     
 }

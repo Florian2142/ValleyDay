@@ -471,6 +471,13 @@ public class Player extends Entity implements Drawable {
             shooChicken(chicken);
         }
 
+        // For every wildlife killed, the score increases.
+        for (Wildlife wildlife : map.getActiveWildlife()) {
+            if (ripWildlife(wildlife)) {
+                map.getGame().setScore(map.getGame().getScore() + 1);
+            };
+        }
+
 
         
            
@@ -515,6 +522,45 @@ public class Player extends Entity implements Drawable {
                             System.out.println("Shooed the chicken! Distance was: " + Math.sqrt(distSq));
             }
         }
+    }
+
+    // The function ripWildLife checks wether S is pressed. If so, it plays the swords slice sound.
+    public boolean ripWildlife(Wildlife wild) {
+            if (Gdx.input.isKeyPressed(Keys.S)) {
+
+                if (swordSoundCooldown <= 0f) {
+                    SoundEffect.SWORD_SLICE.play();
+                    swordSoundCooldown = 0.5f; 
+                }
+
+                
+
+                    
+                    float range = 1.10955f;
+
+                    float targetX = this.offsetX; 
+                    float targetY = this.offsetY;
+
+                    float wildX = wild.getX();
+                    float wildY = wild.getY();
+
+                    /**
+                     * Instead of simple offset tiles we ask if the chicken is in a eucledian distance from us
+                     */
+                    float distSq = (targetX - wildX) * (targetX - wildX) + 
+                       (targetY - wildY) * (targetY - wildY);
+
+                    // If the distance is smaller than 1.015f and S is pressed, the kill function is called and spider is killed.
+                    if (distSq < 1.015f) {
+                            if (!wild.isDead()) {
+                                SoundEffect.SLASH.play();
+                                wild.kill();
+                                System.out.println("Killed the wildlife! Distance was: " + Math.sqrt(distSq));
+                                return true;
+                            }
+                     }
+        }
+        return false;
     }
     
     @Override
