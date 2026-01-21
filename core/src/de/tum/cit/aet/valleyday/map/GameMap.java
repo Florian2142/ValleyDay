@@ -292,7 +292,7 @@ public class GameMap {
                 break;
 
             case 12: // Force white chicken
-                this.activeWildlife.add(new Spider(world, r, c));
+                this.activeWildlife.add(new Spider(world, r, c, this.getPlayer()));
                 break;
             
 
@@ -452,6 +452,13 @@ public class GameMap {
         for (Chicken chicken: activeChickens) {
             chicken.tick(frameTime, this);
         }
+        // The tick is updated for the spider.
+        for (Wildlife wildlife : activeWildlife) {
+            if (wildlife instanceof Spider) {
+                ((Spider) wildlife).tick(frameTime, this);
+            }
+        }
+        
 
         for (int i = 0;  i < explodingDebris.size(); i++) {
             StoneDebris stoneDebris = explodingDebris.get(i);
@@ -467,6 +474,7 @@ public class GameMap {
         doPhysicsStep(frameTime);
 
 
+        
     }
     
     /**
