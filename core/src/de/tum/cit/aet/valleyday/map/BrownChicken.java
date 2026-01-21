@@ -183,6 +183,8 @@ public class BrownChicken extends Entity implements Chicken{
         /** The smart movement of the chicken */
 
         if (highwayToHeaven != null && highwayToHeaven.size() > 0 && isScurrying != true && catchBreath <= 0) {
+
+                if (goalCrop == null) {highwayToHeaven = null;}
                 // When the chicken has a path, it looks at first node in the List.
                 nextMove = highwayToHeaven.get(0);
 
@@ -273,6 +275,8 @@ public class BrownChicken extends Entity implements Chicken{
     // and the postion of the player multiplied by the sprint speed of 10. The chicken moves and sprints away.
     public void scurryAway(float playerX, float playerY) {
 
+        this.highwayToHeaven = null;
+
         float diffX = this.getX() - playerX;
         float diffY = this.getY() - playerY;
 
@@ -282,9 +286,11 @@ public class BrownChicken extends Entity implements Chicken{
         float sprintSpeed = 3f; 
         
         // Set velocity using simple trigonometry
+
         if (shocked <= 0) {
-            this.xVelocity = MathUtils.cos(angle) * sprintSpeed;
-            this.yVelocity = MathUtils.sin(angle) * sprintSpeed;
+            this.xVelocity = MathUtils.clamp(MathUtils.cos(angle) * sprintSpeed, MathUtils.cos(angle) * sprintSpeed, 3);
+            this.yVelocity = MathUtils.clamp(MathUtils.sin(angle) * sprintSpeed, MathUtils.sin(angle) * sprintSpeed, 3);
+
         }
         else {
             this.xVelocity = 0;
@@ -300,6 +306,7 @@ public class BrownChicken extends Entity implements Chicken{
     public void scurry(float playerX, float playerY) {
         this.isScurrying = true;
         /** WE WILL CHANGE THIS VALUES ACCORDING TO DIFFICULTY */
+        this.highwayToHeaven = null;
 
         // Difficulty Settings
         String difficulty = map.getDifficulty();

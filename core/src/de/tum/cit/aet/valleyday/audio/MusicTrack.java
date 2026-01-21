@@ -15,7 +15,11 @@ public enum MusicTrack {
     
     BACKGROUND("background.mp3", 0.1f),
     EASTER_EGG("level-ten-8-bit-pixel-warriors-chapter-one-415692.mp3", 0.33f),
-    GAME("game-music-loop-6-144641.mp3", 0.15f);
+    GAME("game-music-loop-6-144641.mp3", 0.15f),
+    MAP2("minecraft-run-music-394978 (1).mp3", 0.15f),
+    MAP3("winter-pixel-422896.mp3", 0.15f),
+    MAP4("pixel-245147 (2).mp3", 0.15f);
+
     
     /** The music file owned by this variant. */
     private final Music music;

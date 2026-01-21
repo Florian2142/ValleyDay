@@ -179,7 +179,7 @@ public class ValleyDayGame extends Game {
             /** If teg endgame map is chosen, the standard backround music will stop playing, 
              * instead a special music will be playing.
              */
-            if (pendingMapFile.name().equals("mapEG.properties")) {
+            
                 
                 // If it is the Easter Egg map:
                 if (MusicTrack.BACKGROUND.isPlaying()) {
@@ -188,9 +188,22 @@ public class ValleyDayGame extends Game {
                 if (MusicTrack.GAME.isPlaying()) {
                     MusicTrack.GAME.stop();
                 }
-                MusicTrack.EASTER_EGG.play();     // Play special music
-                
-            } else {
+                if (pendingMapFile.name().equals("mapEG.properties")) {
+                    MusicTrack.EASTER_EGG.play();     // Play special music
+                }
+                else if (pendingMapFile.name().equals("map2.properties")) {
+                    MusicTrack.GAME.stop();
+                    MusicTrack.MAP2.play();
+                }
+                else if (pendingMapFile.name().equals("map3.properties")) {
+                    MusicTrack.MAP2.stop();
+                    MusicTrack.MAP3.play();
+                }
+                else if (pendingMapFile.name().equals("map4.properties")) {
+                    MusicTrack.MAP3.stop();
+                    MusicTrack.MAP4.play();
+                }
+                else {
                 // If it is a NORMAL map:
                 // WE Will stop any other music and make a lighter music
                 if (MusicTrack.EASTER_EGG.isPlaying()) {
