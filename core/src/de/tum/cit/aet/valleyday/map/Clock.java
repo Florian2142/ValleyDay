@@ -5,6 +5,13 @@ import de.tum.cit.aet.valleyday.texture.Textures;
 
 public class Clock extends hiddenObject implements Item{
 
+    /**
+     * The clock class extends the hiddenObject class and implements the Item interface.
+     * The constructor takes the GameMap as a parameter and the textures variable from the Parent class hiddenObject.
+     * @param x
+     * @param y
+     * @param map
+     */
     public Clock(int x, int y, GameMap map) {
         super(x, y, map);
         super.texture = Textures.TIMER;

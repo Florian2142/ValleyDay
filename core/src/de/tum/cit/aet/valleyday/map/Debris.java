@@ -51,6 +51,9 @@ public class Debris extends Obstacle implements Destructible{
 
     /**
      * Destroys the object 
+     * If player has no Shovel, and player presses d, the obstacle gets removed, meaning that the state of the 
+     * Obstacle is decremented with currState--.
+     * If currState is <= 0, object is destroyed.
      */
     @Override
     public void destruct(GameMap gamemap, int damage) {

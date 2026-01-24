@@ -13,7 +13,7 @@ public class Textures {
     
     public static final TextureRegion FLOWERS               = SpriteSheet.BASIC_TILES.at(2, 5);
     public static final TextureRegion SOIL                  = SpriteSheet.CROPS.at(10, 2, 1, 1); 
-    public static final TextureRegion ICE                   = SpriteSheet.BASIC_TILES.at(3, 6);
+    public static final TextureRegion LAVA                   = SpriteSheet.BASIC_TILES.at(10, 3);
     
     public static final TextureRegion WALL                  = SpriteSheet.BASIC_TILES.at(3, 1);
     public static final TextureRegion STONE                 = SpriteSheet.BASIC_TILES.at(2, 6);
@@ -23,7 +23,7 @@ public class Textures {
     public static final TextureRegion SMALLPLANT            = SpriteSheet.BASIC_TILES.at(3, 5);
     public static final TextureRegion BRIDGE_VERTICAL       = SpriteSheet.BASIC_TILES.at(12, 1);
     public static final TextureRegion BRIDGE_HORIZONTAL     = SpriteSheet.BASIC_TILES.at(12, 2);
-    public static final TextureRegion TORCH                 = SpriteSheet.BASIC_TILES.at(7, 5);
+    public static final TextureRegion TORCH                 = SpriteSheet.BASIC_TILES.at(8, 5);
     public static final TextureRegion SNOW                  = SpriteSheet.BASIC_TILES.at(8, 8);
     public static final TextureRegion WATER                 = SpriteSheet.FARM_THINGS.at(6, 7);
     public static final TextureRegion SAND                  = SpriteSheet.BASIC_TILES.at(2, 3);
@@ -40,6 +40,10 @@ public class Textures {
     public static final TextureRegion PATH_RIGHT            = SpriteSheet.POKEMON.at(3, 11);
     public static final TextureRegion PATH_RIGHT_CORNER_B   = SpriteSheet.POKEMON.at(4, 11);
 
+    public static final TextureRegion FLOWERS1   = SpriteSheet.FARM_THINGS.at(4, 1);
+    public static final TextureRegion FLOWERS2   = SpriteSheet.FARM_THINGS.at(4, 2);
+    public static final TextureRegion FLOWERS3   = SpriteSheet.FARM_THINGS.at(4, 3);
+
     // Some big Rocks
     public static final TextureRegion SMALL_ROCK            = SpriteSheet.STONES.at(2, 12);
     public static final TextureRegion TINY_ROCK             = SpriteSheet.STONES.at(4, 10);
@@ -48,7 +52,7 @@ public class Textures {
 
    
 
-    public static final TextureRegion START                 = SpriteSheet.POKEMON.at(6, 4);
+    public static final TextureRegion START                 = SpriteSheet.BASIC_TILES.at(7, 3);
 
 
 
@@ -113,25 +117,25 @@ public class Textures {
     /**
      * CROPS AND HARVESTING
      */
-    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 13, 1, 1); 
-    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 13, 1, 1); 
-    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 13, 1, 1); 
-    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(11, 11, 2, 1); 
+    public static final TextureRegion CORN_INIT = SpriteSheet.CROPS.at(2, 9, 1, 1); 
+    public static final TextureRegion CORN_GROWING = SpriteSheet.CROPS.at(4, 9, 1, 1); 
+    public static final TextureRegion CORN_MATURING = SpriteSheet.CROPS.at(8, 9, 1, 1); 
+    public static final TextureRegion CORN_MATURED = SpriteSheet.CROPS.at(12, 11, 1, 1); 
 
     public static final TextureRegion MAIS_INIT = SpriteSheet.CROPS.at(2, 11, 1, 1); 
     public static final TextureRegion MAIS_GROWING = SpriteSheet.CROPS.at(4, 11, 1, 1); 
     public static final TextureRegion MAIS_MATURING = SpriteSheet.CROPS.at(8, 11, 1, 1); 
-    public static final TextureRegion MAIS_MATURED = SpriteSheet.CROPS.at(10, 11, 1, 1); 
+    public static final TextureRegion MAIS_MATURED = SpriteSheet.CROPS.at(12, 11, 1, 1); 
 
     public static final TextureRegion LEMON_INIT = SpriteSheet.CROPS.at(2, 10, 1, 1); 
     public static final TextureRegion LEMON_GROWING = SpriteSheet.CROPS.at(4, 10, 1, 1); 
     public static final TextureRegion LEMON_MATURING = SpriteSheet.CROPS.at(8, 10, 1, 1); 
-    public static final TextureRegion LEMON_MATURED = SpriteSheet.CROPS.at(11, 10, 1, 1); 
+    public static final TextureRegion LEMON_MATURED = SpriteSheet.CROPS.at(12, 11, 1, 1); 
 
     public static final TextureRegion SELLERIE_INIT     = SpriteSheet.CROPS.at(2, 12, 1, 1); 
     public static final TextureRegion SELLERIE_GROWING  = SpriteSheet.CROPS.at(4, 12, 1, 1); 
     public static final TextureRegion SELLERIE_MATURING = SpriteSheet.CROPS.at(8, 12, 1, 1); 
-    public static final TextureRegion SELLERIE_MATURED  = SpriteSheet.CROPS.at(11, 12, 1, 1); 
+    public static final TextureRegion SELLERIE_MATURED  = SpriteSheet.CROPS.at(12, 11, 1, 1); 
 
 
 
@@ -183,7 +187,8 @@ public class Textures {
 
     // big objects for style
     public static final TextureRegion TREE = SpriteSheet.OUTSIDE.at(1, 2, 2, 3); 
-    public static final TextureRegion HOUSE = SpriteSheet.HARVEST.at(2, 7);
+    public static final TextureRegion BIGTREE = SpriteSheet.POKEMON.at(4, 6, 3, 3); 
+    public static final TextureRegion HOUSE = SpriteSheet.POKEMON.at(1 , 1, 6, 5);
 
 
 

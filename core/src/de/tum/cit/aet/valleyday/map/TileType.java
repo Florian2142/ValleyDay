@@ -16,7 +16,7 @@ public enum TileType {
         FLOWERS(true, Textures.FLOWERS),
         SOIL(true, Textures.SOIL),
         GRAS(true, Textures.GRAS),
-        ICE(true, Textures.ICE),
+        LAVA(true, Textures.LAVA),
         SNOW(true, Textures.SNOW),
         START(true, Textures.START),
 
@@ -43,12 +43,9 @@ public enum TileType {
         STONES(true, Textures.STONES),
         SMALLPLANT(true, Textures.SMALLPLANT),
 
-        WALL(false, Textures.WALL),
-        CHEST(false, Textures.CHEST),
-        TREE(false, Textures.TREE),
-        HOUSE(false, Textures.HOUSE),
-        FOUNTAIN(false, Textures.FOUNTAIN),
-        TORCH(false, Textures.TORCH),
+        FLOWER1(false, Textures.FLOWERS1),
+        FLOWER2(false, Textures.FLOWERS2),
+        FLOWER3(false, Textures.FLOWERS3),
 
         BRIDGE_VERTICAL(true, Textures.BRIDGE_VERTICAL),
         BRIDGE_HORIZONTAL(true, Textures.BRIDGE_HORIZONTAL);

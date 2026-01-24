@@ -15,7 +15,7 @@ public interface Destructible {
     /**
      * destructs the destructible :D 
      * @param gamemap
-     * @param damageif player has item for removing faster then increase damage
+     * @param damage if player has item for removing faster then increase damage
      */
 
     public void destruct(GameMap gamemap, int damage);

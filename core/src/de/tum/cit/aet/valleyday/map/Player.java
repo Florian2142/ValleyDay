@@ -31,11 +31,11 @@ public class Player extends Entity implements Drawable {
     
 
 
-    float MaxStamina = 100f;
-    float stamina = 100f;
-    boolean isExhausted = false;
-    private float sprintCooldown = 0f;
-    private final float COOLDOWN_DURATION = 5f; // 5 seconds
+    float MaxStamina = 100f; // Stamina capped at 100.
+    float stamina = 100f; // Stamina is 100 at the start. 
+    boolean isExhausted = false; // isExhausted set to false, only true if Stamina is 0.
+    private float sprintCooldown = 0f; // When player exhausted, has coolDown.
+    private final float COOLDOWN_DURATION = 5f; // 5 seconds before being able to sprint again.
     float drainRate = 25f;
     float regenRate = 25f;
     float sprintSpeed = 10f;
@@ -50,6 +50,7 @@ public class Player extends Entity implements Drawable {
 
     /*Is the player standing or moving */
     private boolean moving = false;
+    // Boolean flag for harvesting. 
     private boolean isHarvesting = false;
 
     /*Variables to store the harvesting count and tool count implenented in the HUD */
@@ -63,9 +64,11 @@ public class Player extends Entity implements Drawable {
     private float shooAwayTimer = 0f;
     private boolean isScared = false;
     private boolean gotHit   = false;
+    // Escape route of the player. 
     private float escapeX, escapeY;
 
-    /* Handles the startled state */
+    /* Handles the startled state
+    If chicken touches player, player will run in opposite direction. */
     public void startle(float chickenOnTileX, float chickenOnTileY) {
         this.isScared = true;
 
@@ -76,7 +79,7 @@ public class Player extends Entity implements Drawable {
     /** Method to switch through the options */
 
     private int option = 0;
-
+    // stores the current cropType.
     private CropType currentCropType = CropType.CORN;
 
 
@@ -95,6 +98,7 @@ public class Player extends Entity implements Drawable {
     private float stepSoundCooldown = 0f;
     private static final float STEP_SOUND_INTERVAL = 0.25f;
 
+    /** Cooldown for Sound Effects. */
     private float harvestSoundCooldown = 0f;
     private float pickupSoundCooldown = 0f;
     private float swordSoundCooldown = 0f;
@@ -133,13 +137,22 @@ public class Player extends Entity implements Drawable {
     private float harvestCooloff = 0;
     private float harvestingAnimationCooloff = 0;
     private float exitCooloff = 120f;
+    // Wildlife coolOffs.
     private float touchChickenCoolOff = 0;
+    private float touchSpiderCoolOff = 0;
+    private float spiderAttackTimer = 0f;
+    private static final float SPIDER_ATTACK_HOLD = 0.6f;
 
     private int harvesting ; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
     
 
-    
+    /**
+     * Initializes the current player for map and the game. 
+     * @param world
+     * @param x - coordinate draws the player on the map. 
+     * @param y - coordinate draws the player on the map.
+     */
     public Player(World world, float x, float y) {
         super(world, x, y);
     }
@@ -184,7 +197,8 @@ public class Player extends Entity implements Drawable {
         offsetDirection(currDirection);
         
         /**
-         * we define a constant speed here
+         * If player is scared, he runs away in the opposite direction.
+         * The gameOverScreen is being called and game ends.
          */
 
          if (isScared) {
@@ -196,14 +210,18 @@ public class Player extends Entity implements Drawable {
             if (gameOverTimer <= 0) {
                 ((GameScreen)map.getGame().getScreen()).gameOverScreen();
             }
-
-
-            
         }
+
+
+        // Else, if player not scared, normal movements will be called. 
         else {
 
         float speed = 5f;
 
+        /**
+         * Makes the sprinting funtions for the player. 
+         * And determines the cooloff as the player cannot sprint indinitely
+         */
         if (sprintCooldown > 0) {
             sprintCooldown -= frameTime;
         }
@@ -232,6 +250,10 @@ public class Player extends Entity implements Drawable {
 
         // we want to increase the stepping sound or the frequency when he is sprinting
         float stepInterval = isSprinting ? 0.2f : STEP_SOUND_INTERVAL;
+
+        /**
+         * INput for the player movement lets up down left and right arrow determines the player movement
+         */
 
         if (Gdx.input.isKeyPressed(Keys.UP)) {
             yVelocity += speed;
@@ -273,6 +295,9 @@ public class Player extends Entity implements Drawable {
             this.moving = false;
         }
 
+        if (chopSoundCooldown > 0f) {
+            chopSoundCooldown -= frameTime;
+        }
         /**
          * Scans for destructible objects in the given direction 
          * 
@@ -280,11 +305,6 @@ public class Player extends Entity implements Drawable {
          * 
          * KEEP key pressed if you want to completely remove the object
          */
-        if (chopSoundCooldown > 0f) {
-            chopSoundCooldown -= frameTime;
-        }
-
-        
 
         if (Gdx.input.isKeyPressed(Keys.D)) {
             /*** TESTING REMOVE LATER */
@@ -297,6 +317,7 @@ public class Player extends Entity implements Drawable {
                 if (map.getObstacle(offsetX, offsetY) instanceof Debris) {
                     ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
                 }
+                /** When player has dynamite he can blow off stonedebris */
                 else if (map.getObstacle(offsetX, offsetY) instanceof StoneDebris && hasDynamite) {
                     ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
                 }
@@ -309,7 +330,10 @@ public class Player extends Entity implements Drawable {
 
         }
 
-
+        /**
+         * When R is pressed, we move to the next index of Array "types" until we reach the end of Array. 
+         * Everytime R is pressed, we display the current crop in the HUD.java 
+         */
         if (Gdx.input.isKeyJustPressed(Keys.R)) {
 
 
@@ -320,8 +344,6 @@ public class Player extends Entity implements Drawable {
             option = option % types.length; // Wrapper -> Circular Array
 
             currentCropType = types[option];
-
-            System.out.println("Switched to: " + currentCropType);
 
             if (equipSoundCooldown <= 0f) {
                 SoundEffect.EQUIP.play();
@@ -345,20 +367,19 @@ public class Player extends Entity implements Drawable {
 
             if (soil != null && soil.getType().equals(TileType.SOIL)) {
                 /**
-                 * Maybe enhance this method such that we can plant different CropTypes
                  * 
-                 * FOR THE MVP we stick with just a simple one!
+                 * 
                  */
-                System.out.println("COULD ENTER THE SOIL");
+            
                 if (map.plantCrop(offsetX, offsetY, currentCropType) != true) {
-                    System.out.println("COULD ENTER THE PLANT CROP");
+                
                     // now we have to check if player can harvest the current crop if the SOIL isEmpty() != true
                     Crop currentCrop = map.getCrop(offsetX, offsetY);
                     if (currentCrop != null) {
-                        System.out.println("CROP IS ACTUALLY NOT EMPTY");
+                        
                         // we must check if the Crop is in state 2 (implying we can harvest this one)
                         if (currentCrop.canHarvest()) {
-                            System.out.println("IS THE CROP ACTUALLY HARVESTABLE");
+          
                             int score = score(map.harvestCrop(offsetX, offsetY)); // harvest the crop
                             /** INCREMENTING THE WINNING CONDITION */
                             this.currentHarvest += MathUtils.clamp(score, 1, 3);
@@ -369,13 +390,14 @@ public class Player extends Entity implements Drawable {
                                     harvestSoundCooldown = 0.15f; 
                                 }
                             
-                            
-                            
+                            // returns a message for the harvest to the hud
                             messageForHarvest = "You just harvested: " + currentCrop.getClass().getSimpleName() + ". Only " + (harvesting - currentHarvest) + "left!";
                         }
+                        // returns message if crop is rotten
                         else if (currentCrop.isRotten()) {
                             messageForHarvest = "Crop is Rotten, you need to water it!";
                         }
+                        // return message if its not ready for harvesting
                         else {
                             messageForHarvest = "Crop is not ready for harvesting!";
                         }
@@ -386,6 +408,7 @@ public class Player extends Entity implements Drawable {
                     }
                 }
                 else {
+                    // play a nice sound for crop planting
                     if (plantSoundCooldown <= 0f) {
                     SoundEffect.CROP_PLANTING.play();
                     plantSoundCooldown = 0.1f;
@@ -411,14 +434,17 @@ public class Player extends Entity implements Drawable {
         if (currHiddenObject != null && (map.getObstacle(currX, currY) == null)) {
             /** ITEM FUNCTION
              * 
-             * to pick it up */
+             * to pick it up 
+             * if the player walks over an item he picks it up automatically 
+             * 
+             */
             if (currHiddenObject instanceof Item) { // DYNAMIC POLYMORPISM 
                 this.messageCoolDown = 240;
                 // pickup the Item and return the pickup String message
                 this.messageToDisplay = ((Item)currHiddenObject).pickup(this);
 
                 if (pickupSoundCooldown <= 0f) {
-                   
+                    // play sound for removal
                     SoundEffect.DEBRISREMOVAL.play();
                     pickupSoundCooldown = 0.5f; 
                 }
@@ -454,6 +480,7 @@ public class Player extends Entity implements Drawable {
         exitCooloff--;
         shooAwayTimer--;
         touchChickenCoolOff--;
+        touchSpiderCoolOff--;
 
 
         
@@ -461,7 +488,7 @@ public class Player extends Entity implements Drawable {
         
 
         /**
-         * we define a constant speed here
+         * We loop through all the chicken, and checked if the touch us.  
          */
 
         for (Chicken chicken : map.getActiveChickens()) {
@@ -472,7 +499,11 @@ public class Player extends Entity implements Drawable {
         }
 
         // For every wildlife killed, the score increases.
+        // Loops through all wildLife, and performs actions. 
         for (Wildlife wildlife : map.getActiveWildlife()) {
+            if (wildlife instanceof Spider) {
+                startleSpider((Spider) wildlife, map, frameTime);
+            }
             if (ripWildlife(wildlife)) {
                 map.getGame().setScore(map.getGame().getScore() + 1);
             };
@@ -488,6 +519,12 @@ public class Player extends Entity implements Drawable {
         this.hitbox.setLinearVelocity(xVelocity, yVelocity);
     }
 
+    /**
+     * Checks if the chicken, in front of player. can be Shooed when S is pressed. 
+     * Calculates the. distance between the player and chicken, when Player is looking at direction of chicken. 
+     * 
+     * @param chicken Chicken on the map.
+     */
     public void shooChicken(Chicken chicken) {
             if (Gdx.input.isKeyPressed(Keys.S)) {
 
@@ -524,7 +561,13 @@ public class Player extends Entity implements Drawable {
         }
     }
 
-    // The function ripWildLife checks wether S is pressed. If so, it plays the swords slice sound.
+    /**
+     * The function ripWildLife checks wether S is pressed. 
+     * If so, it plays the swords slice sound.
+     * 
+     * @param wild gives the current Wildlife
+     * @return true when WildLife was killed. 
+     */
     public boolean ripWildlife(Wildlife wild) {
             if (Gdx.input.isKeyPressed(Keys.S)) {
 
@@ -615,7 +658,18 @@ public class Player extends Entity implements Drawable {
         }
     }}
 
-    /* Handles the startled state */
+    /**
+     * When the player touches the chicken, the player looses health. 
+     * If player has no health left, the isScared function is called and the game ends. 
+     * The distance is calculated by. the euclidean distance and the squared radius.
+     * @param chickenOnTileX
+     * @param chickenOnTileY
+     * @param playerX
+     * @param playerY
+     * @param chicken
+     * @param map
+     * @return
+     */
     public boolean startle(float chickenOnTileX, float chickenOnTileY, float playerX, float playerY, Chicken chicken, GameMap map) {
 
 
@@ -636,7 +690,7 @@ public class Player extends Entity implements Drawable {
                     SoundEffect.GAMEOVER.play();
                     hasPlayedGameOverSound = true; 
              }
-                // for distance offseting running aways in opposite Direction
+                // for distance offseting running away in opposite Direction
                 this.escapeX = -(chicken.getX() - getX()); 
                 this.escapeY = -(chicken.getY() - getY());
             }
@@ -651,6 +705,47 @@ public class Player extends Entity implements Drawable {
         }
 
         
+    }
+
+    /* Handles the spider attack state */
+    public boolean startleSpider(Spider spider, GameMap map, float frameTime) {
+
+        float diffX = spider.getX() - getX();
+        float diffY = spider.getY() - getY();
+        float distanceSq = (diffX * diffX) + (diffY * diffY);
+        float attackRange = Entity.radius * 2f;
+        float attackRangeSq = attackRange * attackRange;
+
+        if (spider.isAttacking() && distanceSq < attackRangeSq) {
+            spiderAttackTimer += frameTime;
+        }
+        else {
+            spiderAttackTimer = 0f;
+            return false;
+        }
+
+        if (spiderAttackTimer >= SPIDER_ATTACK_HOLD) {
+            if (touchSpiderCoolOff <= 0) {
+                health = 0;
+                map.getGame().setScore(map.getGame().getScore() - 5);
+                touchSpiderCoolOff = 90f;
+            }
+
+            if (health <= 0) {
+                this.isScared = true;
+
+                if (!hasPlayedGameOverSound) {
+                    SoundEffect.GAMEOVER.play();
+                    hasPlayedGameOverSound = true;
+                }
+                // for distance offseting running aways in opposite Direction
+                this.escapeX = -(spider.getX() - getX());
+                this.escapeY = -(spider.getY() - getY());
+            }
+            spiderAttackTimer = 0f;
+            return true;
+        }
+        return false;
     }
 
     public void equipShovel() {
