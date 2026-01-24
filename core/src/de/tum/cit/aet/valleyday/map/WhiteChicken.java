@@ -136,11 +136,12 @@ public class WhiteChicken extends Entity implements Chicken{
 
         // Make the chicken eat the crop
         // If the chicken found a crop, the chicken eats it.
-        if (map.getCrop(currX, currY) != null) {
+        Crop cropAtTile = map.getCrop(currX, currY);
+        if (cropAtTile != null && !cropAtTile.isRotten()) {
             eatTimer = 30f;
             this.isEating = true;
+            map.eatCrop(currX, currY);
         }
-        map.eatCrop(currX, currY);
 
         /**
          *If the chicken is on the tile that is one next to or before the player, the chicken knows the 

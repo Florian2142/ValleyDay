@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
+import de.tum.cit.aet.valleyday.audio.MusicTrack;
 
 /**
  * The MenuScreen class is responsible for displaying the main menu of the game.
@@ -46,9 +47,14 @@ public class MenuScreen implements Screen {
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
 
+        MusicTrack.stopAll();
+        MusicTrack.BACKGROUND.play();
+
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
+
+        
 
 
         // Create and add a button to go to the game screen

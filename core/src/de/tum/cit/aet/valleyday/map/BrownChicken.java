@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 
 import de.tum.cit.aet.valleyday.texture.Animations;
+import de.tum.cit.aet.valleyday.audio.MusicTrack;
+import de.tum.cit.aet.valleyday.audio.SoundEffect;
 import de.tum.cit.aet.valleyday.map.Entity.Direction;
 import de.tum.cit.aet.valleyday.pathfinding.*;
 
@@ -119,7 +121,7 @@ public class BrownChicken extends Entity implements Chicken{
                 // It asks the map for a random crop.
                 goalCrop = map.randomCrop();
 
-                if (goalCrop != null) {
+                if (goalCrop != null && !goalCrop.isRotten()) {
                     // Creates a start node and a end note.
                     start = new GridNode(currX, currY, 0, 0, null);
                     goal  = new GridNode((int) goalCrop.getX(), (int) goalCrop.getY(), 0, 0, null);
@@ -184,7 +186,19 @@ public class BrownChicken extends Entity implements Chicken{
 
         if (highwayToHeaven != null && highwayToHeaven.size() > 0 && isScurrying != true && catchBreath <= 0) {
 
-                if (goalCrop == null) {highwayToHeaven = null;}
+
+                /* We need to ask if the player actually harvested the crop */
+                Crop cropAtGoal = null;
+                if (goalCrop != null) {
+                    cropAtGoal = map.getCrop((int) goalCrop.getX(), (int) goalCrop.getY());
+                }
+                if (goalCrop == null || cropAtGoal == null || cropAtGoal.isRotten()) { 
+                    goalCrop = null; highwayToHeaven = null; 
+                }
+                /** If there is nothing to move well there is nothing to move upon chicken is sad :c */
+                if (highwayToHeaven == null || highwayToHeaven.isEmpty()) {
+                    return;
+                }
                 // When the chicken has a path, it looks at first node in the List.
                 nextMove = highwayToHeaven.get(0);
 
@@ -220,11 +234,13 @@ public class BrownChicken extends Entity implements Chicken{
 
         // Make the chicken eat the crop
         // If the chicken found a crop, the chicken eats it.
-        if (map.getCrop(currX, currY) != null) {
+        Crop cropAtTile = map.getCrop(currX, currY);
+        if (cropAtTile != null && !cropAtTile.isRotten()) {
             eatTimer = 30f;
+            SoundEffect.EXPLOSION.play();
             this.isEating = true;
+            map.eatCrop(currX, currY);
         }
-        map.eatCrop(currX, currY);
 
         // If the chicken is on the tile that is one next to or before the player, the chicken knows the 
         // x and y postion of the player and isScurrying is true. 

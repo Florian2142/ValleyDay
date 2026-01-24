@@ -239,7 +239,9 @@ public class Spider extends Entity implements Wildlife{
     /* Function which attacks the player when in reach */
     private void attack() {
         // Asks if the spider is in reach for an attack
-        if ((Math.pow(getX() - player.getX(), 2) + Math.pow(getY() - player.getY(), 2)) < 1.015f) {
+        float attackRange = Entity.radius * 2f;
+        float attackRangeSq = attackRange * attackRange;
+        if ((Math.pow(getX() - player.getX(), 2) + Math.pow(getY() - player.getY(), 2)) < attackRangeSq) {
             isAttacking = true;
             hasAttacked = false;
             attackTime = 0f;

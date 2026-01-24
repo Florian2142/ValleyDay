@@ -34,6 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+
+import de.tum.cit.aet.valleyday.audio.MusicTrack;
 import de.tum.cit.aet.valleyday.audio.SoundEffect;
 
 
@@ -117,6 +119,8 @@ public class Hud {
     private Table gameOverTable;
 
     private Skin skin = new Skin(Gdx.files.internal("skin/craftacular/craftacular-ui.json"));
+
+    private Texture gameOverTexture;
 
 
     public Hud(SpriteBatch spriteBatch, BitmapFont font, Player player, GameScreen gameScreen) {
@@ -380,16 +384,19 @@ public class Hud {
        
         exitTable.setVisible(false); // Set the pauseTable to False by Default
 
-        // Create gameOver table
+        // Make a nice cozy gameover Table and graphics
         this.gameOverTable = new Table();
         gameOverTable.setFillParent(true);
         stage.addActor(gameOverTable);
 
+        gameOverTexture = new Texture(Gdx.files.internal("cutscenes/GameOverScreen/GameOver.png"));
+        gameOverTable.setBackground(new TextureRegionDrawable(new TextureRegion(gameOverTexture)));
+
         // Create Label which displays that player is an idiot
-        gameOverTable.add(new Label("YOU LOST!!", this.skin)).padBottom(40).row();
+        gameOverTable.add(new Label("", this.skin)).padBottom(40).row();
 
         // Create button which lets player go to the menuScreen
-        TextButton losingButton = new TextButton("GET LOST !!!!", this.skin);
+        TextButton losingButton = new TextButton("Return to menu", this.skin);
 
         gameOverTable.add(losingButton).width(650).row();
         gameOverTable.setVisible(false);
@@ -488,16 +495,6 @@ public class Hud {
 
         // Draw the HUD elements
         font.draw(spriteBatch, "Esc to Pause!",  Gdx.graphics.getWidth() - 250, 30);
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -702,6 +699,8 @@ public class Hud {
     public void showLosingMenu() {
         this.gameOverTable.setVisible(true);
         gameScreen.getGame().setScore(0);
+        MusicTrack.stopAll(); // stop all the music
+        MusicTrack.GAMEOVER.play(); // let the gameover Music play
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -831,6 +830,14 @@ public class Hud {
 
     public Skin getSkin() {
         return skin;
+    }
+
+    public void dispose() {
+        stage.dispose();
+        shapeRenderer.dispose();
+        if (gameOverTexture != null) {
+            gameOverTexture.dispose();
+        }
     }
 
 

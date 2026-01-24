@@ -13,6 +13,7 @@ import de.tum.cit.aet.valleyday.audio.MusicTrack;
 import de.tum.cit.aet.valleyday.map.GameMap;
 import de.tum.cit.aet.valleyday.map.mapInputExcepetion;
 import de.tum.cit.aet.valleyday.screen.GameScreen;
+import de.tum.cit.aet.valleyday.screen.LevelIntroScreen;
 import de.tum.cit.aet.valleyday.screen.MenuScreen;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
 import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
@@ -62,6 +63,7 @@ public class ValleyDayGame extends Game {
     private final int TOTAL_MAPS = 5;
 
     private boolean isCampaignMode = false; // indicates if the user is currently in the 
+    private static final float INTRO_FRAME_DURATION_SECONDS = 4.25f; // This is the intro time as fixed for 5 seconds 
 
     
     
@@ -180,7 +182,7 @@ public class ValleyDayGame extends Game {
              * instead a special music will be playing.
              */
             
-                
+                MusicTrack.stopAll();
                 // If it is the Easter Egg map:
                 if (MusicTrack.BACKGROUND.isPlaying()) {
                     MusicTrack.BACKGROUND.stop(); // Stop standard music
@@ -189,6 +191,7 @@ public class ValleyDayGame extends Game {
                     MusicTrack.GAME.stop();
                 }
                 if (pendingMapFile.name().equals("mapEG.properties")) {
+                    MusicTrack.stopAll();
                     MusicTrack.EASTER_EGG.play();     // Play special music
                 }
                 else if (pendingMapFile.name().equals("map2.properties")) {
@@ -262,8 +265,8 @@ public class ValleyDayGame extends Game {
             
             // Get the starting map -> Later we will increment the index as the player moves on
             this.pendingMapFile = winnersRoad.get(currentMapIndex);
-            
-            startGame(); // just call starting the game with the first map
+
+            showLevelIntroIfAvailable(); // this is actually a nice addition it just displays a story frame by frame.
         }
         else {
             System.err.println("Well how can the warrior start its journey with no targets!");
@@ -286,7 +289,7 @@ public class ValleyDayGame extends Game {
             // Now we simply load the next map
             this.pendingMapFile = winnersRoad.get(currentMapIndex);
             System.out.println("Advancing to Level " + (currentMapIndex + 1));
-            startGame(); 
+            showLevelIntroIfAvailable();
         }
         else {
             // He beat the whole game nothing left to do, just enjoy your beer!
@@ -294,17 +297,6 @@ public class ValleyDayGame extends Game {
             goToMenu(); 
     }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -323,6 +315,35 @@ public class ValleyDayGame extends Game {
      */
     public void goToGame() {
         this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+    }
+
+
+    /**
+     * This function it essentially handling the nice, cozy pictures I added for the story game.
+     * It creates a new LevelIntroScreen  and lets the game be paused
+     * and displayes a nice sequence of pictures
+     */
+    public void showLevelIntroIfAvailable() {
+        String[] introPaths = getLevelIntroPaths(this.pendingMapFile); // this here gives simply back the array of pictures or frames we want to display when the user either starts or advances the levels
+        if (introPaths == null || introPaths.length == 0) {
+            startGame();
+            return;
+        }
+
+        List<String> existingPaths = new ArrayList<>();
+        for (String introPath : introPaths) {
+            FileHandle introHandle = Gdx.files.internal(introPath);
+            if (introHandle.exists()) {
+                existingPaths.add(introPath);
+            }
+        }
+
+        if (existingPaths.isEmpty()) {
+            startGame();
+            return;
+        }
+
+        this.setScreen(new LevelIntroScreen(this, existingPaths.toArray(new String[0]), INTRO_FRAME_DURATION_SECONDS, currentMapIndex)); // this makes the nice Sequence of frames for the game -> Feels like a story game Maybe (:D)
     }
 
     /** Returns the skin for UI elements. */
@@ -400,6 +421,52 @@ public class ValleyDayGame extends Game {
      */
     public void setScore(int amount) {
         this.score = Math.min(Math.max(0, amount), 100);
+    }
+
+
+    /**
+     * 
+     * Depending on the Map file this function gives back a fixed and predetermined array of frames
+     * makes the game feel like a story game.
+     * 
+     * @param mapFile
+     * @return array of Strings -> Filepaths for the nice pictures 
+     * 
+     * NOTE: All pictures are created by Gemini, not by me, well apart from the nice scaling
+     * 
+     */
+    private String[] getLevelIntroPaths(FileHandle mapFile) {
+        if (mapFile == null) {
+            return null;
+        }
+
+        switch (mapFile.name()) {
+            case "map1.properties":
+                return new String[] {
+                    "cutscenes/Story/0.png",
+                    "cutscenes/Story/01.png",
+                    "cutscenes/Story/02.png",
+                    "cutscenes/Story/03.png",
+                    "cutscenes/Story/04.png",
+                    "cutscenes/Story/1.png",
+                    "cutscenes/Story/2.png",
+                    "cutscenes/Story/3.png",
+                    "cutscenes/Story/4.png",
+                    "cutscenes/Story/5.png",
+                    "cutscenes/Story/6.png",
+                    "cutscenes/Story/7.png"
+                };
+            case "map2.properties":
+                return new String[] {"cutscenes/Story/Level2.png"};
+            case "map3.properties":
+                return new String[] {"cutscenes/Story/Level3.png"};
+            case "map4.properties":
+                return new String[] {"cutscenes/Story/Level4.png"};
+            case "mapEG.properties":
+                return new String[] {"cutscenes/Story/Level5.png"};
+            default:
+                return null;
+        }
     }
     
 

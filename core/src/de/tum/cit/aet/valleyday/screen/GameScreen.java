@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
+import de.tum.cit.aet.valleyday.audio.MusicTrack;
 import de.tum.cit.aet.valleyday.map.Chicken;
 import de.tum.cit.aet.valleyday.map.Flowers;
 import de.tum.cit.aet.valleyday.texture.Drawable;
@@ -177,34 +178,33 @@ public class GameScreen implements Screen {
 
         Player player = map.getPlayer();
 
-        float currentX = player.getX() * TILE_SIZE_PX * SCALE;
-        float currentY = player.getY() * TILE_SIZE_PX * SCALE;
+        // 1. Calculate target position
+        float targetX = player.getX() * TILE_SIZE_PX * SCALE;
+        float targetY = player.getY() * TILE_SIZE_PX * SCALE;
 
-        /* Increase artifically by 1 for small maps */
+        // 2. Calculate map bounds
         float mapWidth = (map.getWidth() + 1) * TILE_SIZE_PX * SCALE;
         float mapHeight = (map.getHeight() + 1) * TILE_SIZE_PX * SCALE; 
 
         float marginX = mapCamera.viewportWidth * 0.10f; 
         float marginY = mapCamera.viewportHeight * 0.10f;
-
-        /** Implement the padding for the ability to view the background */
         float paddingPx = VIEWPORT_PADDING * TILE_SIZE_PX * SCALE;
 
-
-        /* Half of the viewport */
         float halfViewportWidth  = mapCamera.viewportWidth  / 2f - marginX;
         float halfViewportHeight = mapCamera.viewportHeight / 2f - marginY;
 
-        /* Clamp to keep map edges in view */
         float minX = halfViewportWidth - paddingPx;
         float maxX = mapWidth + paddingPx - halfViewportWidth;
-        // Same for Y
         float minY = halfViewportHeight - paddingPx;
         float maxY = mapHeight + paddingPx - halfViewportHeight;
 
-        // Remove Math.round() — this is the source of the jumping!
-        mapCamera.position.x = MathUtils.clamp(currentX, minX, maxX);
-        mapCamera.position.y = MathUtils.clamp(currentY, minY, maxY);
+        // 3. Clamp
+        float clampedX = MathUtils.clamp(targetX, minX, maxX);
+        float clampedY = MathUtils.clamp(targetY, minY, maxY);
+
+     
+        mapCamera.position.x = Math.round(clampedX);
+        mapCamera.position.y = Math.round(clampedY);
 
         mapCamera.update();
     }
@@ -261,10 +261,10 @@ public class GameScreen implements Screen {
                     allDrawables.add(obstacles);
                 }
                 // Same for crops
-                // Drawable deco = map.getDecoration(x, y);
-                // if (deco != null && deco.getCurrentAppearance() != null) {
-                //     allDrawables.add(deco);
-                //         }
+                Drawable deco = map.getDecoration(x, y);
+                if (deco != null && deco.getCurrentAppearance() != null) {
+                    allDrawables.add(deco);
+                        }
                     
                 // Same for decoration
                 Drawable crop = map.getCrop(x, y);
@@ -401,6 +401,21 @@ public class GameScreen implements Screen {
     public void onVictory() {
         setPaused(true);
         this.isGameEnded = true;
+
+        /**
+         * If the Player wins in the final Map then the credits and the winning screen will be shown
+         * 
+         * 
+         */
+        if (isFinalMap()) {
+            MusicTrack.stopAll();
+            MusicTrack.WINNING.play();
+            /**
+             * Note here that the WinningCutScreen is a NEW OWN SCREEN which plays the nice video by the end
+             */
+            game.setScreen(new WinningCutsceneScreen(game)); // makes the new winning screen
+            return;
+        }
         hud.showVictoryMenu();
     }
 
@@ -417,6 +432,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        hud.dispose();
     }
 
     /**
@@ -438,6 +454,8 @@ public class GameScreen implements Screen {
      /** IF touch the chicken */
     public void gameOver() {
         game.goToMenu();
+        MusicTrack.stopAll();
+        MusicTrack.GAME.play(); 
        
     }
 
@@ -491,6 +509,20 @@ public class GameScreen implements Screen {
 
      public void setTick(int tick) {
          this.tick = tick;
+     }
+
+     /**
+      * A function which returns a boolean of is it the Final map
+      * Just compares if the file name equals the expected STring
+      * Needed for the winningScreen
+      * 
+      * @return true if its the final map
+      */
+     private boolean isFinalMap() {
+         if (game.getPendingMapFile() == null) {
+             return false;
+         }
+         return "mapEG.properties".equals(game.getPendingMapFile().name());
      }
 
     

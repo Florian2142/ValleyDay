@@ -2,12 +2,27 @@ package de.tum.cit.aet.valleyday.map;
 
 import de.tum.cit.aet.valleyday.texture.Drawable;
 
+/**
+ * Contract for all living entities that can be rendered on the map.
+ */
 public interface Wildlife extends Drawable {
 
-    public void kill();
+    /**
+     * Marks this entity as dead and triggers any cleanup logic.
+     */
+    void kill();
 
-    public boolean isRemovable();
+    /**
+     * Indicates whether the entity should be removed from the map.
+     *
+     * @return true if it is safe to remove the entity
+     */
+    boolean isRemovable();
 
-    public boolean isDead();
-    
+    /**
+     * Checks whether the entity is dead.
+     *
+     * @return true if the entity is dead
+     */
+    boolean isDead();
 }
