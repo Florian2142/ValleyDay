@@ -100,18 +100,31 @@ public class Spider extends Entity implements Wildlife{
         }
         else if (isAttacking) {
             attackTime += frameTime;
-            if (attackTime >= Animations.SPIDER_ATTACK_LEFT.getAnimationDuration()) {
-                isAttacking = false;
-                attackTime = 0;
-            }
-            if (attackTime >= 0.2f && !hasAttacked) {
-                hasAttacked = true;
+
+            
+            if (attackTime >= 0.2f && !hasAttacked) { 
+                
+                hasAttacked = true; 
                 SoundEffect.SPIDERHISS.play();
-            }
+
+                
+                float distSq = (getX() - player.getX()) * (getX() - player.getX()) + 
+                            (getY() - player.getY()) * (getY() - player.getY());
+                float attackRange = Entity.radius * 2f;
+
+                if (distSq < attackRange * attackRange) {
+                    
+                    player.takeDamage(1, this.getX(), this.getY());
+                }
+              
+
+            } 
+
+           
             if (attackTime >= Animations.SPIDER_ATTACK_LEFT.getAnimationDuration()) {
                 isAttacking = false;
                 attackTime = 0;
-                hasAttacked = false; 
+                
             }
             xVelocity = 0;
             yVelocity = 0;
@@ -241,7 +254,8 @@ public class Spider extends Entity implements Wildlife{
         // Asks if the spider is in reach for an attack
         float attackRange = Entity.radius * 2f;
         float attackRangeSq = attackRange * attackRange;
-        if ((Math.pow(getX() - player.getX(), 2) + Math.pow(getY() - player.getY(), 2)) < attackRangeSq) {
+        if (!isAttacking
+                && (Math.pow(getX() - player.getX(), 2) + Math.pow(getY() - player.getY(), 2)) < attackRangeSq) {
             isAttacking = true;
             hasAttacked = false;
             attackTime = 0f;

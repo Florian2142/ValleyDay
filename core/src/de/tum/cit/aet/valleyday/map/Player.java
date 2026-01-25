@@ -141,7 +141,7 @@ public class Player extends Entity implements Drawable {
     private float touchChickenCoolOff = 0;
     private float touchSpiderCoolOff = 0;
     private float spiderAttackTimer = 0f;
-    private static final float SPIDER_ATTACK_HOLD = 0.6f;
+    private static final float SPIDER_ATTACK_HOLD = 0.25f;
 
     private int harvesting ; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
@@ -495,15 +495,12 @@ public class Player extends Entity implements Drawable {
             if (startle(chicken.getX(), chicken.getY(), currX, currY, chicken, map)) {
                // 
             };
-            shooChicken(chicken);
+            shooChicken(chicken, map);
         }
 
         // For every wildlife killed, the score increases.
         // Loops through all wildLife, and performs actions. 
         for (Wildlife wildlife : map.getActiveWildlife()) {
-            if (wildlife instanceof Spider) {
-                startleSpider((Spider) wildlife, map, frameTime);
-            }
             if (ripWildlife(wildlife)) {
                 map.getGame().setScore(map.getGame().getScore() + 1);
             };
@@ -525,7 +522,7 @@ public class Player extends Entity implements Drawable {
      * 
      * @param chicken Chicken on the map.
      */
-    public void shooChicken(Chicken chicken) {
+    public void shooChicken(Chicken chicken, GameMap map) {
             if (Gdx.input.isKeyPressed(Keys.S)) {
 
                 if (swordSoundCooldown <= 0f) {
@@ -536,17 +533,20 @@ public class Player extends Entity implements Drawable {
                     shooAwayTimer = 30f;
                     float range = 1.10955f;
 
-                    float targetX = this.offsetX; 
-                    float targetY = this.offsetY;
+                    int targetTileX = this.offsetX; 
+                    int targetTileY = this.offsetY;
 
-                    float chickenX = chicken.getX();
-                    float chickenY = chicken.getY();
+                    float diffX = targetTileX - chicken.getX();
+                    float diffY = targetTileY - chicken.getY();
+
+                    if (!map.inBound(targetTileX, targetTileY)) return;
+                    if (map.getObstacle(targetTileX, targetTileY) != null) return;
+                    if (map.getBigObject(targetTileX, targetTileY) != null) return;
 
                     /**
                      * Instead of simple offset tiles we ask if the chicken is in a eucledian distance from us
                      */
-                    float distSq = (targetX - chickenX) * (targetX - chickenX) + 
-                       (targetY - chickenY) * (targetY - chickenY);
+                    float distSq = (diffX * diffX) + (diffY * diffY);
 
                     if (distSq < range * range) {
             
@@ -673,7 +673,15 @@ public class Player extends Entity implements Drawable {
     public boolean startle(float chickenOnTileX, float chickenOnTileY, float playerX, float playerY, Chicken chicken, GameMap map) {
 
 
-          if ((Math.pow(chickenOnTileX - playerX, 2) + Math.pow(chickenOnTileY - playerY, 2)) < Math.pow(Entity.radius, 2)) {
+            float diffX = chickenOnTileX - this.getX();
+            float diffY = chickenOnTileY - this.getY();
+            
+            // Calculate distance squared
+            float distSq = (diffX * diffX) + (diffY * diffY);
+
+            
+            float collisionRange = radius * 2f;
+            if (distSq <= collisionRange * collisionRange) {
 
             if (touchChickenCoolOff <= 0) {
                 health--;
@@ -707,47 +715,43 @@ public class Player extends Entity implements Drawable {
         
     }
 
-    /* Handles the spider attack state */
-    public boolean startleSpider(Spider spider, GameMap map, float frameTime) {
+    /**
+     * Call this when a Spider actually hits the player
+     * 
+     * @param damageAmount How much health to lose
+     * @param attackerX The X position 
+     * @param attackerY The Y position 
+     */
+    public void takeDamage(int damageAmount, float attackerX, float attackerY) {
+        
+        if (touchSpiderCoolOff > 0) return;
 
-        float diffX = spider.getX() - getX();
-        float diffY = spider.getY() - getY();
-        float distanceSq = (diffX * diffX) + (diffY * diffY);
-        float attackRange = Entity.radius * 2f;
-        float attackRangeSq = attackRange * attackRange;
+        
+        this.health -= damageAmount;
+        // Ensure health doesn't go below 0
+        if (this.health < 0) this.health = 0;
+        
+        
+        touchSpiderCoolOff = 90f; 
 
-        if (spider.isAttacking() && distanceSq < attackRangeSq) {
-            spiderAttackTimer += frameTime;
-        }
-        else {
-            spiderAttackTimer = 0f;
-            return false;
-        }
+        System.out.println("Player took damage! Current Health: " + this.health);
 
-        if (spiderAttackTimer >= SPIDER_ATTACK_HOLD) {
-            if (touchSpiderCoolOff <= 0) {
-                health = 0;
-                map.getGame().setScore(map.getGame().getScore() - 5);
-                touchSpiderCoolOff = 90f;
+      
+        if (this.health <= 0) {
+            this.isScared = true;
+
+            if (!hasPlayedGameOverSound) {
+                SoundEffect.GAMEOVER.play();
+                hasPlayedGameOverSound = true;
             }
 
-            if (health <= 0) {
-                this.isScared = true;
-
-                if (!hasPlayedGameOverSound) {
-                    SoundEffect.GAMEOVER.play();
-                    hasPlayedGameOverSound = true;
-                }
-                // for distance offseting running aways in opposite Direction
-                this.escapeX = -(spider.getX() - getX());
-                this.escapeY = -(spider.getY() - getY());
-            }
-            spiderAttackTimer = 0f;
-            return true;
+          
+            this.escapeX = -(attackerX - getX());
+            this.escapeY = -(attackerY - getY());
         }
-        return false;
     }
 
+    
     public void equipShovel() {
         this.hasShovel = true;
     }
