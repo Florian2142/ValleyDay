@@ -333,6 +333,9 @@ public class GameMap {
                 this.bigUnpassableObjects[r][c] = new Trees(world, r, c);
                 break;
 
+            case 20: // TREE (big unpassable object)
+                this.bigUnpassableObjects[r][c] = new Fire(world, r, c);
+                break;
         
             case 21: // PATH (walkable ground)
                 this.tiles[r][c] = new Tiles(r, c, TileType.PATH);

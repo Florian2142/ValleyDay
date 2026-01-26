@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import de.tum.cit.aet.valleyday.ValleyDayGame;
 import de.tum.cit.aet.valleyday.audio.MusicTrack;
 import de.tum.cit.aet.valleyday.map.Chicken;
-import de.tum.cit.aet.valleyday.map.Flowers;
 import de.tum.cit.aet.valleyday.texture.Drawable;
 
 import de.tum.cit.aet.valleyday.map.GameMap;

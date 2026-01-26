@@ -21,6 +21,9 @@ public class Elixir extends hiddenObject implements Item{
     @Override
     public String pickup(Player player) {
         
+    /* If a player picks up the Elixir after removing the debris, the Elixir gets removed from the map.
+     * If the player has less than 3 hearts, 1 heart is added to the players life and displayed as a message on the screen.
+     */    
         super.map.removeItem((int) super.getX(),(int) super.getY());
         player.setHealth(player.getHealth() + 1);
         return "Elixir was picked up!, increased life by 1!";

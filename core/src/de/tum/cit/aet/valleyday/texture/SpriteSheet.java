@@ -59,7 +59,7 @@ public enum SpriteSheet {
     OUTSIDE("Outside.png", 16,16),
 
     TORNADO("Wood/Dark.png", 16, 16),
-
+    FIRE("Group 7 - 2.png", 16, 16),
 
 
 

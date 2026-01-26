@@ -445,4 +445,24 @@ public class Animations {
         new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
     );
 
+    public static final Animation<TextureRegion> FIRE = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+           
+            
+           
+            SpriteSheet.FIRE.at(1, 1,2, 2),
+             SpriteSheet.FIRE.at(1, 3,2, 2),
+              SpriteSheet.FIRE.at(1, 5,2, 2),
+               SpriteSheet.FIRE.at(1, 7,2, 2),
+                SpriteSheet.FIRE.at(1, 9,2, 2),
+                 SpriteSheet.FIRE.at(1, 11,2, 2),
+                  SpriteSheet.FIRE.at(1, 13,2, 2),
+                   SpriteSheet.FIRE.at(1, 15,2, 2),
+          
+            
+           
+        }, 
+        new int[] {1,1,1,1,1,1,1,1}
+    );
+
 }

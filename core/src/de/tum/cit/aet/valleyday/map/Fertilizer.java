@@ -18,9 +18,13 @@ public class Fertilizer extends hiddenObject implements Item{
         super.texture = Textures.FERTILIZER;
     }
 
+
     @Override
     public String pickup(Player player) {
-        // Remove the item from the map
+    
+    /* If a player picks up the fertilizer after removing the debris, the fertilizer gets removed from the map.
+     * The respective message is displayed on the screen.
+     */
         super.map.removeItem((int) super.getX(),(int) super.getY());
         super.map.fertilizing(); // calls the fertilizer from the GameMap
         return "Fertilizer was picked up! All active Crops grew by one Stage.";

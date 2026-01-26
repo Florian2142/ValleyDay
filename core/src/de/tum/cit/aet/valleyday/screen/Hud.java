@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
 /** Import the libraries for 2D Tables */
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -631,12 +632,23 @@ public class Hud {
 
         /** Display message for any interactions with hidden items */
         if (player.messageCooldown() > 0) {
-            font.draw(spriteBatch, player.getMessageToDisplay(), 10, Gdx.graphics.getHeight() - 800);
+            font.draw(spriteBatch, 
+                      player.getMessageToDisplay(), // The Text
+                      0,                            // X: Start at the left edge
+                      120,                           // Y: Height
+                      camera.viewportWidth - 20,    // Target Width: The width of the screen - 20px padding
+                      Align.right,                  // Align: Push text to the right
+                      false);                       // Wrap: False (don't start new line)
         }
 
         if (player.getHarvestCooloff() > 0) {
-            font.draw(spriteBatch, player.getMessageForHarvest(), Gdx.graphics.getWidth() - 650,
-                    Gdx.graphics.getHeight() - 800);
+            font.draw(spriteBatch, 
+                      player.getMessageForHarvest(), 
+                      0, 
+                      60, 
+                      camera.viewportWidth - 20, 
+                      Align.right, 
+                      false);
         }
 
         // Finish drawing

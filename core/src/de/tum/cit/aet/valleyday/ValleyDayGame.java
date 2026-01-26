@@ -420,7 +420,7 @@ public class ValleyDayGame extends Game {
      * @param amount
      */
     public void setScore(int amount) {
-        this.score = Math.min(Math.max(0, amount), 100);
+        this.score = Math.min(Math.max(0, amount), 999);
     }
 
 

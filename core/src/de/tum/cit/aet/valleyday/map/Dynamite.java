@@ -17,6 +17,10 @@ public class Dynamite extends hiddenObject implements Item {
        
     }
 
+    /* If a player picks up the dynamite after removing the debris, the dynamite gets removed from the map.
+     * It can be used to blow up and remove stones/Stone debris.
+     * 30s are added to the current time and displayed as a message on the screen.
+     */
     @Override
     public String pickup(Player player) {
         super.map.removeItem((int) super.getX(),(int) super.getY());

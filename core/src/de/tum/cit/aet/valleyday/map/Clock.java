@@ -20,6 +20,9 @@ public class Clock extends hiddenObject implements Item{
     @Override
     public String pickup(Player player) {
         
+    /* If a player picks up the clock after removing the stone, the clock gets removed from the map.
+     * 30s are added to the current time and displayed as a message on the screen.
+     */
         super.map.removeItem((int) super.getX(),(int) super.getY());
         GameScreen currScreen = ((GameScreen)map.getGame().getScreen());
         currScreen.setRemainingTime(currScreen.getRemainingTime() + 30f);
