@@ -60,6 +60,13 @@ public enum SpriteSheet {
 
     TORNADO("Wood/Dark.png", 16, 16),
     FIRE("Group 7 - 2.png", 16, 16),
+    LIGHTNING("Lightning03_2.png", 16 ,16),
+    LIGHTNING1("Lightning03_3.png", 16 ,16),
+    LIGHTNING2("Lightning03_4.png", 16 ,16),
+    LIGHTNING3("Lightning03_5.png", 16 ,16),
+    LIGHTNING4("Lightning03_6.png", 16 ,16),
+    LIGHTNING5("Lightning03_7.png", 16 ,16),
+    LIGHTNING6("Lightning03_8.png", 16 ,16),
 
 
 

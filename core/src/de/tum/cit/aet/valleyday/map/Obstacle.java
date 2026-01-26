@@ -54,6 +54,20 @@ public abstract class Obstacle implements Drawable {
         // Set the chest as the user data of the body so we can look up the chest from the body later.
         body.setUserData(this);
     }
+
+    /**
+     * Destroys the hitbox to just keep the visuals
+     * 
+     * @param world
+     */
+    public void destroyHitbox(World world) {
+        if (body != null) {
+            world.destroyBody(body);
+
+
+            body = null;
+        }
+    }
     
     // Define this one here as an abstract method.
     public abstract TextureRegion getCurrentAppearance();
