@@ -58,6 +58,10 @@ public enum SpriteSheet {
     // HARVESTSTUFF
     OUTSIDE("Outside.png", 16,16),
 
+    TORNADO("Wood/Dark.png", 16, 16),
+
+
+
 
     // CROPS
     CROPS("crops.png", 32, 32);

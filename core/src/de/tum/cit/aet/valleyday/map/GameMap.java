@@ -396,6 +396,9 @@ public class GameMap {
             case 38: // CORNER BOTTOM-RIGHT
                 this.tiles[r][c] = new Tiles(r, c, TileType.PATH_CORNER_BR);
                 break;
+            case 39: // Tornado
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c);
+                break;
             case 40: // SMALL_ROCK (Obstacle)
                 this.decoration[r][c] = new Tiles(r, c, TileType.FLOWER3);
                 break;

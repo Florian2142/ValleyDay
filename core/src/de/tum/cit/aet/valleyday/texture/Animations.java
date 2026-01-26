@@ -413,4 +413,36 @@ public class Animations {
         new int[] {2, 2, 2, 2, 2, 2, 2, 2, 2}
     );
 
+
+    public static final Animation<TextureRegion> TORNADO = createComplexAnimation(0.05f, 
+        new TextureRegion[] {
+           
+            
+           
+            SpriteSheet.TORNADO.at(2, 34,7, 6),
+            SpriteSheet.TORNADO.at(10, 2, 7, 6),
+            SpriteSheet.TORNADO.at(10, 10, 7, 6),
+            SpriteSheet.TORNADO.at(10, 18, 7, 6),
+            SpriteSheet.TORNADO.at(10, 26, 7, 6),
+            SpriteSheet.TORNADO.at(10, 34,7, 6),
+             SpriteSheet.TORNADO.at(18, 2, 7, 6),
+            SpriteSheet.TORNADO.at(18, 10, 7, 6),
+            SpriteSheet.TORNADO.at(18, 18, 7, 6),
+            SpriteSheet.TORNADO.at(18, 26, 7, 6),
+            SpriteSheet.TORNADO.at(18, 34,7, 6),
+             SpriteSheet.TORNADO.at(26, 2, 7, 6),
+            SpriteSheet.TORNADO.at(26, 10, 7, 6),
+            SpriteSheet.TORNADO.at(26, 18, 7, 6),
+            SpriteSheet.TORNADO.at(26, 26, 7, 6),
+            SpriteSheet.TORNADO.at(26, 34,7, 6),
+            SpriteSheet.TORNADO.at(34, 10, 7, 6),
+            SpriteSheet.TORNADO.at(34, 18, 7, 6),
+            SpriteSheet.TORNADO.at(34, 26, 7, 6),
+          
+            
+           
+        }, 
+        new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+    );
+
 }
