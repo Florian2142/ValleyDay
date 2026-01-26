@@ -8,7 +8,11 @@ import de.tum.cit.aet.valleyday.audio.SoundEffect;
 import de.tum.cit.aet.valleyday.texture.Animations;
 
 
-
+/**
+ * 
+ * Stonedebris is an harder to destroy debris where the player
+ * first must find dynamite to destroy -> Will explode really cool!
+ */
 public class StoneDebris extends Obstacle implements Destructible {
     
 
@@ -49,10 +53,20 @@ public class StoneDebris extends Obstacle implements Destructible {
         return true;
     }
 
+
+    /**
+     * Tick function which takes the time of the map
+     * and checks if the animation time is smaller than the time passed since triggered
+     * If its smaller will then remove object from the map
+     * 
+     * @param delta time difference
+     * @param map the gamemap
+     */
     public void tick(float delta, GameMap map) {
         if (isTriggered) {
             time += delta;
         }
+        /** Uses the Explosion animation when player hits D while having Dynamite */
         if (Animations.EXPLOSION.isAnimationFinished(time)) {
             this.destroyBody(map.getWorld());
             map.destroyObstacle((int) this.x, (int) this.y);
@@ -62,20 +76,20 @@ public class StoneDebris extends Obstacle implements Destructible {
 
 
     /**
-     * Destroys the object 
+     * Destroys the object -> Will be triggered by the player
      */
     @Override
     public void destruct(GameMap gamemap, int damage) {
         // if player taps d and has dynamite then he destroys the debris
            if (isTriggered || isDestructed()) {
-            return;
+            return; // if already destroyed just return
            }
             this.isTriggered = true;
             time = 0f;
 
-            gamemap.addExplodingDebris(this);
+            gamemap.addExplodingDebris(this); // will add this StoneDebris to the GAMEMAP tick function 
 
-            SoundEffect.EXPLOSION.play();
+            SoundEffect.EXPLOSION.play(); // plays the sound
         }
     
 

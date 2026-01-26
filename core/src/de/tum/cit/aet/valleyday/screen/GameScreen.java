@@ -232,6 +232,7 @@ public class GameScreen implements Screen {
         int endX = map.getWidth() + VIEWPORT_PADDING;
         int startY = -VIEWPORT_PADDING;
         int endY = map.getHeight() + VIEWPORT_PADDING;
+        boolean isLast = game.lastMap();
 
         for (int y = endY; y >= startY; y--) {
             for (int x = startX; x <= endX; x++) {
@@ -245,7 +246,14 @@ public class GameScreen implements Screen {
                     }
                 } else {
                     /** We just make the background outside the Map */
-                    Drawable dummyFloor = new Tiles(x, y, TileType.GRAS);
+                    Drawable dummyFloor;
+                    if (isLast) {
+                         dummyFloor = new Tiles(x, y, TileType.LAVA);
+                    }
+                    else {
+                         dummyFloor = new Tiles(x, y, TileType.GRAS);
+                    }
+                    
                     draw(spriteBatch, dummyFloor);
                 }
 
@@ -390,6 +398,9 @@ public class GameScreen implements Screen {
         hud.setPaused(isPaused);
     }
 
+    /**
+     * Resumes the game
+     */
     @Override
     public void resume() {
         this.isPaused = false;
@@ -397,6 +408,9 @@ public class GameScreen implements Screen {
         
     }
 
+    /**
+     * The onVictory will be triggered if the player successfully enteres the exit 
+     */
     public void onVictory() {
         setPaused(true);
         this.isGameEnded = true;
@@ -442,6 +456,9 @@ public class GameScreen implements Screen {
         game.goToMenu();
     }
 
+    /**
+     * The Gameover table will made visible
+     */
     public void gameOverScreen() {
         setPaused(true);
         this.isGameEnded = true;

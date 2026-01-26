@@ -71,7 +71,7 @@ public class Spider extends Entity implements Wildlife{
     /******
      * 
      * Tick method handles the pathfinding, the movement and the physics inside the world.
-     * TESTING CURRENTLY NOT FINISHED -> We will BUILD a A* Algorithm
+     * Spider is based on the A*search algorithm and targets the Player
      * 
      * @param frameTime time which elapses
      * @param map 
@@ -101,13 +101,15 @@ public class Spider extends Entity implements Wildlife{
         else if (isAttacking) {
             attackTime += frameTime;
 
-            
+            /**
+             * Spider checks the distance and the time for attacking the player if in reach
+             */
             if (attackTime >= 0.2f && !hasAttacked) { 
                 
                 hasAttacked = true; 
                 SoundEffect.SPIDERHISS.play();
 
-                
+                // squared distance
                 float distSq = (getX() - player.getX()) * (getX() - player.getX()) + 
                             (getY() - player.getY()) * (getY() - player.getY());
                 float attackRange = Entity.radius * 2f;
@@ -137,7 +139,7 @@ public class Spider extends Entity implements Wildlife{
             }
             timeToNextMove--;
 
-            followPath();
+            followPath(); // follows the path of the A*search algorithm
 
             attack(); // Spider will attack if the player is in reach
 

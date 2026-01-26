@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import de.tum.cit.aet.valleyday.ValleyDayGame;
+import de.tum.cit.aet.valleyday.texture.Animations;
+import de.tum.cit.aet.valleyday.tornados.Tornado;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -216,13 +218,20 @@ public class GameMap {
          * We first built the default map and then on top of that the other things
          * 
          */
-
         
+        boolean isLast = getGame().lastMap();
+
         // 1.0 Build the basic tiles which we draw over everything 
         tiles = new Tiles[width + 1][height + 1];
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {               
-                tiles[i][j] = new Tiles(i, j, TileType.GRAS);
+            for (int j = 0; j < tiles[i].length; j++) {   
+                if (isLast) {
+                    tiles[i][j] = new Tiles(i, j, TileType.LAVA);
+                }   
+                else {
+                    tiles[i][j] = new Tiles(i, j, TileType.GRAS);
+                }        
+                
             }
         }
 
@@ -404,11 +413,52 @@ public class GameMap {
                 this.tiles[r][c] = new Tiles(r, c, TileType.PATH_CORNER_BR);
                 break;
             case 39: // Tornado
-                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c);
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO);
                 break;
             case 40: // SMALL_ROCK (Obstacle)
                 this.decoration[r][c] = new Tiles(r, c, TileType.FLOWER3);
                 break;
+            case 41: // Tornado 1
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO1);
+                break;
+            case 42: // Tornado 2
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO2);
+                break;
+
+            case 43: // Tornado 3
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO3);
+                break;
+
+            case 44: // Tornado 4
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO4);
+                break;
+
+            case 45: // Tornado 5
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO5);
+                break;
+
+            case 46: // Tornado 6
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO6);
+                break;
+
+            case 47: // Tornado 7
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO7);
+                break;
+
+            case 48: // Tornado 8
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO8);
+                break;
+
+            case 49: // Tornado 9
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO9);
+                break;
+            case 50: // Tornado 9
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO10);
+                break;
+            case 51: // Tornado 9
+                this.bigUnpassableObjects[r][c] = new Tornado(world, r, c, Animations.TORNADO11);
+                break;
+          
           
 
 

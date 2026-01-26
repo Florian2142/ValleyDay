@@ -106,6 +106,13 @@ public class Gps {
         return Math.abs(x - goal.getX()) + Math.abs(y - goal.getY());
     } 
 
+    /**
+     * Recursive inorder traversal function to retrieve the Solution list. 
+     * Goes to the first node via the prev nodes and adds them sequentially to the list
+     * @param list
+     * @param solutionNode
+     * @return
+     */
     private static List<GridNode> solutionList(List<GridNode> list, GridNode solutionNode) {
 
         if (solutionNode.getPrev() != null) {

@@ -50,6 +50,7 @@ public class ValleyDayGame extends Game {
      */
     private final NativeFileChooser fileChooser;
 
+    // Map selected by the user or campaign flow.
     private FileHandle pendingMapFile;
 
     /** We will use a list to make sequential maps and make a winner */
@@ -60,9 +61,10 @@ public class ValleyDayGame extends Game {
     /** We have a score depending on the hits the player took, the harvest he had, the speed he finished the given level */
     private int score = 0;
 
+    // Total maps in campaign mode.
     private final int TOTAL_MAPS = 5;
 
-    private boolean isCampaignMode = false; // indicates if the user is currently in the 
+    private boolean isCampaignMode = false; // indicates if the user is currently in the campaign
     private static final float INTRO_FRAME_DURATION_SECONDS = 4.25f; // This is the intro time as fixed for 5 seconds 
 
     
@@ -127,6 +129,7 @@ public class ValleyDayGame extends Game {
     public void selectMap() {
         NativeFileChooserConfiguration config = new NativeFileChooserConfiguration();
 
+        // Start the file picker in the project folder.
         config.directory = Gdx.files.local("itp2526itp2526projectwork-trycatchreturn35\\desktop\\src");
         
         // pick the right file
@@ -467,6 +470,13 @@ public class ValleyDayGame extends Game {
             default:
                 return null;
         }
+    }
+
+    public boolean lastMap() {
+        if (pendingMapFile.name().equals("mapEG.properties")) {
+            return true;
+        }
+        return false;
     }
     
 

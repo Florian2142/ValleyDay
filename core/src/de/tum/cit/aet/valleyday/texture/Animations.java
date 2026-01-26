@@ -364,31 +364,49 @@ public class Animations {
             },
             new int[] { 2, 2, 2, 2, 2, 2, 2, 2, 2 });
 
-    public static final Animation<TextureRegion> TORNADO = createComplexAnimation(0.05f,
+    private static Animation<TextureRegion> createStandardTornado(SpriteSheet sheet) {
+        return createComplexAnimation(0.05f,
             new TextureRegion[] {
-
-                    SpriteSheet.TORNADO.at(2, 34, 7, 6),
-                    SpriteSheet.TORNADO.at(10, 2, 7, 6),
-                    SpriteSheet.TORNADO.at(10, 10, 7, 6),
-                    SpriteSheet.TORNADO.at(10, 18, 7, 6),
-                    SpriteSheet.TORNADO.at(10, 26, 7, 6),
-                    SpriteSheet.TORNADO.at(10, 34, 7, 6),
-                    SpriteSheet.TORNADO.at(18, 2, 7, 6),
-                    SpriteSheet.TORNADO.at(18, 10, 7, 6),
-                    SpriteSheet.TORNADO.at(18, 18, 7, 6),
-                    SpriteSheet.TORNADO.at(18, 26, 7, 6),
-                    SpriteSheet.TORNADO.at(18, 34, 7, 6),
-                    SpriteSheet.TORNADO.at(26, 2, 7, 6),
-                    SpriteSheet.TORNADO.at(26, 10, 7, 6),
-                    SpriteSheet.TORNADO.at(26, 18, 7, 6),
-                    SpriteSheet.TORNADO.at(26, 26, 7, 6),
-                    SpriteSheet.TORNADO.at(26, 34, 7, 6),
-                    SpriteSheet.TORNADO.at(34, 10, 7, 6),
-                    SpriteSheet.TORNADO.at(34, 18, 7, 6),
-                    SpriteSheet.TORNADO.at(34, 26, 7, 6),
-
+                // If your new images are smaller/different, CHANGE THESE NUMBERS
+                sheet.at(2, 34, 7, 6),
+                sheet.at(10, 2, 7, 6),
+                sheet.at(10, 10, 7, 6),
+                sheet.at(10, 18, 7, 6),
+                sheet.at(10, 26, 7, 6),
+                sheet.at(10, 34, 7, 6),
+                sheet.at(18, 2, 7, 6),
+                sheet.at(18, 10, 7, 6),
+                sheet.at(18, 18, 7, 6),
+                sheet.at(18, 26, 7, 6),
+                sheet.at(18, 34, 7, 6),
+                sheet.at(26, 2, 7, 6),
+                sheet.at(26, 10, 7, 6),
+                sheet.at(26, 18, 7, 6),
+                sheet.at(26, 26, 7, 6),
+                sheet.at(26, 34, 7, 6),
+                sheet.at(34, 10, 7, 6),
+                sheet.at(34, 18, 7, 6),
+                sheet.at(34, 26, 7, 6),
             },
-            new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 });
+            new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+        );
+    }
+
+    // 2. Initialize the constants using the helper
+    public static final Animation<TextureRegion> TORNADO  = createStandardTornado(SpriteSheet.TORNADO);
+    public static final Animation<TextureRegion> TORNADO1 = createStandardTornado(SpriteSheet.TORNADO1);
+    public static final Animation<TextureRegion> TORNADO2 = createStandardTornado(SpriteSheet.TORNADO2);
+    public static final Animation<TextureRegion> TORNADO3 = createStandardTornado(SpriteSheet.TORNADO3);
+    public static final Animation<TextureRegion> TORNADO4 = createStandardTornado(SpriteSheet.TORNADO4);
+    public static final Animation<TextureRegion> TORNADO5 = createStandardTornado(SpriteSheet.TORNADO5);
+    public static final Animation<TextureRegion> TORNADO6 = createStandardTornado(SpriteSheet.TORNADO6);
+    public static final Animation<TextureRegion> TORNADO7 = createStandardTornado(SpriteSheet.TORNADO7);
+    
+    // 
+    public static final Animation<TextureRegion> TORNADO8 = createStandardTornado(SpriteSheet.TORNADO8);
+    public static final Animation<TextureRegion> TORNADO9 = createStandardTornado(SpriteSheet.TORNADO9);
+    public static final Animation<TextureRegion> TORNADO10 = createStandardTornado(SpriteSheet.TORNADO10);
+    public static final Animation<TextureRegion> TORNADO11 = createStandardTornado(SpriteSheet.TORNADO11);
 
     public static final Animation<TextureRegion> FIRE = createComplexAnimation(0.05f,
             new TextureRegion[] {
@@ -405,7 +423,7 @@ public class Animations {
             },
             new int[] { 1, 1, 1, 1, 1, 1, 1, 1 });
 
-    public static final Animation<TextureRegion> LIGHTNING = createComplexAnimation(0.05f,
+    public static final Animation<TextureRegion> LIGHTNING = createComplexAnimation(0.15f,
             new TextureRegion[] {
 
                     SpriteSheet.LIGHTNING.at(1, 4, 3, 1),

@@ -58,7 +58,18 @@ public enum SpriteSheet {
     // HARVESTSTUFF
     OUTSIDE("Outside.png", 16,16),
 
-    TORNADO("Wood/Dark.png", 16, 16),
+    TORNADO("Crimson.png", 16, 16),
+    TORNADO1("Holy.png", 16, 16),
+    TORNADO2("Void.png", 16, 16),
+    TORNADO3("Shock_Yellow.png", 16, 16),
+    TORNADO4("Circus.png", 16, 16),
+    TORNADO5("Arcane.png", 16, 16),
+    TORNADO6("Tech.png", 16, 16),
+    TORNADO7("Fairy.png", 16, 16),
+    TORNADO8("Frost.png", 16, 16),
+    TORNADO9("Nature.png", 16, 16),
+    TORNADO10("Water.png", 16, 16),
+    TORNADO11("Universe.png", 16, 16),
     FIRE("Group 7 - 2.png", 16, 16),
     LIGHTNING("Lightning03_2.png", 16 ,16),
     LIGHTNING1("Lightning03_3.png", 16 ,16),
@@ -167,11 +178,6 @@ public enum SpriteSheet {
         return new TextureRegion(spritesheet, x, y, width, height);
 }
 
-public TextureRegion atBigFromBottom(int bottomRow, int column, int heightTiles, int widthTiles) {
-    int totalRows = spritesheet.getHeight() / height;
-    int startRow = totalRows - heightTiles - (bottomRow - 1);  // bottomRow 1 = bottom
-    return at(startRow, column, heightTiles, widthTiles);
-}
 
 
 
