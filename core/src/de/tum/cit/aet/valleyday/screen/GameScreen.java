@@ -219,7 +219,27 @@ public class GameScreen implements Screen {
 
         mapCamera.update();
     }
-    
+    /**
+     * The map is build in a layered approach:
+     * 
+     * It has the following layer:
+     * 
+     * 1: We draw the background far beyond the normal scope of the playable map (LAYER 1)
+     * 
+     * 2: We collect all the items (Drawable) within a temporary list -<> Each tick stores objects 
+     * 
+     * 3: These items will be all sorted according to the y-coordinate 
+     *    (Dont know which sorting technique, maybe quick, maybe merge, BUT fast enough)
+     * 
+     * 4: After sorting we draw all the items, player, decoration and so on (LAYER 2)
+     * 
+     * 5: Then big objects like the trees, house and tornado will be drawn upon everything
+     * 
+     * Repeat the process each time
+     *
+     * 
+     * 
+     */
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
         spriteBatch.setProjectionMatrix(mapCamera.combined);
@@ -319,8 +339,8 @@ public class GameScreen implements Screen {
                          }
                     }
                 }
-                // Same for chest
-                allDrawables.add(map.getChest());
+          
+            
                 // Same for Player
                 allDrawables.add(map.getPlayer());
 
