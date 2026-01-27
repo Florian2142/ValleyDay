@@ -481,9 +481,9 @@ public class Hud {
 
 
         // /** Debugging -> uncomment if needed */
-        toolsTable.setDebug(true); // Uncomment for nice Debugging
-        exitTable.setDebug(true); // Uncomment for nice Debugging
-        pauseTable.setDebug(true); // Uncomment for nice Debugging
+        //toolsTable.setDebug(true); // Uncomment for nice Debugging
+        //exitTable.setDebug(true); // Uncomment for nice Debugging
+        //pauseTable.setDebug(true); // Uncomment for nice Debugging
     }
 
     /**
