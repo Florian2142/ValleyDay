@@ -50,7 +50,7 @@ public class BrownChicken extends Entity implements Chicken{
     private static final float NORMAL_SPEED = 0.6f;
 
     /** GPS to next Crop */
-    private List<GridNode> highwayToHeaven = new LinkedList<>();
+    private List<GridNode> highwayToHeaven = new LinkedList<>(); // this SAVES the nodes to field the chicken walks
 
     private GridNode start;
     private GridNode goal;
@@ -82,7 +82,7 @@ public class BrownChicken extends Entity implements Chicken{
     /******
      * 
      * Tick method handles the pathfinding, the movement and the physics inside the world.
-     * TESTING CURRENTLY NOT FINISHED -> We will BUILD a A* Algorithm
+     * 
      * 
      * @param frameTime time which elapses
      * @param map 
@@ -104,7 +104,7 @@ public class BrownChicken extends Entity implements Chicken{
         int currX = Math.round(getX()); // retrieve the currX always, reduces the function calls
         int currY = Math.round(getY()); // same for Y
 
-        // right before next move
+        // 1) "Brain tick": refresh path or choose fallback move when it's time to decide.
         if (timeToNextMove <= 0) {
 
             // Set the current velocity to 0
@@ -113,7 +113,7 @@ public class BrownChicken extends Entity implements Chicken{
 
             System.out.println("Well this works potentially");
 
-            //Checks if the path list (highwayToHeaven) is null or empty.
+            // If no cached path, pick a target crop and run A* once to build a path.
             if (highwayToHeaven == null || highwayToHeaven.size() == 0) {
 
                 System.out.println("Currently its null");
@@ -127,10 +127,6 @@ public class BrownChicken extends Entity implements Chicken{
                     goal  = new GridNode((int) goalCrop.getX(), (int) goalCrop.getY(), 0, 0, null);
                     // Searches for the best route based on the GPS Class.
                     highwayToHeaven = Gps.findPath(start, goal, map);
-
-                    if (highwayToHeaven != null) {
-                        System.out.println("Path found! Steps: " + highwayToHeaven.size());
-                    }
                 }
                 else {
                     highwayToHeaven = null;
@@ -141,6 +137,7 @@ public class BrownChicken extends Entity implements Chicken{
                 
             }
 
+            // If no valid path exists, wander randomly for this decision step.
             if (highwayToHeaven == null || highwayToHeaven.isEmpty()) {
                 // lets take a random number TESTING
                 int randomDir = MathUtils.random(0 , 4);
@@ -182,12 +179,12 @@ public class BrownChicken extends Entity implements Chicken{
             
         }
 
-        /** The smart movement of the chicken */
+        // 2) Path-following step: advance along the A* path if it still makes sense.
 
         if (highwayToHeaven != null && highwayToHeaven.size() > 0 && isScurrying != true && catchBreath <= 0) {
 
 
-                /* We need to ask if the player actually harvested the crop */
+                // Validate that the target crop still exists and is worth pursuing.
                 Crop cropAtGoal = null;
                 if (goalCrop != null) {
                     cropAtGoal = map.getCrop((int) goalCrop.getX(), (int) goalCrop.getY());
@@ -199,7 +196,7 @@ public class BrownChicken extends Entity implements Chicken{
                 if (highwayToHeaven == null || highwayToHeaven.isEmpty()) {
                     return;
                 }
-                // When the chicken has a path, it looks at first node in the List.
+                // Follow the next node in the path and remove it once reached.
                 nextMove = highwayToHeaven.get(0);
 
                 System.out.println("The current TileX which is better: " + nextMove.getX());
@@ -232,7 +229,7 @@ public class BrownChicken extends Entity implements Chicken{
         
         
 
-        // Make the chicken eat the crop
+        // 3) Resolve tile effects: eat crop if standing on one.
         // If the chicken found a crop, the chicken eats it.
         Crop cropAtTile = map.getCrop(currX, currY);
         if (cropAtTile != null && !cropAtTile.isRotten()) {
@@ -242,8 +239,7 @@ public class BrownChicken extends Entity implements Chicken{
             map.eatCrop(currX, currY);
         }
 
-        // If the chicken is on the tile that is one next to or before the player, the chicken knows the 
-        // x and y postion of the player and isScurrying is true. 
+        // 4) Scurry state: if startled, override movement with sprint-away.
         if (isScurrying && scurryTimer >= 0) {
             scurryAway(playerX, playerY);
         }
@@ -252,7 +248,7 @@ public class BrownChicken extends Entity implements Chicken{
             scurryAnimTimer = 0f;
         }
 
-        // decrement the time in order for brainpower restorage -> Move requires loads of energy
+        // 5) Tick down timers and animation state.
         timeToNextMove -= frameTime;
         if (eatTimer > 0) {
             eatTimer--;

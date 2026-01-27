@@ -130,6 +130,7 @@ public enum SpriteSheet {
         );
     }
 
+    /** Returns a horizontally flipped texture region at the given grid position. */
     public TextureRegion atInverted(int row, int column) {
         return new TextureRegion(
                 spritesheet,

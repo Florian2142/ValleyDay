@@ -135,6 +135,7 @@ public class ValleyDayGame extends Game {
         // pick the right file
         this.fileChooser.chooseFile(config, new NativeFileChooserCallback() {
 
+        /** Stores selected map file for later game start. */
         @Override
         public void onFileChosen(FileHandle file) {
             // return the map we have chosen by the user
@@ -147,11 +148,13 @@ public class ValleyDayGame extends Game {
 
         }
 
+            /** Handles user cancellation of map selection. */
                 @Override
             public void onCancellation() {
                 System.out.println("User cancelled.");
             }
         
+            /** Reports file chooser errors. */
             @Override
             public void onError(Exception exception) {
                 System.err.println("Error picking file:");
@@ -163,6 +166,7 @@ public class ValleyDayGame extends Game {
        
     }
 
+    /** Builds the map and switches to the game screen. */
     public void startGame() {
         // Check if we have everything we need
         /** If we didn't select any map, a warning will appear. */
@@ -251,6 +255,7 @@ public class ValleyDayGame extends Game {
 
     }
 
+    /** Starts campaign mode at the first map. */
     public void startCampaign() {
         
         /** When starting campaignMode, we run the InitCampaign function from above and set isCampaignMode to true.
@@ -472,6 +477,7 @@ public class ValleyDayGame extends Game {
         }
     }
 
+    /** Returns true if the current map is the final campaign map. */
     public boolean lastMap() {
         if (pendingMapFile.name().equals("mapEG.properties")) {
             return true;

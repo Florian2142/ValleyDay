@@ -30,6 +30,7 @@ public enum SoundEffect {
         this.volume = volume;
     }
 
+    /** Plays this sound effect at its configured volume. */
     public void play() {
         sound.play(volume);
     }

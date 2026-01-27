@@ -171,43 +171,66 @@ public class GameScreen implements Screen {
     
     /**
      * Updates the camera to follow the player but only 80% viewport (stated in the task)
-     * 
-     */
+     * */
     private void updateCamera() {
 
         Player player = map.getPlayer();
 
-        // 1. Calculate target position
+        // Calculate target position -> well it should be float hence not rounded
         float targetX = player.getX() * TILE_SIZE_PX * SCALE;
         float targetY = player.getY() * TILE_SIZE_PX * SCALE;
 
-        // 2. Calculate map bounds
+        // Calculate map bounds and margins
         float mapWidth = (map.getWidth() + 1) * TILE_SIZE_PX * SCALE;
         float mapHeight = (map.getHeight() + 1) * TILE_SIZE_PX * SCALE; 
 
+        // Define 10% margins on each side to keep player within central 80% of view
         float marginX = mapCamera.viewportWidth * 0.10f; 
         float marginY = mapCamera.viewportHeight * 0.10f;
         float paddingPx = VIEWPORT_PADDING * TILE_SIZE_PX * SCALE;
 
+        // Adjust effective viewport half-extents by the margins and padding
         float halfViewportWidth  = mapCamera.viewportWidth  / 2f - marginX;
         float halfViewportHeight = mapCamera.viewportHeight / 2f - marginY;
 
+        // Define clamp boundaries 
+        // Ensures camera doesn't show areas beyond the map plus padding -> Does goes litttttle bit beyond the map
         float minX = halfViewportWidth - paddingPx;
         float maxX = mapWidth + paddingPx - halfViewportWidth;
         float minY = halfViewportHeight - paddingPx;
         float maxY = mapHeight + paddingPx - halfViewportHeight;
 
-        // 3. Clamp
+        // Clamp and apply position
+        // Restrict target coordinates to calculated bounds and round to prevent sub-pixel jitter
         float clampedX = MathUtils.clamp(targetX, minX, maxX);
         float clampedY = MathUtils.clamp(targetY, minY, maxY);
 
-     
         mapCamera.position.x = Math.round(clampedX);
         mapCamera.position.y = Math.round(clampedY);
 
         mapCamera.update();
     }
-    
+    /**
+     * The map is build in a layered approach:
+     * 
+     * It has the following layer:
+     * 
+     * 1: We draw the background far beyond the normal scope of the playable map (LAYER 1)
+     * 
+     * 2: We collect all the items (Drawable) within a temporary list -<> Each tick stores objects 
+     * 
+     * 3: These items will be all sorted according to the y-coordinate 
+     *    (Dont know which sorting technique, maybe quick, maybe merge, BUT fast enough)
+     * 
+     * 4: After sorting we draw all the items, player, decoration and so on (LAYER 2)
+     * 
+     * 5: Then big objects like the trees, house and tornado will be drawn upon everything
+     * 
+     * Repeat the process each time
+     *
+     * 
+     * 
+     */
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
         spriteBatch.setProjectionMatrix(mapCamera.combined);
@@ -247,6 +270,7 @@ public class GameScreen implements Screen {
                 } else {
                     /** We just make the background outside the Map */
                     Drawable dummyFloor;
+                    /** In case it is the last map will make the ground to lava */
                     if (isLast) {
                          dummyFloor = new Tiles(x, y, TileType.LAVA);
                     }
@@ -254,7 +278,7 @@ public class GameScreen implements Screen {
                          dummyFloor = new Tiles(x, y, TileType.GRAS);
                     }
                     
-                    draw(spriteBatch, dummyFloor);
+                    draw(spriteBatch, dummyFloor); // draws
                 }
 
                 // Add the items to the list for later sorting
@@ -306,8 +330,7 @@ public class GameScreen implements Screen {
                          }
                     }
                 }
-                // Same for chest
-                allDrawables.add(map.getChest());
+               
                 // Same for Player
                 allDrawables.add(map.getPlayer());
 
@@ -321,6 +344,8 @@ public class GameScreen implements Screen {
                             });
 
                 /**
+                 * Layer 2: Draws ontop of the background
+                 * 
                  * Draw all the sorted Items in the list
                  */
                 for (Drawable drawable : allDrawables) {
@@ -328,7 +353,7 @@ public class GameScreen implements Screen {
                     draw(spriteBatch, drawable);
                 }
 
-
+                /** Layer 3: Draws ontop of everything  */
                 for (int y = map.getHeight(); y >= 0; y--) {
                     for (int x = 0; x <= map.getWidth(); x++) {
                     // Same for bigObjects

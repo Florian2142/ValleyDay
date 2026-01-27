@@ -52,6 +52,7 @@ public enum MusicTrack {
         this.music.play();
     }
 
+    /** Stops this music track if it is currently playing. */
     public void stop() {
         this.music.stop();
     }

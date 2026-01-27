@@ -364,6 +364,7 @@ public class Animations {
             },
             new int[] { 2, 2, 2, 2, 2, 2, 2, 2, 2 });
 
+    /** Builds the standard tornado animation sequence from the given spritesheet. */
     private static Animation<TextureRegion> createStandardTornado(SpriteSheet sheet) {
         return createComplexAnimation(0.05f,
             new TextureRegion[] {

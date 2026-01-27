@@ -140,8 +140,7 @@ public class Player extends Entity implements Drawable {
     // Wildlife coolOffs.
     private float touchChickenCoolOff = 0;
     private float touchSpiderCoolOff = 0;
-    private float spiderAttackTimer = 0f;
-    private static final float SPIDER_ATTACK_HOLD = 0.25f;
+   
 
     private int harvesting ; // UPDATE CORRESPONDING TO THE DIFFICULTY
 
@@ -222,6 +221,8 @@ public class Player extends Entity implements Drawable {
          * Makes the sprinting funtions for the player. 
          * And determines the cooloff as the player cannot sprint indinitely
          */
+        // Stamina is both a sprint gate and a cooldown trigger; once exhausted, sprint is locked
+        // until stamina recovers past 50%.
         if (sprintCooldown > 0) {
             sprintCooldown -= frameTime;
         }
@@ -313,6 +314,7 @@ public class Player extends Entity implements Drawable {
             // asks if the tile is a destructable
             if (map.isDestructible(offsetX, offsetY)) {
                 int damage = hasShovel ? 2 : 1;
+                // Debris can always be chopped; StoneDebris requires dynamite first.
                 // destruct the obstacle
                 if (map.getObstacle(offsetX, offsetY) instanceof Debris) {
                     ((Destructible) map.getObstacle(offsetX, offsetY)).destruct(map, damage);
@@ -359,18 +361,12 @@ public class Player extends Entity implements Drawable {
          * 
          */
         if (Gdx.input.isKeyJustPressed(Keys.A)) {
-            /*** TESTING REMOVE LATER */
-            System.out.println("THE CURRENT X COORDINATE IS: " + currX);
-            System.out.println("THE CURRENT X COORDINATE IS: " + offsetX);
+            
             // check if the current Soil is empty
             Tiles soil = map.getSoil(offsetX, offsetY);
 
             if (soil != null && soil.getType().equals(TileType.SOIL)) {
-                /**
-                 * 
-                 * 
-                 */
-            
+                // Planting vs harvesting is disambiguated by whether a crop already occupies the soil.
                 if (map.plantCrop(offsetX, offsetY, currentCropType) != true) {
                 
                     // now we have to check if player can harvest the current crop if the SOIL isEmpty() != true
@@ -453,6 +449,7 @@ public class Player extends Entity implements Drawable {
              * game 
              * MUST FULLFILL ALL THE WINNING CONDITIONS */
             else if (currHiddenObject instanceof Exit) {
+                // Exit only works when win condition met; otherwise display remaining count.
                 if (isWinning() && exitCooloff <= 0) {
                     // leave the game
                     ((GameScreen) map.getGame().getScreen()).onVictory(); // display the ExitMenu
@@ -607,6 +604,12 @@ public class Player extends Entity implements Drawable {
     }
     
     @Override
+    /**
+     * Changes the appearance 
+     * of the player given the 
+     * position he looks
+     * and the action he does
+     */
     public TextureRegion getCurrentAppearance() {
 
          if (isScared) {

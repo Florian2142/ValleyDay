@@ -5,8 +5,11 @@ package de.tum.cit.aet.valleyday.pathfinding;
 /**
  * Makes a GridNode for determining the neigbour steps of wildlife and Npcs
  * 
- * Important for finding the shortest path towards Crops or Player
+ * Important for finding the shortest path towards Crops or Player.
  * 
+ * The gridnodes kinda stores the tiles like a chessboard and calculates the distance to the goal via the manhattan distance
+ * 
+ * The Gridnodes are needed to find the neighbors and save the costs while keeping a link to the start till the solution
  * 
  */
 
@@ -53,6 +56,7 @@ public class GridNode implements Comparable<GridNode> {
     }
 
   
+    /** Compares positions to determine node equality. */
     public boolean equals(GridNode that) {
         if (that == null) {return false;}
         if (!(that instanceof GridNode)) {
