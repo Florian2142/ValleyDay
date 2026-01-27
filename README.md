@@ -17,6 +17,11 @@ Valley Day is a top-down farming adventure built with LibGDX. You clear debris, 
 
 ## Architecture and class hierarchy
 
+The diagram below shows **inheritance (extends)** and **composition/usage (creates/has)**:
+- `extends` = Java inheritance (child class inherits fields/methods of parent).
+- `creates`/`has` = a class owns or instantiates another class at runtime (not inheritance).
+- Indentation = "is a" relationship (subclass).
+
 ```
 ValleyDayGame (extends Game)
   -> Screen
@@ -42,6 +47,11 @@ ValleyDayGame (extends Game)
 
 Textures, Tiles, animations, and audio are centralized in `texture/` and `audio/` so gameplay classes only reference enums/constants.
 ```
+
+## Design patterns and structure
+
+- Screen-based state management: LibGDX `Screen` implementations model game states (menu, gameplay, cutscenes), which is a State-pattern style organization.
+- Data-driven maps: `.properties` maps drive tile/entity placement so content changes do not require code changes.
 
 ## How to run
 
@@ -96,6 +106,21 @@ NOTE: There is Button "Compliance which makes the task fullfillment exactly as s
   - If nothing is determined via java.properties debris and soil will be randomly distributed (There must be free tiles)
   - You must choose a map before starting. Then you can click the button "Start Random Map".
 
+## Bonus features and extensions
+
+- Extra items beyond minimum: Dynamite, Elixir, Clock.
+- Advanced AI: A* pathfinding for brown chickens.
+- Crop variety: four crop types (CORN, MAIS, LEMON, SELLERIE).
+- Extra map features: lava, big trees, stone debris (requires dynamite).
+- Multiple modes: campaign/story mode with cutscenes and random map mode.
+- A five-map sequence with intro cutscenes and a final win cutscene -> JUST CLICK THE NICE BUTTON :D.
+- Different difficulty settings.
+
+## Cheats / debug helpers (for graders)
+
+- Compliance button: sets task fulfillment to exact requirements (Health 1, Time: Enough).
+- Advance button: available only in Story mode (used to progress through story content).
+
 ## Map format (custom maps)
 
 Maps are `.properties` files with lines in the format `x,y=value`. The loader builds layered tiles and objects from these values. Key values:
@@ -127,3 +152,9 @@ Maps are `.properties` files with lines in the format `x,y=value`. The loader bu
 
 - Campaign maps are in `maps/` and are loaded in order: `map1.properties` to `mapEG.properties`.
 - Intro cutscenes and the final winning cutscene are stored under `assets/cutscenes/`.
+
+## Credits / attributions
+
+- Graphics: TODO (e.g., self-made pixel art or source like Kenney/OpenGameArt).
+- Music: TODO (royalty-free source or self-composed).
+- Sound effects: TODO (royalty-free source or self-created).

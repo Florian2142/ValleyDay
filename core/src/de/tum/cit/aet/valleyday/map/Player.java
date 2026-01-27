@@ -69,6 +69,7 @@ public class Player extends Entity implements Drawable {
 
     /* Handles the startled state
     If chicken touches player, player will run in opposite direction. */
+    /** Sets the player into a startled state and stores escape direction. */
     public void startle(float chickenOnTileX, float chickenOnTileY) {
         this.isScared = true;
 
@@ -752,6 +753,7 @@ public class Player extends Entity implements Drawable {
     }
 
     
+    /** Grants the player a shovel. */
     public void equipShovel() {
         this.hasShovel = true;
     }
@@ -800,6 +802,7 @@ public class Player extends Entity implements Drawable {
 
     }
 
+    /** Returns score value for a harvested crop type. */
     public int score(Crop type) {
         if (type.getCropType() == CropType.CORN || type.getCropType() == CropType.MAIS) {
             return 1;
@@ -1002,6 +1005,7 @@ public class Player extends Entity implements Drawable {
         this.health = Math.min(Math.max(0, health), 3);
     }
 
+    /** Grants the player dynamite. */
     public void equipDynamite() {
         this.hasDynamite = true;
     }

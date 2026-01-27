@@ -58,6 +58,7 @@ public abstract class hiddenObject implements Drawable {
         }
     }
 
+    /** Updates the hidden flag based on whether the covering obstacle is gone. */
     private void hiddenUpdate() {
         if (map.getObstacle((int) getX(), (int) getY()) == null) {
             hidden = false;

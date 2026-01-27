@@ -92,6 +92,7 @@ public class LevelIntroScreen implements Screen {
         this.continueButton.setVisible(frames.length <= 1); 
         
         continueButton.addListener(new ChangeListener() {
+            /** Starts the game from the intro screen. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.startGame(); // starts the game
@@ -151,14 +152,17 @@ public class LevelIntroScreen implements Screen {
         stage.getViewport().update(width, height, true);
     }
 
+    /** No-op for intro pause. */
     @Override
     public void pause() {
     }
 
+    /** No-op for intro resume. */
     @Override
     public void resume() {
     }
 
+    /** Clears input processor when hidden. */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);

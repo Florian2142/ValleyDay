@@ -78,6 +78,7 @@ public class MenuScreen implements Screen {
 
 
         goToCampagneButton.addListener(new ChangeListener() {
+            /** Starts campaign flow. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.startCampaign();
@@ -86,6 +87,7 @@ public class MenuScreen implements Screen {
 
 
         mapButtom.addListener(new ChangeListener() {
+            /** Opens map selection dialog. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.selectMap();
@@ -95,6 +97,7 @@ public class MenuScreen implements Screen {
         });
 
         settingsButton.addListener(new ChangeListener() {
+            /** Cycles difficulty options and updates game state. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 
@@ -113,12 +116,14 @@ public class MenuScreen implements Screen {
         });
 
         goToGameButton.addListener(new ChangeListener() {
+            /** Starts the game with the currently selected map/difficulty. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                game.startGame();            }
         });
 
         scaryButton.addListener(new ChangeListener() {
+            /** Opens the quit confirmation dialog. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // Leaving the game
@@ -126,6 +131,7 @@ public class MenuScreen implements Screen {
                 // We make the nice anonymous class !:)
                 Dialog dialog = new Dialog("Already leaving, are you scared?", game.getSkin()) {
 
+                /** Handles confirmation dialog result. */
                 @Override
                 protected void result(Object answerOfUser) {
                     boolean exit = (Boolean) answerOfUser;
@@ -178,12 +184,14 @@ public class MenuScreen implements Screen {
         stage.getViewport().update(width, height, true); // Update the stage viewport on resize
     }
 
+    /** Releases UI resources for the menu screen. */
     @Override
     public void dispose() {
         // Dispose of the stage when screen is disposed
         stage.dispose();
     }
 
+    /** Activates input for this screen. */
     @Override
     public void show() {
         // Set the input processor so the stage can receive input events
@@ -195,10 +203,12 @@ public class MenuScreen implements Screen {
     public void pause() {
     }
 
+    /** No-op for menu resume. */
     @Override
     public void resume() {
     }
 
+    /** No-op for menu hide. */
     @Override
     public void hide() {
     }

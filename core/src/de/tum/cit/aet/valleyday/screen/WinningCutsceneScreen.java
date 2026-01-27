@@ -84,6 +84,7 @@ public class WinningCutsceneScreen implements Screen {
 
         // The eventListener adds functionality to the toMenuButton and when pressed, you return to the menu screen.
         toMenuButton.addListener(new ChangeListener() {
+            /** Returns to the main menu after the cutscene. */
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.goToMenu();
@@ -91,11 +92,13 @@ public class WinningCutsceneScreen implements Screen {
         });
     }
 
+    /** Enables input for the cutscene screen. */
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
+    /** Advances cutscene frames and renders the stage. */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
@@ -118,24 +121,29 @@ public class WinningCutsceneScreen implements Screen {
         stage.draw();
     }
 
+    /** Updates the stage viewport on resize. */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
 
+    /** No-op for cutscene pause. */
     @Override
     public void pause() {
     }
 
+    /** No-op for cutscene resume. */
     @Override
     public void resume() {
     }
 
+    /** Clears input when this screen is hidden. */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
 
+    /** Disposes of textures and stage resources. */
     @Override
     public void dispose() {
         stage.dispose();

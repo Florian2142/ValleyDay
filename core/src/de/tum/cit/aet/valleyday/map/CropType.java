@@ -16,10 +16,10 @@ import de.tum.cit.aet.valleyday.texture.Textures;
  */
 public enum CropType {
  
-        CORN(Textures.CORN_STAGES, 45f),
-        MAIS(Textures.MAIS_STAGES, 55f),
-        LEMON(Textures.LEMON_STAGES, 90f),
-        SELLERIE(Textures.SELLERIE_STAGES, 150f);
+        CORN(Textures.CORN_STAGES, 35f),
+        MAIS(Textures.MAIS_STAGES, 45f),
+        LEMON(Textures.LEMON_STAGES, 60f),
+        SELLERIE(Textures.SELLERIE_STAGES, 75f);
       
         
 
