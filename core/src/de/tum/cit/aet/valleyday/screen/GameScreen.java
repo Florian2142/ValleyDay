@@ -79,7 +79,11 @@ public class GameScreen implements Screen {
         this.mapCamera.setToOrtho(false);
 
 
-        /** DUMMY VARIABLES CHANGE LATER TO DIFFICULTY */
+        /** In the game menu the difficulty can be chosen. The easy difficulty gives 5 minutes to harvest 5 crops and you get 3 lives.
+         * The medium difficulty gives you 3 minutes and 20 seconds to harvest 10 crops and you get 3 lives.
+         * The hard difficulty gives you 3 minutes to harvest 15 crops and you get 2 lives.
+         * The TUM difficulty gives you 2 minutes to harvest 15 crops and you get 1 life.
+         */
         String diff = map.getDifficulty();
 
         System.out.println("Difficulty is: " + diff);
@@ -102,7 +106,12 @@ public class GameScreen implements Screen {
         }
         else if (diff.equals("TUM")){
             this.remainingTime = 120;
-            player.setHarvesting(15);
+            player.setHarvesting(20);
+           player.setHealth(1);
+        }
+         else if (diff.equals("Compliance")){
+            this.remainingTime = 200;
+            player.setHarvesting(10);
            player.setHealth(1);
         }
 
@@ -210,27 +219,7 @@ public class GameScreen implements Screen {
 
         mapCamera.update();
     }
-    /**
-     * The map is build in a layered approach:
-     * 
-     * It has the following layer:
-     * 
-     * 1: We draw the background far beyond the normal scope of the playable map (LAYER 1)
-     * 
-     * 2: We collect all the items (Drawable) within a temporary list -<> Each tick stores objects 
-     * 
-     * 3: These items will be all sorted according to the y-coordinate 
-     *    (Dont know which sorting technique, maybe quick, maybe merge, BUT fast enough)
-     * 
-     * 4: After sorting we draw all the items, player, decoration and so on (LAYER 2)
-     * 
-     * 5: Then big objects like the trees, house and tornado will be drawn upon everything
-     * 
-     * Repeat the process each time
-     *
-     * 
-     * 
-     */
+    
     private void renderMap() {
         // This configures the spriteBatch to use the camera's perspective when rendering
         spriteBatch.setProjectionMatrix(mapCamera.combined);
@@ -330,12 +319,14 @@ public class GameScreen implements Screen {
                          }
                     }
                 }
-               
+                // Same for chest
+                allDrawables.add(map.getChest());
                 // Same for Player
                 allDrawables.add(map.getPlayer());
 
                 // Now we sort the temporary List
                 Collections.sort(allDrawables, new Comparator<Drawable>() {
+                /** Sorts by Y descending so higher objects render behind. */
                 @Override
                 public int compare(Drawable i1, Drawable i2) {
                     // compare(b, a) gives us Descending Order (Big Y first)
@@ -459,15 +450,18 @@ public class GameScreen implements Screen {
 
     
 
+    /** Called when this screen becomes the current screen. */
     @Override
     public void show() {
 
     }
 
+    /** Called when this screen is no longer the current screen. */
     @Override
     public void hide() {
     }
 
+    /** Cleans up resources owned by this screen. */
     @Override
     public void dispose() {
         hud.dispose();

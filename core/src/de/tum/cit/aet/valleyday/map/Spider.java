@@ -215,8 +215,8 @@ public class Spider extends Entity implements Wildlife{
         
     }
 
+    /** Marks the spider for removal after the death animation ends. */
     private void remove() {
-
         if (deathTimer > Animations.SPIDER_KILL.getAnimationDuration()) {
                 this.reallyKilled = true; // now we must remove it from the map
             }
@@ -266,6 +266,7 @@ public class Spider extends Entity implements Wildlife{
 
 
 
+    /** Triggers the spider death sequence. */
     @Override
     public void kill() {
             this.killed = true;

@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -323,13 +324,13 @@ public class Hud {
 
         // Create and add a button to go to the game screen
         TextButton resumeButtom     = new TextButton("Resume the game.", this.skin);
-        TextButton settingsButton   = new TextButton("Settings.", this.skin);
+        TextButton newMapButton   = new TextButton("Choose new map.", this.skin);
         TextButton scaryButton      = new TextButton("Become a lost warrior!", this.skin);
 
 
         pauseTable.add(resumeButtom).width(425).row();
         pauseTable.row();
-        pauseTable.add(settingsButton).width(425).row();
+        pauseTable.add(newMapButton).width(425).row();
         pauseTable.row();
         pauseTable.add(scaryButton).width(425).row();
         
@@ -345,6 +346,16 @@ public class Hud {
             public void changed(ChangeEvent event, Actor actor) {
                 gameScreen.resume();
             }
+        });
+
+        newMapButton.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameScreen.getGame().selectMap();
+                gameScreen.getGame().startGame();
+            }
+            
         });
 
         scaryButton.addListener(new ChangeListener() {
@@ -511,6 +522,9 @@ public class Hud {
         cropsLabel.setText("" + player.getCurrentHarvest() + "/" + player.getHarvesting());
 
 
+        /** If the player fullfills the harvesting quota, the exit will open and the player can proceed to the next level.
+         * The Exit label changes from red to green.
+         */
         if (player.isWinning()) {
             exitLabel.setColor(0, 255, 0, 0.5f);
             gameScreen.getMap().getExit().openExit(); // will visually open the Exit
@@ -549,7 +563,9 @@ public class Hud {
 
         int currentOption = player.getOption();
 
-        // Switches through the available crops which bring different points
+        /** When R is pressed, iit is possible to switch between different types of crops. 
+         * It cycles through the cropType array/wrapper indexes and yields different points based on the option. 
+         */
         if (currentOption == 0) {
             crop1.setDrawable(cornDrawable);
             essentialsLabel.setText("Yields PTS: 1");
@@ -567,6 +583,11 @@ public class Hud {
             essentialsLabel.setText("Yields PTS: 3");
         }
 
+        /** The HUD also comntains the amount of lives the player has. It starts with 3.
+         * When the player is touched by a chicken or bitten by a spider, the player loses a life. 
+         * Heart3 (the visibility of the last heart from left to right) is set to false.
+         * Same is the player loses the last 2 remaining lifes.
+         */
         int currentHealth = player.getHealth();
 
         
@@ -633,12 +654,12 @@ public class Hud {
         /** Display message for any interactions with hidden items */
         if (player.messageCooldown() > 0) {
             font.draw(spriteBatch, 
-                      player.getMessageToDisplay(), // The Text
+                      player.getMessageToDisplay(), 
                       0,                            // X: Start at the left edge
                       120,                           // Y: Height
-                      camera.viewportWidth - 20,    // Target Width: The width of the screen - 20px padding
+                      camera.viewportWidth - 20,    // The width of the screen - 20px padding
                       Align.right,                  // Align: Push text to the right
-                      false);                       // Wrap: False (don't start new line)
+                      false);                      
         }
 
         if (player.getHarvestCooloff() > 0) {
@@ -696,7 +717,11 @@ public class Hud {
         } 
     }
 
-    // Victory meni is shown when the first level is passed.
+    /** Victory menu is shown when the first level is passed.
+     * The nextLevel music is played. In the Table, The victory message is displayed.
+     * You can either continue farming or proceed to the next level.
+     * If you loose the game, the GameOver music is played and you only have the option to retuen to. the menu.
+     */
     public void showVictoryMenu() {
         this.exitTable.setVisible(true);
         Gdx.input.setInputProcessor(stage);

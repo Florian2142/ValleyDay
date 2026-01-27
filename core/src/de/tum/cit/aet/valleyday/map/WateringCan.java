@@ -9,6 +9,9 @@ public class WateringCan extends hiddenObject implements Item{
         super.texture = Textures.WATERING_CAN;
     }
 
+    /* If a player picks up the Watering Can after removing the debris, the Watering Can gets removed from the map.
+     * The Watering Can advances the stage of the crops by one. The respective message is displayed on the screen.
+     */
     @Override
     public String pickup(Player player) {
         super.map.removeItem((int) super.getX(),(int) super.getY());

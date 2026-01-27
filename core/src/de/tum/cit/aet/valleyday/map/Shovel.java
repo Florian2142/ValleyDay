@@ -20,6 +20,9 @@ public class Shovel extends hiddenObject implements Item{
         super.texture = Textures.SHOVEL;
     }
 
+    /* If a player picks up the shovel after removing the debris, the shovel gets removed from the map.
+     * The shovel clears debris quicker. The respective message is displayed on the screen.
+     */
     @Override
     public String pickup(Player player) {
         super.map.removeItem((int) super.getX(),(int) super.getY());

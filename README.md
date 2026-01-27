@@ -22,6 +22,11 @@ The diagram below shows **inheritance (extends)** and **composition/usage (creat
 - `creates`/`has` = a class owns or instantiates another class at runtime (not inheritance).
 - Indentation = "is a" relationship (subclass).
 
+The diagram below shows **inheritance (extends)** and **composition/usage (creates/has)**:
+- `extends` = Java inheritance (child class inherits fields/methods of parent).
+- `creates`/`has` = a class owns or instantiates another class at runtime (not inheritance).
+- Indentation = "is a" relationship (subclass).
+
 ```
 ValleyDayGame (extends Game)
   -> Screen
@@ -47,6 +52,11 @@ ValleyDayGame (extends Game)
 
 Textures, Tiles, animations, and audio are centralized in `texture/` and `audio/` so gameplay classes only reference enums/constants.
 ```
+
+## Design patterns and structure
+
+- Screen-based state management: LibGDX `Screen` implementations model game states (menu, gameplay, cutscenes), which is a State-pattern style organization.
+- Data-driven maps: `.properties` maps drive tile/entity placement so content changes do not require code changes.
 
 ## Design patterns and structure
 

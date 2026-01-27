@@ -58,7 +58,7 @@ public class GameMap {
     // Game objects
     private final Player player;
     
-    private final Chest chest;
+   
 
     /** Difficulty of the game */
     private String difficulty;
@@ -137,9 +137,7 @@ public class GameMap {
 
         
         this.harvesting = 3; // UPDATE TO DIFFICULTY
-        
-        // Create a chest in the middle of the map
-        this.chest = new Chest(world, 3, 3);
+    
 
         /** Set difficulty, UPDATE LATER FOR REAL DIFFICULTY */
         this.difficulty = difficulty;
@@ -992,11 +990,7 @@ public class GameMap {
     public Player getPlayer() {
         return player;
     }
-    
-    /** Returns the chest on the map. */
-    public Chest getChest() {
-        return chest;
-    }
+  
     
     /** Returns the Tiles -> Default or ground of the map. */
     public Tiles[][] getTiles() {
