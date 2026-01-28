@@ -206,6 +206,11 @@ public class Player extends Entity implements Drawable {
 
             xVelocity = escapeX * sprintSpeed;
             yVelocity = escapeY * sprintSpeed;
+            if (Math.abs(escapeX) >= Math.abs(escapeY)) {
+                this.currDirection = escapeX >= 0 ? Direction.RIGHT : Direction.LEFT;
+            } else {
+                this.currDirection = escapeY >= 0 ? Direction.UP : Direction.DOWN;
+            }
 
             if (gameOverTimer <= 0) {
                 ((GameScreen)map.getGame().getScreen()).gameOverScreen();
@@ -615,10 +620,10 @@ public class Player extends Entity implements Drawable {
 
          if (isScared) {
             switch (this.currDirection) {
-                    case RIGHT: return  Animations.CHARACTER_RUN_RIGHT.getKeyFrame(this.harvestTime, false);
-                    case LEFT : return  Animations.CHARACTER_RUN_LEFT.getKeyFrame(this.harvestTime, false);
-                    case UP   : return  Animations.CHARACTER_RUN_UP.getKeyFrame(this.harvestTime, false);
-                    default   : return  Animations.CHARACTER_RUN_DOWN.getKeyFrame(this.harvestTime, false);
+                    case RIGHT: return  Animations.CHARACTER_RUN_RIGHT.getKeyFrame(this.elapsedTime, true);
+                    case LEFT : return  Animations.CHARACTER_RUN_LEFT.getKeyFrame(this.elapsedTime, true);
+                    case UP   : return  Animations.CHARACTER_RUN_UP.getKeyFrame(this.elapsedTime, true);
+                    default   : return  Animations.CHARACTER_RUN_DOWN.getKeyFrame(this.elapsedTime, true);
                 
             }
         }

@@ -21,7 +21,7 @@ public enum MusicTrack {
     WINNING("victory-epic-music-155790.mp3", 0.10f),
     GAMEOVER("game-over-2-short-music-351102.mp3", 0.23f),
     INTRO("Desert Planet - Quincas Moreira.mp3" , 0.2f),
-    OUTRO("ElevenLabs_2026-01-23T14_10_03_Callum - Husky Trickster_pre_sp100_s50_sb75_v3.mp3" , 0.7f, false),
+    OUTRO("ElevenLabs_2026-01-23T14_10_03_Callum - Husky Trickster_pre_sp100_s50_sb75_v3.mp3" , 0.85f, false),
     EPICVOICE("ElevenLabs_2026-01-23T12_52_09_Callum - Husky Trickster_pre_sp100_s50_sb75_v3.mp3", 0.7f, false),
     EPICOUTRO("ElevenLabs_2026-01-24T13_49_43_Callum - Husky Trickster_pre_sp100_s50_sb75_v3.mp3", 0.7f, false),
     CUTSCRENE("inspiring-story-380675.mp3", 0.33f),

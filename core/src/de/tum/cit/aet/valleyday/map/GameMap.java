@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import de.tum.cit.aet.valleyday.ValleyDayGame;
+import de.tum.cit.aet.valleyday.audio.MusicTrack;
+import de.tum.cit.aet.valleyday.audio.SoundEffect;
 import de.tum.cit.aet.valleyday.texture.Animations;
 import de.tum.cit.aet.valleyday.tornados.Tornado;
 
@@ -803,6 +805,7 @@ public class GameMap {
                 crops[x][y] = null;
                 // Also remove the crop from the active Crops -> Not active anymore
                 int index = activeCrops.indexOf(newCrop);
+                SoundEffect.CHICKENEAT.play();
                 activeCrops.remove(index);
             }
         }

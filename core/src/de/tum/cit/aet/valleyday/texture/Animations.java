@@ -112,13 +112,25 @@ public class Animations {
     public static final Animation<TextureRegion> CHARACTER_WALK_RIGHT_IDLE = new Animation<>(0.1f,
             SpriteSheet.CHARACTER.at(2, 1));
     public static final Animation<TextureRegion> CHARACTER_RUN_DOWN = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(1, 10));
+            SpriteSheet.CHARACTER.at(1, 10),
+            SpriteSheet.CHARACTER.at(1, 11),
+            SpriteSheet.CHARACTER.at(1, 12),
+            SpriteSheet.CHARACTER.at(1, 13));
     public static final Animation<TextureRegion> CHARACTER_RUN_UP = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(3, 10));
+            SpriteSheet.CHARACTER.at(3, 10),
+            SpriteSheet.CHARACTER.at(3, 11),
+            SpriteSheet.CHARACTER.at(3, 12),
+            SpriteSheet.CHARACTER.at(3, 13));
     public static final Animation<TextureRegion> CHARACTER_RUN_LEFT = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(4, 10));
+            SpriteSheet.CHARACTER.at(4, 10),
+            SpriteSheet.CHARACTER.at(4, 11),
+            SpriteSheet.CHARACTER.at(4, 12),
+            SpriteSheet.CHARACTER.at(4, 13));
     public static final Animation<TextureRegion> CHARACTER_RUN_RIGHT = new Animation<>(0.1f,
-            SpriteSheet.CHARACTER.at(2, 10));
+            SpriteSheet.CHARACTER.at(2, 10),
+            SpriteSheet.CHARACTER.at(2, 11),
+            SpriteSheet.CHARACTER.at(2, 12),
+            SpriteSheet.CHARACTER.at(2, 13));
 
     /** The Chicken Animation for Movement */
     public static final Animation<TextureRegion> WHITE_CHICKEN_WALKING = new Animation<>(0.1f,

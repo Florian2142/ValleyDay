@@ -234,7 +234,7 @@ public class BrownChicken extends Entity implements Chicken{
         Crop cropAtTile = map.getCrop(currX, currY);
         if (cropAtTile != null && !cropAtTile.isRotten()) {
             eatTimer = 30f;
-            SoundEffect.CROP_PLANTING.play();
+            
             this.isEating = true;
             map.eatCrop(currX, currY);
         }
