@@ -1,31 +1,107 @@
 # Valley Day
 
-Valley Day is a top-down farming adventure built with LibGDX. You clear debris, plant crops, manage time and stamina, and avoid wildlife while trying to hit a harvest quota before time runs out. The game supports a campaign (multiple maps in sequence) and a free play mode with manual map selection. Note: You must start the STORY game in order to use the Advance Button.
+> A top-down farming adventure built with [LibGDX](https://libgdx.com/) — developed as a top-5 project in the TUM Informatics practical course ITP (WS 24/25).
+
+Valley Day puts you on a timer: clear debris, plant and harvest crops, manage stamina, and fend off wildlife before the clock hits zero. Complete the harvest quota to open the exit and move to the next map.
+
+---
+
+## Features
+
+- **Campaign mode** — five-map story sequence with intro cutscenes and a final win cutscene
+- **Free play mode** — load any `.properties` map or generate a random one on the fly
+- **Four crop types** — Corn, Maize, Lemon, and Celery, each with different growth times and scores; crops can rot and be revived
+- **Six collectible items** — Shovel, Fertilizer, Watering Can, Dynamite, Elixir, Clock
+- **A\* pathfinding AI** — brown chickens seek out your crops; spiders hunt the player
+- **Difficulty settings** — adjustable harvest quota, timer, and player health
+- **Full HUD** — health bar, stamina bar, timer, inventory display, and harvest progress
+- **Procedural map generation** — debris and soil placed randomly when no layout is specified
+
+---
+
+## Screenshots
+
+> *Add screenshots or a gameplay GIF here to showcase the game visually.*
+
+---
+
+## How to run
+
+**Requirements:** Java 17+
+
+```bash
+# Windows
+.\gradlew.bat desktop:run
+
+# macOS / Linux
+./gradlew desktop:run
+```
+
+---
+
+## Controls
+
+| Key | Action |
+|-----|--------|
+| Arrow keys | Move (up / down / left / right) |
+| Shift | Sprint (stamina-based) |
+| A | Plant or harvest on soil tiles |
+| D | Chop / destroy obstacles |
+| R | Cycle crop type |
+| S | Shoo or attack nearby chickens and wildlife |
+| Esc | Pause / resume |
+
+---
+
+## Game mechanics
+
+### Core loop
+Each level requires harvesting a set number of crops before the exit unlocks. Health reaches zero or the timer expires and it's game over.
+
+### Crop system
+Crops progress through growth stages and can rot after the final stage (~60 s). A watering can revives rotting crops. Fertilizer instantly advances one stage.
+
+### Items
+| Item | Effect | Location |
+|------|--------|----------|
+| Shovel | Increases debris damage | Hidden under debris |
+| Dynamite | Destroys stone debris | Hidden under debris |
+| Fertilizer | Advances crop growth by one stage | Hidden under debris |
+| Watering Can | Revives rotting crops | Hidden under debris |
+| Elixir | Restores health | Hidden under stone debris |
+| Clock | Adds time | Hidden under stone debris |
+
+### AI
+- **Brown chickens** — use A\* pathfinding to seek the nearest crop
+- **Spiders** — track the player using A\* and attack on contact
+- Chickens can be scared off; spiders must be defeated
+
+### Difficulty
+Three difficulty presets adjust harvest quota, starting time, and player health. A *Compliance* mode sets values to the exact course specification.
+
+---
 
 ## Project layout
 
-- `core/` Game logic and rendering shared across platforms
-  - `core/src/de/tum/cit/aet/valleyday/` main game class
-  - `core/src/de/tum/cit/aet/valleyday/screen/` screens (menu, game, HUD, cutscenes)
-  - `core/src/de/tum/cit/aet/valleyday/map/` map loading, entities, items, crops
-  - `core/src/de/tum/cit/aet/valleyday/pathfinding/` pathfinding helpers (Implements an A*-Search AI Algorithm)
-  - `core/src/de/tum/cit/aet/valleyday/audio/` music and sound effect enums
-  - `core/src/de/tum/cit/aet/valleyday/texture/` texture loading, animations, drawables
-- `desktop/` Desktop launcher and platform configuration
-- `assets/` textures, audio, UI skin, cutscenes
-- `maps/` map `.properties` files used by campaign and custom selection
+```
+ValleyDay/
+├── core/src/de/tum/cit/aet/valleyday/
+│   ├── ValleyDayGame.java          # Main game class (extends LibGDX Game)
+│   ├── screen/                     # MenuScreen, GameScreen, HUD, cutscenes
+│   ├── map/                        # Map loading, entities, items, crops
+│   ├── pathfinding/                # A* search (Gps, GridNode)
+│   ├── audio/                      # Music and sound effect enums
+│   └── texture/                    # Texture loading, sprite sheets, animations
+├── desktop/                        # Desktop launcher
+├── assets/                         # Textures, audio, UI skin, cutscenes
+└── maps/                           # Campaign and custom .properties map files
+```
 
-## Architecture and class hierarchy
+---
 
-The diagram below shows **inheritance (extends)** and **composition/usage (creates/has)**:
-- `extends` = Java inheritance (child class inherits fields/methods of parent).
-- `creates`/`has` = a class owns or instantiates another class at runtime (not inheritance).
-- Indentation = "is a" relationship (subclass).
+## Architecture
 
-The diagram below shows **inheritance (extends)** and **composition/usage (creates/has)**:
-- `extends` = Java inheritance (child class inherits fields/methods of parent).
-- `creates`/`has` = a class owns or instantiates another class at runtime (not inheritance).
-- Indentation = "is a" relationship (subclass).
+Inheritance (`extends`) and composition (`creates` / `has`):
 
 ```
 ValleyDayGame (extends Game)
@@ -35,11 +111,11 @@ ValleyDayGame (extends Game)
      -> LevelIntroScreen
      -> WinningCutsceneScreen
   -> GameMap (tile layers + entities + items)
-     -> Entity (dynamic objects)
+     -> Entity
         -> Player
         -> Chicken -> BrownChicken / WhiteChicken
         -> Wildlife -> Spider
-     -> hiddenObject (map items / hidden objects)
+     -> hiddenObject
         -> Exit
         -> Item -> Shovel / Fertilizer / WateringCan / Dynamite / Elixir / Clock
      -> Obstacle
@@ -49,122 +125,58 @@ ValleyDayGame (extends Game)
         -> Trees / House / BigTree
      -> Crop + CropType
      -> Tiles + TileType
-
-Textures, Tiles, animations, and audio are centralized in `texture/` and `audio/` so gameplay classes only reference enums/constants.
 ```
 
-## Design patterns and structure
+Textures, tile definitions, animations, and audio are centralized in `texture/` and `audio/` — gameplay classes reference only enums/constants.
 
-- Screen-based state management: LibGDX `Screen` implementations model game states (menu, gameplay, cutscenes), which is a State-pattern style organization.
-- Data-driven maps: `.properties` maps drive tile/entity placement so content changes do not require code changes.
+**Design patterns used:**
+- *State pattern* — LibGDX `Screen` implementations model game states (menu, gameplay, cutscenes)
+- *Data-driven design* — `.properties` map files drive tile and entity placement without code changes
 
-## Design patterns and structure
+---
 
-- Screen-based state management: LibGDX `Screen` implementations model game states (menu, gameplay, cutscenes), which is a State-pattern style organization.
-- Data-driven maps: `.properties` maps drive tile/entity placement so content changes do not require code changes.
+## Custom map format
 
-## How to run
+Maps are `.properties` files with lines in the format `x,y=value`.
 
-Java 17 is required.
+| Value | Tile / object |
+|-------|---------------|
+| 0 | Fence (indestructible) |
+| 1 | Debris (destructible) |
+| 2 | Player spawn |
+| 3 | Chicken spawn |
+| 4 | Exit (hidden under debris) |
+| 5 | Fertilizer (hidden) |
+| 6 | Watering can (hidden) |
+| 7 | Shovel (hidden) |
+| 8 | Soil (plantable) |
+| 9 | Lava |
+| 10 | Dynamite (hidden) |
+| 12 | Spider spawn |
+| 13 | Tree (blocking) |
+| 21 | Path (walkable) |
+| 23 | Elixir (hidden under stone) |
+| 25 | Clock (hidden under stone) |
+| 26 | Big tree (blocking) |
+| 27 | House (blocking) |
+| 28–29 | Flowers |
+| 30–38 | Path shapes (corners / edges) |
+| 40 | Flower (variant 3) |
 
-Windows:
-```
-.\gradlew.bat desktop:run
-```
+Campaign maps (`map1.properties` – `mapEG.properties`) live in `maps/`. Cutscene assets are in `assets/cutscenes/`.
 
-macOS/Linux:
-```
-./gradlew desktop:run
-```
+---
 
-## Controls
+## Built with
 
-- Arrow keys: move -> You have only UP, DOWN, LEFT and RIGHT movements, please note its based on x- & yVelocity
-- Shift: sprint (stamina based) -> You can only sprint for a few seconds before exhausted and recover
-- A: plant or harvest (on soil tiles)
-- D: chop destructible objects (shovel/dynamite required for some)
-- R: cycle crop type 
-- S: shoo/attack nearby chickens and wildlife 
-- Esc: pause/resume
+- [LibGDX](https://libgdx.com/) — cross-platform Java game framework
+- Java 17
+- Gradle
 
-## Game mechanics (beyond the minimum)
+---
 
-- Harvest quota: each level requires harvesting a number of crops before the exit opens.
-- Time limit: you lose when the timer reaches zero. 
-- Health: touching chickens or being attacked by spiders reduces health; 0 health triggers game over.
-- Difficulty: Depending on the difficulty you choose the Harvest quote, time and health will be set.
-NOTE: There is Button "Compliance which makes the task fullfillment exactly as stated -> Health 1, Time: Enough
-- Crop system:
-  - Four crop types (CORN, MAIS, LEMON, SELLERIE) with different growth times and scores.
-  - Crops mature, can be harvested, and can rot if ignored (After the final stage that takes 60 seconds).
-  - Rotten crops can be revived when finding and picking up the watering can
-- Items:
-  - Shovel: increases debris damage.
-  - Dynamite: allows destroying stone debris. NOTE: WITH DYNAMITE (ITEM) you can blow the stones on the map
-  - Fertilizer: instantly advances crop growth by one stage.
-  - Watering can: revives rotting crops.
-  - Elixir: increases health. -> Only beneath StoneDebris
-  - Clock: adds time. -> Only beneath StoneDebris
-- AI:
-  - Brown chickens use pathfinding to seek crops -> Based on a A*-search Algorithm it finds the shortest path heuristically.
-  - Chickens can be scared off; spiders attack when close.
-- Campaign mode (BUTTON "Start the warrior Story" in the MAIN MENU):
-  - A five-map sequence with intro cutscenes and a final win cutscene -> JUST CLICK THE NICE BUTTON :D.
-  - Difficulty settings adjust harvest quota, timer, and player health.(Warning, dont choose "TUM" ;)
-- Random Maps: 
-  - You can start any random maps you may desire, you dont have to define soil or debris 
-  - If nothing is determined via java.properties debris and soil will be randomly distributed (There must be free tiles)
-  - You must choose a map before starting. Then you can click the button "Start Random Map".
+## Credits
 
-## Bonus features and extensions
+Music, textures, and sprites used in this project are free / open-licence assets. Full attribution is listed in the asset source files.
 
-- Extra items beyond minimum: Dynamite, Elixir, Clock.
-- Advanced AI: A* pathfinding for brown chickens.
-- Spider wildlife which attacks the player and will based on the A*-Algorithm find him anywhere on the map.
-- Crop variety: four crop types (CORN, MAIS, LEMON, SELLERIE).
-- Extra map features: lava, big trees, stone debris (requires dynamite).
-- Added big visuals to the map (Tornado, House, Trees, Fire, Lighthning).
-- Intro and Outro of the game.
-- Added health and a interactive HUD for better visuals.
-- Added several free copyright music, Pictures and textures.
-- Multiple modes: campaign/story mode with cutscenes and random map mode.
-- A five-map sequence with intro cutscenes and a final win cutscene -> JUST CLICK THE NICE BUTTON :D.
-- Different difficulty settings (changes health, time, harvest quota).
-
-## Cheats / debug helpers (for graders)
-
-- Compliance button: sets task fulfillment to exact requirements (Health 1, Time: Enough).
-- Advance button: available only in Story mode (used to progress through story content).
-
-## Map format (custom maps)
-
-Maps are `.properties` files with lines in the format `x,y=value`. The loader builds layered tiles and objects from these values. Key values:
-
-- `0` fence (indestructible)
-- `1` debris (destructible)
-- `2` start tile (player spawn)
-- `3` chicken spawn
-- `4` exit (hidden under debris)
-- `5` fertilizer (hidden)
-- `6` watering can (hidden)
-- `7` shovel (hidden)
-- `8` soil (plantable)
-- `9` lava
-- `10` dynamite (hidden)
-- `12` spider spawn
-- `13` tree (blocking)
-- `21` path (walkable)
-- `23` elixir (hidden under stone)
-- `25` clock (hidden under stone)
-- `26` big tree (blocking)
-- `27` house (blocking)
-- `28` flower1
-- `29` flower2
-- `30-38` path shapes (corners/edges)
-- `40` flower3
-
-## Notes
-
-- Campaign maps are in `maps/` and are loaded in order: `map1.properties` to `mapEG.properties`.
-- Intro cutscenes and the final winning cutscene are stored under `assets/cutscenes/`.
-
+Developed by Team *TryCatchReturn35* for the TUM ITP practical course (WS 2024/25).
