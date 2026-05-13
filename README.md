@@ -1,6 +1,6 @@
 # Valley Day
 
-> A top-down farming adventure built with [LibGDX](https://libgdx.com/) — developed as a top-5 project in the TUM Informatics practical course ITP (WS 24/25).
+> A top-down farming adventure built with [LibGDX](https://libgdx.com/) — developed as a project in the TUM Informatics practical course ITP (WS 24/25).
 
 Valley Day puts you on a timer: clear debris, plant and harvest crops, manage stamina, and fend off wildlife before the clock hits zero. Complete the harvest quota to open the exit and move to the next map.
 
