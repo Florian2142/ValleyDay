@@ -29,49 +29,47 @@ public enum MusicTrack {
     MAP4("pixel-245147 (2).mp3", 0.15f);
 
     
-    /** The music file owned by this variant. */
     private final Music music;
-    
+
     MusicTrack(String fileName, float volume) {
-        this.music = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
-        this.music.setLooping(true);
-        this.music.setVolume(volume);
+        Music loaded = null;
+        try {
+            loaded = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
+            loaded.setLooping(true);
+            loaded.setVolume(volume);
+        } catch (Exception e) {
+            Gdx.app.error("MusicTrack", "Failed to load audio/" + fileName);
+        }
+        this.music = loaded;
     }
 
-    MusicTrack(String fileName, float volume, boolean Loop) {
-        this.music = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
-        this.music.setLooping(Loop);
-        this.music.setVolume(volume);
+    MusicTrack(String fileName, float volume, boolean loop) {
+        Music loaded = null;
+        try {
+            loaded = Gdx.audio.newMusic(Gdx.files.internal("audio/" + fileName));
+            loaded.setLooping(loop);
+            loaded.setVolume(volume);
+        } catch (Exception e) {
+            Gdx.app.error("MusicTrack", "Failed to load audio/" + fileName);
+        }
+        this.music = loaded;
     }
-    
-    /**
-     * Play this music track.
-     * This will not stop other music from playing
-     */
+
     public void play() {
-        this.music.play();
+        if (music != null) music.play();
     }
 
-    /** Stops this music track if it is currently playing. */
     public void stop() {
-        this.music.stop();
+        if (music != null) music.stop();
     }
 
-    /** 
-     * Checks if the music is currently playing.
-     * @return true if playing, false otherwise.
-     */
     public boolean isPlaying() {
-        return this.music.isPlaying();
+        return music != null && music.isPlaying();
     }
 
-    /**
-     * 
-     * Stops all the Current Tracks Playing
-     */
     public static void stopAll() {
-        for (MusicTrack tracks : MusicTrack.values()) {
-            tracks.stop();
+        for (MusicTrack track : MusicTrack.values()) {
+            track.stop();
         }
     }
 }

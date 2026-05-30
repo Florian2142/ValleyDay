@@ -3,6 +3,18 @@
 !src/**/build/
 target/
 
+# IDE
+.idea/
+.vscode/
+
+# Claude Code
+.claude/
+
+# Raw source/design files
+*.eps
+*.aseprite
+*.mp4
+
 # Taken from https://github.com/github/gitignore
 
 ### Java
