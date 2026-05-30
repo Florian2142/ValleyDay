@@ -28,17 +28,17 @@ A short visual overview of the main gameplay mechanics, user interface, and inte
     <td align="center">
       <img src="assets/demos/Animation.gif" alt="Gameplay preview showing the main game environment and world exploration" width="280"/>
       <br/>
-      <sub>World exploration</sub>
+      <sub>Farm Crops to win!</sub>
     </td>
     <td align="center">
       <img src="assets/demos/Animation2.gif" alt="Gameplay preview showing crop planting, harvesting, and core farming mechanics" width="280"/>
       <br/>
-      <sub>Farming &amp; harvesting</sub>
+      <sub>Five Levels &amp; special Items</sub>
     </td>
     <td align="center">
       <img src="assets/demos/Animation3.gif" alt="Gameplay preview showing the HUD, menus, and progression features" width="280"/>
       <br/>
-      <sub>HUD &amp; progression</sub>
+      <sub>Many things to discover!</sub>
     </td>
   </tr>
 </table>
