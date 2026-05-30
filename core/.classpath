@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="output" path="bin/default"/>
+	<classpathentry output="bin/main" kind="src" path="src">
+		<attributes>
+			<attribute name="gradle_scope" value="main"/>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17/"/>
+	<classpathentry sourcepath="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.13.0/dfc21e990129da3a7de0a7ba1fdfba30e346819/gdx-freetype-1.13.0-sources.jar" kind="lib" path="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.13.0/283b1d86af06bff6dc4b33523d98fe7f44c9dcaa/gdx-freetype-1.13.0.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.13.0/997a2df72a42018aa7137d4f6ca48fa4bdf83bd/gdx-box2d-1.13.0-sources.jar" kind="lib" path="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.13.0/4e3dec7944c9f1972a6628922b54390a4f4dea44/gdx-box2d-1.13.0.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/flori/.gradle/caches/modules-2/files-2.1/games.spooky.gdx/gdx-nativefilechooser/2.3.0/b844e58d30e38a703beec8b44022209ef74ce0c1/gdx-nativefilechooser-2.3.0-sources.jar" kind="lib" path="C:/Users/flori/.gradle/caches/modules-2/files-2.1/games.spooky.gdx/gdx-nativefilechooser/2.3.0/e025ca234c2c280b7a8ef6f9c6275debc195bb47/gdx-nativefilechooser-2.3.0.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.13.0/bf9c09e6d189fab6a2d846d0f7b6a332ffb7ed16/gdx-1.13.0-sources.jar" kind="lib" path="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.13.0/5ad34f11004a70f4f2c55456461ab1dbf438eeea/gdx-1.13.0.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-jnigen-loader/2.5.2/2a21b103d03be8d1ed81a021981376615f481cf5/gdx-jnigen-loader-2.5.2-sources.jar" kind="lib" path="C:/Users/flori/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-jnigen-loader/2.5.2/f35e90affe07c46b4f5e5958a1a4c1820c4890e2/gdx-jnigen-loader-2.5.2.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+		</attributes>
+	</classpathentry>
+</classpath>

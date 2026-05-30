@@ -19,9 +19,29 @@ Valley Day puts you on a timer: clear debris, plant and harvest crops, manage st
 
 ---
 
-## Screenshots
+## Gameplay Preview
 
-> *Add screenshots or a gameplay GIF here to showcase the game visually.*
+A short visual overview of the main gameplay mechanics, user interface, and interactive game flow.
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/demos/gameplay-1.gif" alt="Gameplay preview showing the main game environment and world exploration" width="280"/>
+      <br/>
+      <sub>World exploration</sub>
+    </td>
+    <td align="center">
+      <img src="assets/demos/gameplay-2.gif" alt="Gameplay preview showing crop planting, harvesting, and core farming mechanics" width="280"/>
+      <br/>
+      <sub>Farming &amp; harvesting</sub>
+    </td>
+    <td align="center">
+      <img src="assets/demos/gameplay-3.gif" alt="Gameplay preview showing the HUD, menus, and progression features" width="280"/>
+      <br/>
+      <sub>HUD &amp; progression</sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
